@@ -112,7 +112,7 @@ export default function Footer() {
               © {currentYear} Bravo Zulu Services Inc. All rights reserved.
             </p>
             <p className="text-sm mt-2 md:mt-0">
-              "A job well done" in Naval terms
+            &quot;A job well done&quot; in Naval terms
             </p>
           </div>
         </div>

@@ -20,8 +20,8 @@ export default function Hero() {
           Perfection is in the Detail
         </h1>
         <p className="mt-6 text-xl text-gray-300 max-w-3xl">
-          From single engine Cessna's to Gulfstreams and everything in between, 
-          we take care of your aircraft's detailing needs from start to finish, inside and out.
+          From single engine Cessna&quot;s to Gulfstreams and everything in between, 
+          we take care of your aircraft&quot;s detailing needs from start to finish, inside and out.
         </p>
         <div className="mt-10 flex gap-4">
           <Link 

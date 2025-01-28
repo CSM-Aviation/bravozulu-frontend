@@ -95,11 +95,11 @@ async function handleApiResponse<T>(promise: Promise<AxiosResponse<T>>): Promise
   try {
     const response = await promise;
     return { data: response.data, error: null };
-  } catch (error: any) {
-    console.error('API Error:', error.response?.data || error.message);
+  } catch (error: unknown) {
+    console.error('API Error:', error instanceof Error ? error.message : 'Unknown error');
     return {
       data: null,
-      error: error.response?.data?.error || error.message || 'An unknown error occurred'
+      error: error instanceof Error ? error.message : 'An unknown error occurred'
     };
   }
 }

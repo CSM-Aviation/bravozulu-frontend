@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { apiService, QuoteData } from '../../../APIServices/apiService';
-import { PlusCircle, MinusCircle, Send, Loader2, FileText } from 'lucide-react';
+import { PlusCircle, MinusCircle, Send, Loader2 } from 'lucide-react';
 
 interface Service {
   description: string;
@@ -20,11 +20,7 @@ export default function QuoteReviewPage() {
   const [services, setServices] = useState<Service[]>([{ description: '', price: 0 }]);
   const [notes, setNotes] = useState('');
 
-  useEffect(() => {
-    fetchQuote();
-  }, []);
-
-  const fetchQuote = async () => {
+  const fetchQuote = useCallback(async () => {
     try {
       const response = await apiService.getQuoteById(params.id as string);
       if (response.error) {
@@ -40,11 +36,15 @@ export default function QuoteReviewPage() {
         }
       }
     } catch (err) {
-      setError('Failed to fetch quote details');
+      setError(err instanceof Error ? err.message :'Failed to fetch quote details');
     } finally {
       setLoading(false);
     }
-  };
+  }, [params.id]);
+
+  useEffect(() => {
+    fetchQuote();
+  }, [fetchQuote]);
 
   const handleServiceChange = (index: number, field: keyof Service, value: string) => {
     const updatedServices = [...services];
@@ -89,7 +89,7 @@ export default function QuoteReviewPage() {
 
       router.push('/dashboard');
     } catch (err) {
-      setError('Failed to generate and send quote');
+      setError(err instanceof Error ? err.message : 'Failed to generate and send quote');
     } finally {
       setSubmitting(false);
     }

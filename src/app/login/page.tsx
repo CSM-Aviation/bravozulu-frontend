@@ -42,7 +42,7 @@ const LoginPage = () => {
       // Successful login - redirect to dashboard
       router.push('/dashboard');
     } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }

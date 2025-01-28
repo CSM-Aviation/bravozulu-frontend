@@ -7,7 +7,7 @@ import Image from 'next/image';
 const HeroWithNav = () => {
   const router = useRouter();
 
-  const handleNavigation = (path) => {
+  const handleNavigation = (path: string) => {
     router.push(`/${path.toLowerCase()}`);
   };
 
@@ -82,7 +82,7 @@ const HeroWithNav = () => {
         <div className="flex-1 text-black">
           <h2 className="text-3xl font-bold mb-6">INTERIOR</h2>
           <p className="text-lg leading-relaxed opacity-90">
-            Both time and condition determine what level of cleaning your vehicle interior requires which is why we offer everything from a trip ready interior cleaning to a deep interior detail. Whether you need a quick touch-up, a full deep cleaning, or something in between we'll have your vehicle ready meeting the highest standards. In addition to our regular interior detailing services, we offer custom services such as stain removal, leather dye touch-up and repair. We welcome you to call us for more information or to schedule your next interior detailing service.
+            Both time and condition determine what level of cleaning your vehicle interior requires which is why we offer everything from a trip ready interior cleaning to a deep interior detail. Whether you need a quick touch-up, a full deep cleaning, or something in between we&apos;ll have your vehicle ready meeting the highest standards. In addition to our regular interior detailing services, we offer custom services such as stain removal, leather dye touch-up and repair. We welcome you to call us for more information or to schedule your next interior detailing service.
           </p>
         </div>
       </div>

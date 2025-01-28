@@ -1,10 +1,10 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
 import { apiService, QuoteData } from '../APIServices/apiService';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 
 const Quote = () => {
-  const router = useRouter();
+  // const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -60,7 +60,7 @@ const Quote = () => {
         setSuccess(true);
       }
     } catch (err) {
-      setError('Failed to submit quote. Please try again.');
+      setError(err instanceof Error ? err.message : 'Failed to submit quote. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -91,7 +91,7 @@ const Quote = () => {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [formRefs]);
 
   if (success) {
     return (

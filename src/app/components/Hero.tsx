@@ -25,7 +25,7 @@ export default function Hero() {
         </p>
         <div className="mt-10 flex gap-4">
           <Link 
-            href="/quote" 
+            href="/Quote" 
             className="bg-blue-600 text-white px-8 py-3 rounded-md hover:bg-blue-700"
           >
             Get a Quote

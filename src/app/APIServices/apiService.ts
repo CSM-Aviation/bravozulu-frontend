@@ -26,6 +26,7 @@ export interface QuoteData {
   vehicleType: 'Aircraft' | 'Automobile' | 'Vessel';
   status: 'Need Response' | 'Quoted' | 'Approved' | 'Completed';
   createdAt: string;
+  
   // Vehicle specific fields
   registrationNumber?: string;
   serviceType?: string;
@@ -36,12 +37,14 @@ export interface QuoteData {
   boatNumber?: string;
   vesselType?: string;
   length?: number;
-  services?: Array<{
-    description: string;
-    price: number;
-  }>;
+  
+  // New service selection fields
+  services?: ServiceSelection;
+  isInFleet?: boolean;
   notes?: string;
+  pricing?: QuotePricing;
 }
+
 
 export interface QuoteUpdateData {
   services: Array<{
@@ -49,6 +52,52 @@ export interface QuoteUpdateData {
     price: number;
   }>;
   notes?: string;
+}
+
+interface WorkOrder {
+  _id: string;
+  workOrderId: string;
+  quoteId: string;
+  status: 'Pending' | 'In Progress' | 'Completed';
+  createdAt: string;
+  updatedAt: string;
+  assignedTo?: string;
+  completionNotes?: string;
+  beforeImages?: string[];
+  afterImages?: string[];
+  estimatedCompletionDate?: string;
+  actualCompletionDate?: string;
+}
+
+interface FleetAircraft {
+  _id: string;
+  tailNumber: string;
+  type: string;
+  homeBase: string;
+  year: number;
+  passengers: string;
+  isActive: boolean;
+}
+
+export interface ServiceSelection {
+  exterior: string[];
+  interior: string[];
+  specialRequests?: string;
+}
+
+export interface ServicePricing {
+  service: string;
+  price: number;
+}
+
+export interface PricingBreakdown {
+  exterior: ServicePricing[];
+  interior: ServicePricing[];
+}
+
+export interface QuotePricing {
+  total: number;
+  breakdown: PricingBreakdown;
 }
 
 export interface ApiResponse<T> {
@@ -112,8 +161,22 @@ export const apiService = {
   },
 
   // Quote endpoints
-  async submitQuote(quoteData: Partial<QuoteData>): Promise<ApiResponse<QuoteData>> {
-    return handleApiResponse(api.post('/api/quotes', quoteData));
+  submitQuote: async (quoteData: Partial<QuoteData>): Promise<ApiResponse<QuoteData>> => {
+    const response = await handleApiResponse(api.post('/api/quotes', quoteData));
+    console.log(response.data)
+
+    // console.log(response.data)
+
+    // If it's an In Fleet aircraft, automatically approve and generate the quote
+    if (response.data && response.data.isInFleet) {
+      quoteData.pricing = response.data.pricing
+      quoteData.isInFleet = response.data.isInFleet
+      await handleApiResponse(api.post(`/api/quotes/${response.data._id}/generate`, quoteData));
+      await handleApiResponse(api.get(`/api/quotes/${response.data._id}/approve`));
+      
+    }
+
+    return response;
   },
 
   async getQuotes(): Promise<ApiResponse<QuoteData[]>> {
@@ -142,6 +205,22 @@ export const apiService = {
     return handleApiResponse(
       api.get(`/api/quotes/${quoteId}/pdf`)
     );
+  },
+
+  getWorkOrderByQuoteId: async (quoteId: string): Promise<ApiResponse<WorkOrder>> => {
+    return handleApiResponse(api.get(`/api/workorders/quote/${quoteId}`));
+  },
+
+  updateWorkOrder: async (workOrderId: string, updateData: Partial<WorkOrder>): Promise<ApiResponse<WorkOrder>> => {
+    return handleApiResponse(api.put(`/api/workorders/${workOrderId}`, updateData));
+  },
+
+  getFleetAircraft: async (): Promise<ApiResponse<FleetAircraft[]>> => {
+    return handleApiResponse(api.get('/api/fleet'));
+  },
+
+  addFleetAircraft: async (aircraft: Omit<FleetAircraft, '_id' | 'isActive'>): Promise<ApiResponse<FleetAircraft>> => {
+    return handleApiResponse(api.post('/api/fleet', aircraft));
   },
 
   // Helper method to check if user is authenticated

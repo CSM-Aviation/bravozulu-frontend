@@ -3,7 +3,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { apiService, QuoteData } from '../../../APIServices/apiService';
-import { PlusCircle, MinusCircle, Send, Loader2 } from 'lucide-react';
+import { PlusCircle, MinusCircle, Send, Loader2, ChevronDown } from 'lucide-react';
+import WorkOrderSection from '../../WorkOrder/WorkOrderSection';
+import PricingBreakdown from '../../../components/PricingBreakdown';
+
+
 
 interface Service {
   description: string;
@@ -19,6 +23,9 @@ export default function QuoteReviewPage() {
   const [error, setError] = useState('');
   const [services, setServices] = useState<Service[]>([{ description: '', price: 0 }]);
   const [notes, setNotes] = useState('');
+  const [isQuoteExpanded, setIsQuoteExpanded] = useState(true);
+  const [isWorkOrderExpanded, setIsWorkOrderExpanded] = useState(false);
+  
 
   const fetchQuote = useCallback(async () => {
     try {
@@ -29,14 +36,24 @@ export default function QuoteReviewPage() {
       if (response.data) {
         setQuote(response.data);
         if (response.data.services) {
-          setServices(response.data.services);
+          const formattedServices = Object.entries(response.data.services)
+            .filter(([key]) => key !== 'specialRequests')
+            .flatMap(([type, services]) => 
+              (services as string[]).map(service => ({
+                description: `${type.charAt(0).toUpperCase() + type.slice(1)} - ${service}`,
+                price: 0 // This will be calculated by the backend
+              }))
+            );
+          setServices(formattedServices);
         }
         if (response.data.notes) {
           setNotes(response.data.notes);
         }
+        setIsWorkOrderExpanded(response.data.status === 'Approved');
+        setIsQuoteExpanded(response.data.status !== 'Approved');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message :'Failed to fetch quote details');
+      setError(err instanceof Error ? err.message : 'Failed to fetch quote details');
     } finally {
       setLoading(false);
     }
@@ -115,212 +132,257 @@ export default function QuoteReviewPage() {
 
   return (
     <div className="min-h-screen text-black bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-4xl mx-auto px-4 space-y-8">
+        {/* Quote Review Section */}
         <div className="bg-white rounded-lg shadow-lg p-6">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-6">
+          <button
+            onClick={() => setIsQuoteExpanded(!isQuoteExpanded)}
+            className="w-full flex justify-between items-center mb-4"
+          >
             <h1 className="text-2xl font-bold">Quote Review</h1>
-            <div className="text-sm text-gray-500">
-              Quote ID: {quote.quoteId}
-            </div>
-          </div>
-
-          {/* Customer Information */}
-          <div className="mb-8">
-            <h2 className="text-lg font-semibold mb-4">Customer Information</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-600">Name</label>
-                <div className="mt-1">{quote.firstName} {quote.lastName}</div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600">Email</label>
-                <div className="mt-1">{quote.email}</div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600">Phone</label>
-                <div className="mt-1">{quote.phoneNumber}</div>
-              </div>
-              {quote.companyName && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-600">Company</label>
-                  <div className="mt-1">{quote.companyName}</div>
+            <ChevronDown
+              className={`w-6 h-6 transform transition-transform ${
+                isQuoteExpanded ? 'rotate-180' : ''
+              }`}
+            />
+          </button>
+          {isQuoteExpanded && (
+            <>
+              {/* Header */}
+              <div className="flex justify-between items-center mb-6">
+                <div className="text-sm text-gray-500">
+                  Quote ID: {quote.quoteId}
                 </div>
-              )}
-            </div>
-          </div>
-
-          {/* Vehicle Information */}
-          <div className="mb-8">
-            <h2 className="text-lg font-semibold mb-4">Vehicle Information</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-600">Vehicle Type</label>
-                <div className="mt-1">{quote.vehicleType}</div>
               </div>
-              
-              {quote.vehicleType === 'Aircraft' && (
-                <>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-600">Registration Number</label>
-                    <div className="mt-1">{quote.registrationNumber}</div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-600">Service Type</label>
-                    <div className="mt-1">{quote.serviceType}</div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-600">Location</label>
-                    <div className="mt-1">{quote.serviceLocation}</div>
-                  </div>
-                </>
-              )}
 
-              {quote.vehicleType === 'Automobile' && (
-                <>
+              {/* Customer Information */}
+              <div className="mb-8">
+                <h2 className="text-lg font-semibold mb-4">Customer Information</h2>
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-600">Year</label>
-                    <div className="mt-1">{quote.year}</div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-600">Make</label>
-                    <div className="mt-1">{quote.make}</div>
+                    <label className="block text-sm font-medium text-gray-600">Name</label>
+                    <div className="mt-1">{quote.firstName} {quote.lastName}</div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-600">Model</label>
-                    <div className="mt-1">{quote.model}</div>
-                  </div>
-                </>
-              )}
-
-              {quote.vehicleType === 'Vessel' && (
-                <>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-600">Boat Number</label>
-                    <div className="mt-1">{quote.boatNumber}</div>
+                    <label className="block text-sm font-medium text-gray-600">Email</label>
+                    <div className="mt-1">{quote.email}</div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-600">Vessel Type</label>
-                    <div className="mt-1">{quote.vesselType}</div>
+                    <label className="block text-sm font-medium text-gray-600">Phone</label>
+                    <div className="mt-1">{quote.phoneNumber}</div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-600">Length</label>
-                    <div className="mt-1">{quote.length} ft</div>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Services */}
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Services & Pricing</h2>
-              <button
-                type="button"
-                onClick={addService}
-                className="flex items-center text-blue-600 hover:text-blue-700"
-              >
-                <PlusCircle className="w-5 h-5 mr-1" />
-                Add Service
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              {services.map((service, index) => (
-                <div key={index} className="flex gap-4 items-start">
-                  <div className="flex-grow">
-                    <input
-                      type="text"
-                      placeholder="Service description"
-                      value={service.description}
-                      onChange={(e) => handleServiceChange(index, 'description', e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-                  <div className="w-32">
-                    <input
-                      type="number"
-                      placeholder="Price"
-                      value={service.price}
-                      onChange={(e) => handleServiceChange(index, 'price', e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-                  {services.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removeService(index)}
-                      className="text-red-500 hover:text-red-600"
-                    >
-                      <MinusCircle className="w-5 h-5" />
-                    </button>
+                  {quote.companyName && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600">Company</label>
+                      <div className="mt-1">{quote.companyName}</div>
+                    </div>
                   )}
                 </div>
-              ))}
-            </div>
-
-            <div className="mt-4 text-right">
-              <div className="text-lg font-semibold">
-                Total: ${total.toFixed(2)}
               </div>
-            </div>
-          </div>
 
-          {/* Notes */}
-          <div className="mb-8">
-            <h2 className="text-lg font-semibold mb-4">Additional Notes</h2>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={4}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Add any additional notes or special instructions..."
-            />
-          </div>
+              {/* Vehicle Information */}
+              <div className="mb-8">
+                <h2 className="text-lg font-semibold mb-4">Vehicle Information</h2>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600">Vehicle Type</label>
+                    <div className="mt-1">{quote.vehicleType}</div>
+                  </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="mb-4 p-4 bg-red-50 text-red-500 rounded-md">
-              {error}
-            </div>
-          )}
+                  {quote.vehicleType === 'Aircraft' && (
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-600">Registration Number</label>
+                        <div className="mt-1">{quote.registrationNumber}</div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-600">Service Type</label>
+                        <div className="mt-1">{quote.serviceType}</div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-600">Location</label>
+                        <div className="mt-1">{quote.serviceLocation}</div>
+                      </div>
+                    </>
+                  )}
 
-          {/* Action Buttons */}
-          <div className="flex justify-end gap-4">
-            <button
-              type="button"
-              onClick={() => router.push('/dashboard')}
-              className="px-4 py-2 text-gray-600 hover:text-gray-700"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={submitting || quote.status !== 'Need Response'}
-              className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-            >
-              {submitting ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Generating Quote...
-                </>
-              ) : (
-                <>
-                  <Send className="w-5 h-5 mr-2" />
-                  Send Quote
-                </>
+                  {quote.vehicleType === 'Automobile' && (
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-600">Year</label>
+                        <div className="mt-1">{quote.year}</div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-600">Make</label>
+                        <div className="mt-1">{quote.make}</div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-600">Model</label>
+                        <div className="mt-1">{quote.model}</div>
+                      </div>
+                    </>
+                  )}
+
+                  {quote.vehicleType === 'Vessel' && (
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-600">Boat Number</label>
+                        <div className="mt-1">{quote.boatNumber}</div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-600">Vessel Type</label>
+                        <div className="mt-1">{quote.vesselType}</div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-600">Length</label>
+                        <div className="mt-1">{quote.length} ft</div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Services */}
+              {quote.status === 'Need Response' && (
+              <div className="mb-8">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold">Services & Pricing</h2>
+                  <button
+                    type="button"
+                    onClick={addService}
+                    className="flex items-center text-blue-600 hover:text-blue-700"
+                  >
+                    <PlusCircle className="w-5 h-5 mr-1" />
+                    Add Service
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {services.map((service, index) => (
+                    <div key={index} className="flex gap-4 items-start">
+                      <div className="flex-grow">
+                        <input
+                          type="text"
+                          placeholder="Service description"
+                          value={service.description}
+                          onChange={(e) => handleServiceChange(index, 'description', e.target.value)}
+                          className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </div>
+                      <div className="w-32">
+                        <input
+                          type="number"
+                          placeholder="Price"
+                          value={service.price}
+                          onChange={(e) => handleServiceChange(index, 'price', e.target.value)}
+                          className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </div>
+                      {services.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeService(index)}
+                          className="text-red-500 hover:text-red-600"
+                        >
+                          <MinusCircle className="w-5 h-5" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-4 text-right">
+                  <div className="text-lg font-semibold">
+                    Total: ${total.toFixed(2)}
+                  </div>
+                </div>
+              </div>
               )}
-            </button>
-          </div>
 
-          {quote.status !== 'Need Response' && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-md text-gray-600 text-sm">
-              This quote has already been {quote.status.toLowerCase()}. No further changes can be made.
-            </div>
+              {/* Pricing Breakdown */}
+              {quote.pricing && (
+                <PricingBreakdown pricing={quote.pricing} />
+              )}
+
+              {/* Notes */}
+              <div className="mb-8">
+                <h2 className="text-lg font-semibold mb-4">Additional Notes</h2>
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  rows={4}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Add any additional notes or special instructions..."
+                />
+              </div>
+
+              {/* Error Message */}
+              {error && (
+                <div className="mb-4 p-4 bg-red-50 text-red-500 rounded-md">
+                  {error}
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex justify-end gap-4">
+                <button
+                  type="button"
+                  onClick={() => router.push('/dashboard')}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-700"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={submitting || quote.status !== 'Need Response'}
+                  className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Generating Quote...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5 mr-2" />
+                      Send Quote
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {quote.status !== 'Need Response' && (
+                <div className="mt-4 p-4 bg-gray-50 rounded-md text-gray-600 text-sm">
+                  This quote has already been {quote.status.toLowerCase()}. No further changes can be made.
+                </div>
+              )}
+            </>
           )}
         </div>
+
+        {/* Work Order Section */}
+        {quote.status === 'Approved' && (
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <button
+              onClick={() => setIsWorkOrderExpanded(!isWorkOrderExpanded)}
+              className="w-full flex justify-between items-center mb-4"
+            >
+              <h2 className="text-lg font-semibold">Work Order</h2>
+              <ChevronDown
+                className={`w-6 h-6 transform transition-transform ${
+                  isWorkOrderExpanded ? 'rotate-180' : ''
+                }`}
+              />
+            </button>
+            {isWorkOrderExpanded && quote._id && (
+              <WorkOrderSection
+                quoteId={quote._id}
+                status={quote.status}
+              />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

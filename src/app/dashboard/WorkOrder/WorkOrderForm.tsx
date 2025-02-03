@@ -48,11 +48,11 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
 
   const handleImageUpload = async (images: File[], type: 'before' | 'after') => {
     if (!workOrderData?._id) return;
-    
+
     try {
       // Create a copy of the files array to avoid potential mutability issues
       const imagesToUpload = Array.from(images);
-      
+
       // Add loading state for images
       if (type === 'before') {
         setBeforeImages(prev => [...prev, ...imagesToUpload]);
@@ -61,17 +61,17 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
       }
 
       // Upload images
-      const response = await apiService.uploadWorkOrderImages(workOrderData._id, imagesToUpload, type);
-      
-      if (response.error) {
-        // Remove the images from state if upload failed
-        if (type === 'before') {
-          setBeforeImages(prev => prev.filter(img => !imagesToUpload.includes(img)));
-        } else {
-          setAfterImages(prev => prev.filter(img => !imagesToUpload.includes(img)));
-        }
-        throw new Error(response.error);
-      }
+      // const response = await apiService.uploadWorkOrderImages(workOrderData._id, imagesToUpload, type);
+
+      // if (response.error) {
+      //   // Remove the images from state if upload failed
+      //   if (type === 'before') {
+      //     setBeforeImages(prev => prev.filter(img => !imagesToUpload.includes(img)));
+      //   } else {
+      //     setAfterImages(prev => prev.filter(img => !imagesToUpload.includes(img)));
+      //   }
+      //   throw new Error(response.error);
+      // }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to upload images');
     }
@@ -127,6 +127,53 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
     }));
   };
 
+  // const handleSubmit = async () => {
+  //   if (!workOrderData?._id) return;
+
+  //   // Validate required fields
+  //   if (timeEntries.some(entry => !entry.name || !entry.workPerformed)) {
+  //     setError('Please complete all time entry fields');
+  //     return;
+  //   }
+
+  //   if (selectedServices.length === 0) {
+  //     setError('Please select at least one completed service');
+  //     return;
+  //   }
+
+  //   setLoading(true);
+  //   setError('');
+
+  //   try {
+  //     // Submit form data
+  //     const formData: WorkOrderUpdateData = {
+  //       timeEntries: timeEntries.map(entry => ({
+  //         ...entry,
+  //         hours: Number(entry.hours) || 0
+  //       })),
+  //       comments,
+  //       completedServices: selectedServices,
+  //       status: 'Completed',
+  //       completedAt: new Date().toISOString()
+  //     };
+
+  //     const response = await apiService.updateWorkOrder(workOrderData._id, formData);
+
+  //     if (response.error) {
+  //       throw new Error(response.error);
+  //     }
+
+  //     if (response.data) {
+  //       onUpdate(response.data);
+  //     }
+  //   } catch (err) {
+  //     setError(err instanceof Error ? err.message : 'Failed to update work order');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
   const handleSubmit = async () => {
     if (!workOrderData?._id) return;
 
@@ -145,7 +192,7 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
     setError('');
 
     try {
-      // Submit form data
+      // First, submit the form data
       const formData: WorkOrderUpdateData = {
         timeEntries: timeEntries.map(entry => ({
           ...entry,
@@ -157,22 +204,57 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
         completedAt: new Date().toISOString()
       };
 
-      const response = await apiService.updateWorkOrder(workOrderData._id, formData);
+      const workOrderResponse = await apiService.updateWorkOrder(
+        workOrderData._id,
+        formData
+      );
 
-      if (response.error) {
-        throw new Error(response.error);
+      if (workOrderResponse.error) {
+        throw new Error(workOrderResponse.error);
       }
 
-      if (response.data) {
-        onUpdate(response.data);
+      // Upload before images if any exist
+      if (beforeImages.length > 0) {
+        const beforeResponse = await apiService.uploadWorkOrderImages(
+          workOrderData._id,
+          Array.from(beforeImages),
+          'before'
+        );
+
+        if (beforeResponse.error) {
+          throw new Error(beforeResponse.error);
+        }
+      }
+
+      // Upload after images if any exist
+      if (afterImages.length > 0) {
+        const afterResponse = await apiService.uploadWorkOrderImages(
+          workOrderData._id,
+          Array.from(afterImages),
+          'after'
+        );
+
+        if (afterResponse.error) {
+          throw new Error(afterResponse.error);
+        }
+      }
+
+      // Fetch the latest work order data after all updates
+      const refreshedData = await apiService.getWorkOrderByQuoteId(workOrderData.quoteId);
+      if (refreshedData.error) {
+        throw new Error(refreshedData.error);
+      }
+
+      // Update the parent component with the refreshed data
+      if (refreshedData.data) {
+        onUpdate(refreshedData.data);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update work order');
+      setError(err instanceof Error ? err.message : 'Failed to submit work order');
     } finally {
       setLoading(false);
     }
   };
-
 
   return (
     <div className="space-y-8">

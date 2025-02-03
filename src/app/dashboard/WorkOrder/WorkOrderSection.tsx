@@ -18,7 +18,7 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
   useEffect(() => {
     const fetchWorkOrder = async () => {
       if (status !== 'Approved' && status !== 'Completed') return;
-      
+
       try {
         const response = await apiService.getWorkOrderByQuoteId(quoteId);
         if (response.error) {
@@ -39,15 +39,11 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
 
   const handleWorkOrderUpdate = async (updateData: any) => {
     try {
-      if (!workOrder?._id) return;
-      
-      const response = await apiService.updateWorkOrder(workOrder._id, updateData);
-      if (response.error) {
-        throw new Error(response.error);
-      }
-      if (response.data) {
-        setWorkOrder(response.data);
-      }
+      setLoading(true);
+      // Just update the local state with the new work order data
+      // The API call is already handled in the WorkOrderForm
+      setWorkOrder(updateData);
+      setLoading(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update work order');
     }
@@ -126,9 +122,8 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
           >
             <h3 className="text-lg font-semibold">Work Order Details</h3>
             <ChevronDown
-              className={`w-5 h-5 transform transition-transform ${
-                expanded ? 'rotate-180' : ''
-              }`}
+              className={`w-5 h-5 transform transition-transform ${expanded ? 'rotate-180' : ''
+                }`}
             />
           </button>
 

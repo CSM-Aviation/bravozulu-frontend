@@ -1,6 +1,6 @@
 'use client'
-import React, { useEffect, useRef, useState } from 'react';
-import { apiService, QuoteData } from '../APIServices/apiService';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import { apiService, QuoteData, ServiceItem } from '../APIServices/apiService';
 import RegistrationDropdown from '../components/RegistrationDropdown';
 import ServiceSelectionSection from '../components/ServiceSelectionSection';
 
@@ -34,9 +34,8 @@ const Quote = () => {
     length: undefined,
     isInFleet: false,
     createdAt: '',
-    services: {
-      exterior: [],
-      interior: [],
+    serviceDetails: {
+      services: []
     }
   });
 
@@ -48,28 +47,38 @@ const Quote = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccess(false);
 
-    // Create submission data by removing undefined/empty values
-    const submissionData = {
+    // Transform selected services into ServiceItem array
+    const transformedServices: ServiceItem[] = [
+      // Transform exterior services
+      ...selectedExterior.map(service => ({
+        type: 'exterior' as const,
+        name: service,
+        displayName: getDisplayName(service),
+        status: 'pending' as const
+      })),
+      // Transform interior services
+      ...selectedInterior.map(service => ({
+        type: 'interior' as const,
+        name: service,
+        displayName: getDisplayName(service),
+        status: 'pending' as const
+      }))
+    ];
+
+    const quoteData: Partial<QuoteData> = {
       ...formData,
-      services: {
-        exterior: selectedExterior,
-        interior: selectedInterior,
-        specialRequests: specialRequests
-      },
-      companyName: formData.companyName || undefined,
-      isInFleet: formData.isInFleet || false,
-      year: formData.year ? parseInt(formData.year.toString()) : undefined,
-      length: formData.length ? parseInt(formData.length.toString()) : undefined,
+      serviceDetails: {
+        services: transformedServices,
+        specialRequests: specialRequests || undefined
+      }
     };
 
+
     try {
-      const response = await apiService.submitQuote(submissionData);
+      const response = await apiService.submitQuote(quoteData);
       if (response.error) {
         setError(response.error);
       } else {
@@ -82,6 +91,27 @@ const Quote = () => {
     }
   };
 
+  const getDisplayName = (serviceName: string): string => {
+    const displayNames: Record<string, string> = {
+      tripReady: 'Trip Ready',
+      basic: 'Basic',
+      basicPlus: 'Basic Plus',
+      complete: 'Complete',
+      wetWash: 'Wet Wash',
+      dryWash: 'Dry Wash',
+      waxing: 'Waxing/Buffing',
+      brightwork: 'Brightwork Polishing',
+      boots: 'Boot Treatment',
+      gearWells: 'Gear Wells',
+      carpetExtraction: 'Carpet Extraction',
+      leatherReconditioning: 'Leather Reconditioning',
+      stainRemoval: 'Stain Removal'
+    };
+
+    return displayNames[serviceName] || serviceName;
+  };
+
+  
   const formRefs = {
     customerInfo: useRef(null),
     vehicleInfo: useRef(null)
@@ -357,14 +387,14 @@ const Quote = () => {
 
           {/* Service Selection Section */}
           {vehicleType === 'Aircraft' && (
-          <ServiceSelectionSection
-            vehicleType={vehicleType}
-            selectedExterior={selectedExterior}
-            selectedInterior={selectedInterior}
-            onExteriorChange={setSelectedExterior}
-            onInteriorChange={setSelectedInterior}
-            serviceType={formData.serviceType}
-          />
+            <ServiceSelectionSection
+              vehicleType={vehicleType}
+              selectedExterior={selectedExterior}
+              selectedInterior={selectedInterior}
+              onExteriorChange={setSelectedExterior}
+              onInteriorChange={setSelectedInterior}
+              serviceType={formData.serviceType}
+            />
           )}
           <div>
             <label className="block text-gray-800 font-semibold mb-2">Service Location</label>

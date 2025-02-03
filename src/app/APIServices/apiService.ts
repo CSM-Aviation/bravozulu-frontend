@@ -15,6 +15,24 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface ServiceItem {
+  type: 'interior' | 'exterior';
+  name: string;           // e.g. "basicPlus", "wetWash"
+  displayName: string;    // e.g. "Basic Plus", "Wet Wash"
+  price?: number;         // Optional during quote submission, required after pricing
+  status?: 'pending' | 'completed';  // Used for work order tracking
+}
+
+export interface QuoteServices {
+  services: ServiceItem[];
+  specialRequests?: string;
+  totalPrice?: number;    // Calculated by backend for in-fleet, set by sales for others
+  priceSetBy?: {         // Track who set the price
+    userId: string;
+    timestamp: Date;
+  };
+}
+
 export interface QuoteData {
   _id?: string;
   quoteId?: string;
@@ -39,10 +57,17 @@ export interface QuoteData {
   length?: number;
 
   // New service selection fields
-  services?: ServiceSelection;
+  // services?: ServiceSelection;
   isInFleet?: boolean;
   notes?: string;
-  pricing?: QuotePricing;
+  serviceDetails: QuoteServices;
+  // pricing?: QuotePricing;
+}
+
+export interface ServiceOption {
+  value: string;
+  label: string;
+  type: 'interior' | 'exterior';
 }
 
 
@@ -230,8 +255,10 @@ export const apiService = {
 
     // If it's an In Fleet aircraft, automatically approve and generate the quote
     if (response.data && response.data.isInFleet) {
-      quoteData.pricing = response.data.pricing
-      quoteData.isInFleet = response.data.isInFleet
+      if (quoteData.serviceDetails) {
+        quoteData.serviceDetails.totalPrice = response.data.pricing;
+      }
+      quoteData.isInFleet = response.data.isInFleet;
       await handleApiResponse(api.post(`/api/quotes/${response.data._id}/generate`, quoteData));
       await handleApiResponse(api.get(`/api/quotes/${response.data._id}/approve`));
 

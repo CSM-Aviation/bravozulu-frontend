@@ -5,6 +5,15 @@ interface ServiceOption {
   label: string;
 }
 
+interface ServiceSelectionSectionProps {
+  vehicleType: 'Aircraft' | 'Automobile' | 'Vessel';
+  selectedExterior: string[];
+  selectedInterior: string[];
+  onExteriorChange: (selected: string[]) => void;
+  onInteriorChange: (selected: string[]) => void;
+  serviceType?: string;
+}
+
 interface ServiceCheckboxGroupProps {
   title: string;
   options: ServiceOption[];
@@ -46,13 +55,13 @@ interface ServiceSelectionSectionProps {
   serviceType?: string;
 }
 
-const ServiceSelectionSection: React.FC<ServiceSelectionSectionProps> = ({ 
-  vehicleType, 
-  selectedExterior, 
-  selectedInterior, 
-  onExteriorChange, 
+const ServiceSelectionSection: React.FC<ServiceSelectionSectionProps> = ({
+  vehicleType,
+  selectedExterior,
+  selectedInterior,
+  onExteriorChange,
   onInteriorChange,
-  serviceType 
+  serviceType
 }) => {
   const aircraftExteriorOptions = [
     { value: 'tripReady', label: 'Trip Ready' },

@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../../APIServices/apiService';
-import { Loader2, ClipboardCheck, Clock, AlertTriangle } from 'lucide-react';
+import { Loader2, ClipboardCheck, Clock, AlertTriangle, ChevronDown } from 'lucide-react';
+import WorkOrderForm from './WorkOrderForm';
 
 interface WorkOrderSectionProps {
   quoteId: string;
   status: string;
+  quoteData: any;
 }
 
-const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status }) => {
+const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, quoteData }) => {
   const [workOrder, setWorkOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [expanded, setExpanded] = useState(true);
 
   useEffect(() => {
     const fetchWorkOrder = async () => {
-      if (status !== 'Approved') return;
+      if (status !== 'Approved' && status !== 'Completed') return;
       
       try {
         const response = await apiService.getWorkOrderByQuoteId(quoteId);
@@ -34,42 +37,24 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status }) 
     fetchWorkOrder();
   }, [quoteId, status]);
 
-  if (status !== 'Approved') {
+  const handleWorkOrderUpdate = async (updateData: any) => {
+    try {
+      if (!workOrder?._id) return;
+      
+      const response = await apiService.updateWorkOrder(workOrder._id, updateData);
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      if (response.data) {
+        setWorkOrder(response.data);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update work order');
+    }
+  };
+
+  if (status !== 'Approved' && status !== 'Completed') {
     return null;
-  }
-
-  if (loading) {
-    return (
-      <div className="mt-8">
-        <h2 className="text-lg font-semibold mb-4">Work Order</h2>
-        <div className="flex items-center justify-center p-8">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="mt-8">
-        <h2 className="text-lg font-semibold mb-4">Work Order</h2>
-        <div className="p-4 bg-red-50 text-red-500 rounded-md flex items-center">
-          <AlertTriangle className="w-5 h-5 mr-2" />
-          {error}
-        </div>
-      </div>
-    );
-  }
-
-  if (!workOrder) {
-    return (
-      <div className="mt-8">
-        <h2 className="text-lg font-semibold mb-4">Work Order</h2>
-        <div className="p-4 bg-yellow-50 text-yellow-600 rounded-md">
-          No work order found for this quote.
-        </div>
-      </div>
-    );
   }
 
   const getStatusIcon = (status: string) => {
@@ -85,55 +70,163 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status }) 
     }
   };
 
+  if (loading) {
+    return (
+      <div className="mt-8">
+        <div className="flex items-center justify-center p-8">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mt-8">
+        <div className="p-4 bg-red-50 text-red-500 rounded-md flex items-center">
+          <AlertTriangle className="w-5 h-5 mr-2" />
+          {error}
+        </div>
+      </div>
+    );
+  }
+
+  if (!workOrder) {
+    return (
+      <div className="mt-8">
+        <div className="p-4 bg-yellow-50 text-yellow-600 rounded-md">
+          No work order found for this quote.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mt-8">
-      {/* <h2 className="text-lg font-semibold mb-4">Work Order</h2> */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-600">Work Order ID</label>
-            <div className="mt-1 text-gray-900">{workOrder.workOrderId}</div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-600">Status</label>
-            <div className="mt-1 flex items-center gap-2">
+      <div className="bg-white rounded-lg shadow">
+        {/* Header */}
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex justify-between items-center">
+            <div className="space-y-1">
+              <div className="text-sm text-gray-500">Work Order ID</div>
+              <div className="font-medium">{workOrder.workOrderId}</div>
+            </div>
+            <div className="flex items-center gap-2">
               {getStatusIcon(workOrder.status)}
-              <span>{workOrder.status}</span>
+              <span className="font-medium">{workOrder.status}</span>
             </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-600">Created At</label>
-            <div className="mt-1 text-gray-900">
-              {new Date(workOrder.createdAt).toLocaleDateString()}
-            </div>
-          </div>
-          {workOrder.assignedTo && (
-            <div>
-              <label className="block text-sm font-medium text-gray-600">Assigned To</label>
-              <div className="mt-1 text-gray-900">{workOrder.assignedTo}</div>
+        </div>
+
+        {/* Collapsible Content */}
+        <div className="p-6">
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="flex justify-between items-center w-full mb-4"
+          >
+            <h3 className="text-lg font-semibold">Work Order Details</h3>
+            <ChevronDown
+              className={`w-5 h-5 transform transition-transform ${
+                expanded ? 'rotate-180' : ''
+              }`}
+            />
+          </button>
+
+          {expanded && (
+            <div className="mt-4">
+              {workOrder.status !== 'Completed' ? (
+                <WorkOrderForm
+                  quoteData={quoteData}
+                  workOrderData={workOrder}
+                  onUpdate={handleWorkOrderUpdate}
+                />
+              ) : (
+                <div className="space-y-6">
+                  {/* Display completed work order details */}
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2">Completion Details</h4>
+                    <div className="text-sm text-gray-600">
+                      Completed on: {new Date(workOrder.completedAt).toLocaleDateString()}
+                    </div>
+                  </div>
+
+                  {/* Time Entries */}
+                  {workOrder.timeEntries && workOrder.timeEntries.length > 0 && (
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-semibold mb-4">Time Entries</h4>
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                          <thead>
+                            <tr>
+                              <th className="px-4 py-2 text-left">Date</th>
+                              <th className="px-4 py-2 text-left">Name</th>
+                              <th className="px-4 py-2 text-left">Hours</th>
+                              <th className="px-4 py-2 text-left">Work Performed</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {workOrder.timeEntries.map((entry: any, index: number) => (
+                              <tr key={index}>
+                                <td className="px-4 py-2">{entry.date}</td>
+                                <td className="px-4 py-2">{entry.name}</td>
+                                <td className="px-4 py-2">{entry.hours}</td>
+                                <td className="px-4 py-2">{entry.workPerformed}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Comments */}
+                  {workOrder.comments && (
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-semibold mb-2">Comments</h4>
+                      <p className="text-gray-600 whitespace-pre-wrap">{workOrder.comments}</p>
+                    </div>
+                  )}
+
+                  {/* Images */}
+                  {(workOrder.beforeImages?.length > 0 || workOrder.afterImages?.length > 0) && (
+                    <div className="grid grid-cols-2 gap-8">
+                      {workOrder.beforeImages?.length > 0 && (
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          <h4 className="font-semibold mb-4">Before Images</h4>
+                          <div className="grid grid-cols-2 gap-4">
+                            {workOrder.beforeImages.map((url: string, index: number) => (
+                              <img
+                                key={index}
+                                src={url}
+                                alt={`Before ${index + 1}`}
+                                className="w-full h-32 object-cover rounded"
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {workOrder.afterImages?.length > 0 && (
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          <h4 className="font-semibold mb-4">After Images</h4>
+                          <div className="grid grid-cols-2 gap-4">
+                            {workOrder.afterImages.map((url: string, index: number) => (
+                              <img
+                                key={index}
+                                src={url}
+                                alt={`After ${index + 1}`}
+                                className="w-full h-32 object-cover rounded"
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
-
-        {workOrder.completionNotes && (
-          <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-600">Completion Notes</label>
-            <div className="mt-1 text-gray-900 whitespace-pre-wrap">
-              {workOrder.completionNotes}
-            </div>
-          </div>
-        )}
-
-        {workOrder.estimatedCompletionDate && (
-          <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-600">
-              Estimated Completion Date
-            </label>
-            <div className="mt-1 text-gray-900">
-              {new Date(workOrder.estimatedCompletionDate).toLocaleDateString()}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

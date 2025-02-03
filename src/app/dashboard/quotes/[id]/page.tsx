@@ -31,6 +31,8 @@ export default function QuoteReviewPage() {
     try {
       const response = await apiService.getQuoteById(params.id as string);
       if (response.error) {
+        // console.log(response)
+        router.push('/dashboard');
         throw new Error(response.error);
       }
       if (response.data) {
@@ -49,8 +51,8 @@ export default function QuoteReviewPage() {
         if (response.data.notes) {
           setNotes(response.data.notes);
         }
-        setIsWorkOrderExpanded(response.data.status === 'Approved');
-        setIsQuoteExpanded(response.data.status !== 'Approved');
+        setIsWorkOrderExpanded(response.data.status === 'Approved' || response.data.status === 'Completed' );
+        setIsQuoteExpanded(response.data.status !== 'Approved' && response.data.status !== 'Completed');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch quote details');
@@ -362,7 +364,7 @@ export default function QuoteReviewPage() {
         </div>
 
         {/* Work Order Section */}
-        {quote.status === 'Approved' && (
+        {(quote.status === 'Approved' || quote.status === 'Completed') && (
           <div className="bg-white rounded-lg shadow-lg p-6">
             <button
               onClick={() => setIsWorkOrderExpanded(!isWorkOrderExpanded)}
@@ -379,6 +381,7 @@ export default function QuoteReviewPage() {
               <WorkOrderSection
                 quoteId={quote._id}
                 status={quote.status}
+                quoteData={quote}
               />
             )}
           </div>

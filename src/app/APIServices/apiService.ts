@@ -26,7 +26,7 @@ export interface QuoteData {
   vehicleType: 'Aircraft' | 'Automobile' | 'Vessel';
   status: 'Need Response' | 'Quoted' | 'Approved' | 'Completed';
   createdAt: string;
-  
+
   // Vehicle specific fields
   registrationNumber?: string;
   serviceType?: string;
@@ -37,7 +37,7 @@ export interface QuoteData {
   boatNumber?: string;
   vesselType?: string;
   length?: number;
-  
+
   // New service selection fields
   services?: ServiceSelection;
   isInFleet?: boolean;
@@ -54,20 +54,51 @@ export interface QuoteUpdateData {
   notes?: string;
 }
 
-interface WorkOrder {
+export interface TimeEntry {
+  date: string;
+  name: string;
+  startTime: string;
+  endTime: string;
+  hours: number;
+  workPerformed: string;
+}
+
+export interface WorkOrder {
   _id: string;
   workOrderId: string;
   quoteId: string;
   status: 'Pending' | 'In Progress' | 'Completed';
+  timeEntries: TimeEntry[];
+  beforeImages: string[];
+  afterImages: string[];
+  comments?: string;
+  completedServices: string[];
+  completedAt?: string;
   createdAt: string;
   updatedAt: string;
-  assignedTo?: string;
-  completionNotes?: string;
-  beforeImages?: string[];
-  afterImages?: string[];
-  estimatedCompletionDate?: string;
-  actualCompletionDate?: string;
+  laborDetails?: {
+    totalHours: number;
+    laborCost: number;
+    hourlyRate: number;
+  };
 }
+
+export interface WorkOrderUpdateRequest {
+  timeEntries: TimeEntry[];
+  beforeImages: File[];
+  afterImages: File[];
+  comments?: string;
+  completedServices: string[];
+}
+
+export interface WorkOrderUpdateData {
+  timeEntries: TimeEntry[];
+  completedServices: string[];
+  comments?: string;
+  status: 'Pending' | 'In Progress' | 'Completed';
+  completedAt?: string;
+}
+
 
 interface FleetAircraft {
   _id: string;
@@ -145,10 +176,40 @@ async function handleApiResponse<T>(promise: Promise<AxiosResponse<T>>): Promise
     const response = await promise;
     return { data: response.data, error: null };
   } catch (error: unknown) {
-    console.error('API Error:', error instanceof Error ? error.message : 'Unknown error');
+    // Handle axios errors with more detail
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const message = error.response?.data?.message || error.message;
+
+      // Handle specific status codes
+      switch (status) {
+        case 401:
+          console.error('Authentication error: Please log in again');
+          break;
+        case 403:
+          console.error('Authorization error: You do not have permission to perform this action');
+          break;
+        case 404:
+          console.error('Resource not found');
+          break;
+        case 500:
+          console.error('Server error occurred');
+          break;
+        default:
+          console.error(`API Error (${status}):`, message);
+      }
+
+      return {
+        data: null,
+        error: message
+      };
+    }
+
+    // Handle non-axios errors
+    console.error('Unexpected error:', error instanceof Error ? error.message : 'Unknown error');
     return {
       data: null,
-      error: error instanceof Error ? error.message : 'An unknown error occurred'
+      error: error instanceof Error ? error.message : 'An unexpected error occurred'
     };
   }
 }
@@ -173,7 +234,7 @@ export const apiService = {
       quoteData.isInFleet = response.data.isInFleet
       await handleApiResponse(api.post(`/api/quotes/${response.data._id}/generate`, quoteData));
       await handleApiResponse(api.get(`/api/quotes/${response.data._id}/approve`));
-      
+
     }
 
     return response;
@@ -211,9 +272,38 @@ export const apiService = {
     return handleApiResponse(api.get(`/api/workorders/quote/${quoteId}`));
   },
 
-  updateWorkOrder: async (workOrderId: string, updateData: Partial<WorkOrder>): Promise<ApiResponse<WorkOrder>> => {
-    return handleApiResponse(api.put(`/api/workorders/${workOrderId}`, updateData));
+  // Add these methods to apiService.ts
+
+  uploadWorkOrderImages: async (workOrderId: string, files: File[], type: 'before' | 'after'): Promise<ApiResponse<any>> => {
+    const formData = new FormData();
+    
+    // Append each file with a unique field name
+    files.forEach((file, index) => {
+      formData.append(`${type}Images`, file);
+    });
+  
+    const config = {
+      headers: {
+        ...api.defaults.headers.common,
+        'Content-Type': 'multipart/form-data',
+      },
+      // Add timeout and max content length
+      timeout: 60000,
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity,
+    };
+  
+    return handleApiResponse(
+      api.post(`/api/workorders/${workOrderId}/images`, formData, config)
+    );
   },
+
+  updateWorkOrder: async (workOrderId: string, updateData: WorkOrderUpdateData): Promise<ApiResponse<WorkOrder>> => {
+    return handleApiResponse(
+      api.put(`/api/workorders/${workOrderId}`, updateData)
+    );
+  },
+
 
   getFleetAircraft: async (): Promise<ApiResponse<FleetAircraft[]>> => {
     return handleApiResponse(api.get('/api/fleet'));

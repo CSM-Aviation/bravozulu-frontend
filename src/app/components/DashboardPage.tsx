@@ -46,6 +46,7 @@ export default function Dashboard() {
       const response = await apiService.getQuotes();
       
       if (response.error) {
+        router.push('/login');
         throw new Error(response.error);
       }
 

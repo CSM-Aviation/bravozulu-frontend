@@ -14,12 +14,12 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // If already authenticated, redirect to dashboard
-    if (apiService.isAuthenticated()) {
-      router.push('/dashboard');
-    }
-  }, [router]);
+  // useEffect(() => {
+  //   // If already authenticated, redirect to dashboard
+  //   if (apiService.isAuthenticated()) {
+  //     router.push('/dashboard');
+  //   }
+  // }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

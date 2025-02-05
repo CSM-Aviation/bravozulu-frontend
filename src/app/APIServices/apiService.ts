@@ -70,13 +70,18 @@ export interface ServiceOption {
   type: 'interior' | 'exterior';
 }
 
+export interface Service {
+  type: 'interior' | 'exterior';
+  name: string;
+  displayName: string;
+  price?: number;
+  status?: 'pending' | 'completed';
+}
 
 export interface QuoteUpdateData {
-  services: Array<{
-    description: string;
-    price: number;
-  }>;
+  services: Array<Service>;
   notes?: string;
+  specialRequests?: string;
 }
 
 export interface TimeEntry {
@@ -118,7 +123,7 @@ export interface WorkOrderUpdateRequest {
 
 export interface WorkOrderUpdateData {
   timeEntries: TimeEntry[];
-  completedServices: string[];
+  completedServices: Service[];
   comments?: string;
   status: 'Pending' | 'In Progress' | 'Completed';
   completedAt?: string;
@@ -284,10 +289,24 @@ export const apiService = {
   },
 
   async generateQuote(quoteId: string, updateData: QuoteUpdateData): Promise<ApiResponse<QuoteData>> {
+    // Calculate total price
+    const totalPrice = updateData.services.reduce((sum, service) => sum + (service.price || 0), 0);
+
+    // Structure the request data
+    const requestData = {
+      serviceDetails: {
+        services: updateData.services,
+        totalPrice,
+        specialRequests: updateData.specialRequests
+      },
+      notes: updateData.notes
+    };
+
     return handleApiResponse(
-      api.post(`/api/quotes/${quoteId}/generate`, updateData)
+      api.post(`/api/quotes/${quoteId}/generate`, requestData)
     );
   },
+
 
   async getQuotePDF(quoteId: string): Promise<ApiResponse<{ url: string }>> {
     return handleApiResponse(
@@ -303,12 +322,12 @@ export const apiService = {
 
   uploadWorkOrderImages: async (workOrderId: string, files: File[], type: 'before' | 'after'): Promise<ApiResponse<any>> => {
     const formData = new FormData();
-    
+
     // Append each file with a unique field name
     files.forEach((file, index) => {
       formData.append(`${type}Images`, file);
     });
-  
+
     const config = {
       headers: {
         ...api.defaults.headers.common,
@@ -319,7 +338,7 @@ export const apiService = {
       maxContentLength: Infinity,
       maxBodyLength: Infinity,
     };
-  
+
     return handleApiResponse(
       api.post(`/api/workorders/${workOrderId}/images`, formData, config)
     );

@@ -37,6 +37,7 @@ const LoginPage = () => {
       // Store the received token in localStorage
       if (response.data?.token) {
         localStorage.setItem('authToken', response.data.token);
+        window.dispatchEvent(new Event('authStateChange'));
       }
 
       // Successful login - redirect to dashboard

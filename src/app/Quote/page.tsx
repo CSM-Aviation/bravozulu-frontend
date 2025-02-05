@@ -3,6 +3,7 @@ import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { apiService, QuoteData, ServiceItem } from '../APIServices/apiService';
 import RegistrationDropdown from '../components/RegistrationDropdown';
 import ServiceSelectionSection from '../components/ServiceSelectionSection';
+import Router from "next/router";
 
 // import { useRouter } from 'next/navigation';
 
@@ -76,7 +77,7 @@ const Quote = () => {
       }
     };
 
-
+    setLoading(true);
     try {
       const response = await apiService.submitQuote(quoteData);
       if (response.error) {
@@ -139,6 +140,36 @@ const Quote = () => {
     return () => observer.disconnect();
   }, [formRefs]);
 
+  const resetForm = () => {
+    setSuccess(false);
+    setSelectedExterior([]);
+    setSelectedInterior([]);
+    setSpecialRequests('');
+    setFormData({
+      status: 'Need Response',
+      firstName: '',
+      lastName: '',
+      companyName: '',
+      email: '',
+      phoneNumber: '',
+      vehicleType: 'Aircraft',
+      registrationNumber: '',
+      serviceType: '',
+      serviceLocation: 'FAT',
+      year: undefined,
+      make: '',
+      model: '',
+      boatNumber: '',
+      vesselType: '',
+      length: undefined,
+      isInFleet: false,
+      createdAt: '',
+      serviceDetails: {
+        services: []
+      }
+    });
+  };
+
   if (success) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 py-12">
@@ -149,9 +180,15 @@ const Quote = () => {
             </svg>
           </div>
           <h1 className="text-4xl font-bold mb-4 text-gray-800">Thank you!</h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-gray-600 mb-8">
             Your quote request has been sent. We will get in touch with you shortly after reviewing your servicing details.
           </p>
+          <button
+            onClick={resetForm}
+            className="bg-blue-500 text-white py-3 px-8 rounded-lg text-lg font-semibold hover:bg-blue-600 transform hover:scale-[1.02] transition-all duration-200"
+          >
+            Submit New Quote
+          </button>
         </div>
       </div>
     );

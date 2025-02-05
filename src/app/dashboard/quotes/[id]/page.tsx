@@ -2,17 +2,40 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { apiService, QuoteData } from '../../../APIServices/apiService';
-import { PlusCircle, MinusCircle, Send, Loader2, ChevronDown } from 'lucide-react';
+import { apiService, QuoteData, QuoteUpdateData, Service } from '../../../APIServices/apiService';
+import { PlusCircle, Send, Loader2, ChevronDown } from 'lucide-react';
 import WorkOrderSection from '../../WorkOrder/WorkOrderSection';
 import PricingBreakdown from '../../../components/PricingBreakdown';
 
+const serviceOptions = {
+  exterior: [
+    { value: 'tripReady', label: 'Trip Ready' },
+    { value: 'basic', label: 'Basic' },
+    { value: 'wetWash', label: 'Wet Wash' },
+    { value: 'dryWash', label: 'Dry Wash' },
+    { value: 'waxing', label: 'Waxing/Buffing' },
+    { value: 'brightwork', label: 'Brightwork Polishing' },
+    { value: 'boots', label: 'Boots' },
+    { value: 'gearWells', label: 'Gear Wells' }
+  ],
+  interior: [
+    { value: 'tripReady', label: 'Trip Ready' },
+    { value: 'basic', label: 'Basic' },
+    { value: 'basicPlus', label: 'Basic +' },
+    { value: 'complete', label: 'Complete' },
+    { value: 'carpetExtraction', label: 'Carpet Extraction' },
+    { value: 'leatherReconditioning', label: 'Leather Reconditioning' },
+    { value: 'stainRemoval', label: 'Stain Removal' }
+  ]
+};
 
-
-interface Service {
-  description: string;
-  price: number;
-}
+// export interface Service {
+//   type: 'interior' | 'exterior';
+//   name: string;
+//   displayName: string;
+//   price?: number;
+//   status?: 'pending' | 'completed';
+// }
 
 export default function QuoteReviewPage() {
   const params = useParams();
@@ -21,37 +44,27 @@ export default function QuoteReviewPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [services, setServices] = useState<Service[]>([{ description: '', price: 0 }]);
+  const [services, setServices] = useState<Service[]>([]);
   const [notes, setNotes] = useState('');
   const [isQuoteExpanded, setIsQuoteExpanded] = useState(true);
   const [isWorkOrderExpanded, setIsWorkOrderExpanded] = useState(false);
-  
 
   const fetchQuote = useCallback(async () => {
     try {
       const response = await apiService.getQuoteById(params.id as string);
       if (response.error) {
-        // console.log(response)
         router.push('/dashboard');
         throw new Error(response.error);
       }
       if (response.data) {
         setQuote(response.data);
-        if (response.data.services) {
-          const formattedServices = Object.entries(response.data.services)
-            .filter(([key]) => key !== 'specialRequests')
-            .flatMap(([type, services]) => 
-              (services as string[]).map(service => ({
-                description: `${type.charAt(0).toUpperCase() + type.slice(1)} - ${service}`,
-                price: 0 // This will be calculated by the backend
-              }))
-            );
-          setServices(formattedServices);
+        if (response.data.serviceDetails?.services) {
+          setServices(response.data.serviceDetails.services);
         }
         if (response.data.notes) {
           setNotes(response.data.notes);
         }
-        setIsWorkOrderExpanded(response.data.status === 'Approved' || response.data.status === 'Completed' );
+        setIsWorkOrderExpanded(response.data.status === 'Approved' || response.data.status === 'Completed');
         setIsQuoteExpanded(response.data.status !== 'Approved' && response.data.status !== 'Completed');
       }
     } catch (err) {
@@ -65,30 +78,56 @@ export default function QuoteReviewPage() {
     fetchQuote();
   }, [fetchQuote]);
 
-  const handleServiceChange = (index: number, field: keyof Service, value: string) => {
+  const handleServiceChange = (index: number, field: keyof Service, value: string | number) => {
     const updatedServices = [...services];
-    if (field === 'price') {
-      updatedServices[index][field] = parseFloat(value) || 0;
-    } else {
-      updatedServices[index][field] = value;
+    if (field === 'type') {
+      const type = value as 'interior' | 'exterior';
+      const serviceOption = serviceOptions[type][0];
+      updatedServices[index] = {
+        ...updatedServices[index],
+        type,
+        name: serviceOption.value,
+        displayName: serviceOption.label,
+        price: 0
+      };
+    } else if (field === 'name') {
+      const type = updatedServices[index].type;
+      const serviceOption = serviceOptions[type].find(opt => opt.value === value);
+      if (serviceOption) {
+        updatedServices[index] = {
+          ...updatedServices[index],
+          name: serviceOption.value,
+          displayName: serviceOption.label
+        };
+      }
+    } else if (field === 'price') {
+      updatedServices[index] = {
+        ...updatedServices[index],
+        price: typeof value === 'number' ? value : parseFloat(value) || 0
+      };
     }
     setServices(updatedServices);
   };
 
   const addService = () => {
-    setServices([...services, { description: '', price: 0 }]);
+    const newService: Service = {
+      type: 'exterior',
+      name: serviceOptions.exterior[0].value,
+      displayName: serviceOptions.exterior[0].label,
+      price: 0,
+      status: 'pending'
+    };
+    setServices([...services, newService]);
   };
 
   const removeService = (index: number) => {
-    const updatedServices = services.filter((_, i) => i !== index);
-    setServices(updatedServices);
+    setServices(services.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async () => {
     if (!quote) return;
 
-    // Validate services
-    if (services.some(service => !service.description || service.price <= 0)) {
+    if (services.some(service => !service.name || !service.price || service.price <= 0)) {
       setError('Please fill in all service details with valid prices');
       return;
     }
@@ -97,10 +136,12 @@ export default function QuoteReviewPage() {
     setError('');
 
     try {
-      const response = await apiService.generateQuote(quote._id as string, {
-        services,
-        notes
-      });
+      const quoteData : QuoteUpdateData = {
+        services: services,
+        notes: notes,
+        specialRequests: quote.serviceDetails.specialRequests || ''
+      };
+      const response = await apiService.generateQuote(quote._id as string, quoteData );
 
       if (response.error) {
         throw new Error(response.error);
@@ -130,7 +171,9 @@ export default function QuoteReviewPage() {
     );
   }
 
-  const total = services.reduce((sum, service) => sum + service.price, 0);
+  const total = services.reduce((sum, service) => sum + (service.price || 0), 0);
+
+
 
   return (
     <div className="min-h-screen text-black bg-gray-50 py-8">
@@ -143,9 +186,8 @@ export default function QuoteReviewPage() {
           >
             <h1 className="text-2xl font-bold">Quote Review</h1>
             <ChevronDown
-              className={`w-6 h-6 transform transition-transform ${
-                isQuoteExpanded ? 'rotate-180' : ''
-              }`}
+              className={`w-6 h-6 transform transition-transform ${isQuoteExpanded ? 'rotate-180' : ''
+                }`}
             />
           </button>
           {isQuoteExpanded && (
@@ -244,76 +286,111 @@ export default function QuoteReviewPage() {
                 </div>
               </div>
 
-              {/* Services */}
+              {/* Services Section */}
               {quote.status === 'Need Response' && (
-              <div className="mb-8">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-semibold">Services & Pricing</h2>
-                  <button
-                    type="button"
-                    onClick={addService}
-                    className="flex items-center text-blue-600 hover:text-blue-700"
-                  >
-                    <PlusCircle className="w-5 h-5 mr-1" />
-                    Add Service
-                  </button>
-                </div>
+                <div className="mb-8">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-lg font-semibold">Services & Pricing</h2>
+                    <button
+                      type="button"
+                      onClick={addService}
+                      className="flex items-center text-blue-600 hover:text-blue-700"
+                    >
+                      <PlusCircle className="w-5 h-5 mr-1" />
+                      Add Service
+                    </button>
+                  </div>
 
-                <div className="space-y-4">
-                  {services.map((service, index) => (
-                    <div key={index} className="flex gap-4 items-start">
-                      <div className="flex-grow">
-                        <input
-                          type="text"
-                          placeholder="Service description"
-                          value={service.description}
-                          onChange={(e) => handleServiceChange(index, 'description', e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                      </div>
-                      <div className="w-32">
+                  <div className="space-y-4">
+                    {services.map((service, index) => (
+                      <div key={index} className="flex gap-4 items-start">
+                        <select
+                          value={service.type}
+                          onChange={(e) => handleServiceChange(index, 'type', e.target.value)}
+                          className="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          <option value="exterior">Exterior</option>
+                          <option value="interior">Interior</option>
+                        </select>
+
+                        <select
+                          value={service.name}
+                          onChange={(e) => handleServiceChange(index, 'name', e.target.value)}
+                          className="flex-grow p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          {serviceOptions[service.type].map(option => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+
                         <input
                           type="number"
                           placeholder="Price"
-                          value={service.price}
+                          value={service.price || ''}
                           onChange={(e) => handleServiceChange(index, 'price', e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-32 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />
-                      </div>
-                      {services.length > 1 && (
+
                         <button
                           type="button"
                           onClick={() => removeService(index)}
-                          className="text-red-500 hover:text-red-600"
+                          className="text-red-500 hover:text-red-600 p-2"
                         >
-                          <MinusCircle className="w-5 h-5" />
+                          ×
                         </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                      </div>
+                    ))}
+                  </div>
 
-                <div className="mt-4 text-right">
-                  <div className="text-lg font-semibold">
-                    Total: ${total.toFixed(2)}
+                  <div className="mt-4 text-right">
+                    <div className="text-lg font-semibold">
+                      Total: ${total.toFixed(2)}
+                    </div>
                   </div>
                 </div>
-              </div>
               )}
+
+              {/* View Only Services List */}
+              {/* {quote.status !== 'Need Response' && quote.serviceDetails?.services && (
+                <div className="mb-8">
+                  <h2 className="text-lg font-semibold mb-4">Services</h2>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="space-y-2">
+                      {quote.serviceDetails.services.map((service, index) => (
+                        <div key={index} className="flex justify-between items-center">
+                          <span>{service.displayName} ({service.type})</span>
+                          {service.price && (
+                            <span className="font-medium">${service.price.toFixed(2)}</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    {quote.serviceDetails.totalPrice && (
+                      <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between items-center">
+                        <span className="font-semibold">Total:</span>
+                        <span className="font-semibold">
+                          ${quote.serviceDetails.totalPrice.toFixed(2)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )} */}
 
               {/* Pricing Breakdown */}
-              {quote.pricing && (
-                <PricingBreakdown pricing={quote.pricing} />
-              )}
+              {quote.status != 'Need Response' && quote.serviceDetails && <PricingBreakdown serviceDetails={quote.serviceDetails} />}
 
-              {/* Notes */}
+              {/* Notes Section */}
               <div className="mb-8">
                 <h2 className="text-lg font-semibold mb-4">Additional Notes</h2>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
+                  disabled={quote.status !== 'Need Response'}
                   rows={4}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
                   placeholder="Add any additional notes or special instructions..."
                 />
               </div>
@@ -334,31 +411,27 @@ export default function QuoteReviewPage() {
                 >
                   Cancel
                 </button>
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={submitting || quote.status !== 'Need Response'}
-                  className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                >
-                  {submitting ? (
-                    <>
-                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Generating Quote...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-5 h-5 mr-2" />
-                      Send Quote
-                    </>
-                  )}
-                </button>
+                {quote.status === 'Need Response' && (
+                  <button
+                    type="button"
+                    onClick={handleSubmit}
+                    disabled={submitting}
+                    className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+                  >
+                    {submitting ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        Generating Quote...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5 mr-2" />
+                        Send Quote
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
-
-              {quote.status !== 'Need Response' && (
-                <div className="mt-4 p-4 bg-gray-50 rounded-md text-gray-600 text-sm">
-                  This quote has already been {quote.status.toLowerCase()}. No further changes can be made.
-                </div>
-              )}
             </>
           )}
         </div>
@@ -372,9 +445,8 @@ export default function QuoteReviewPage() {
             >
               <h2 className="text-lg font-semibold">Work Order</h2>
               <ChevronDown
-                className={`w-6 h-6 transform transition-transform ${
-                  isWorkOrderExpanded ? 'rotate-180' : ''
-                }`}
+                className={`w-6 h-6 transform transition-transform ${isWorkOrderExpanded ? 'rotate-180' : ''
+                  }`}
               />
             </button>
             {isWorkOrderExpanded && quote._id && (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2, Upload, Plus, X, Camera } from 'lucide-react';
-import { apiService, WorkOrderUpdateData } from '../../APIServices/apiService';
+import { apiService, Service, WorkOrderUpdateData } from '../../APIServices/apiService';
 
 interface TimeEntry {
   date: string;
@@ -16,6 +16,141 @@ interface WorkOrderFormProps {
   workOrderData: any;
   onUpdate: (data: any) => void;
 }
+
+// Service options from ServiceSelectionSection
+const aircraftExteriorOptions = [
+  { value: 'tripReady', label: 'Trip Ready' },
+  { value: 'basic', label: 'Basic' },
+  { value: 'wetWash', label: 'Wet Wash' },
+  { value: 'dryWash', label: 'Dry Wash' },
+  { value: 'waxing', label: 'Waxing/Buffing' },
+  { value: 'brightwork', label: 'Brightwork Polishing' },
+  { value: 'boots', label: 'Boots' },
+  { value: 'gearWells', label: 'Gear Wells' }
+];
+
+const aircraftInteriorOptions = [
+  { value: 'tripReady', label: 'Trip Ready' },
+  { value: 'basic', label: 'Basic' },
+  { value: 'basicPlus', label: 'Basic +' },
+  { value: 'complete', label: 'Complete' },
+  { value: 'carpetExtraction', label: 'Carpet Extraction' },
+  { value: 'leatherReconditioning', label: 'Leather Reconditioning' },
+  { value: 'stainRemoval', label: 'Stain Removal' }
+];
+
+const autoVesselExteriorOptions = [
+  { value: 'tripReady', label: 'Trip Ready' },
+  { value: 'basic', label: 'Basic' },
+  { value: 'complete', label: 'Complete' },
+  { value: 'wheelRestoration', label: 'Wheel Restoration' },
+  { value: 'headlightRestoration', label: 'Headlight Restoration' },
+  { value: 'ecoWax', label: 'Eco Wax' }
+];
+
+const autoVesselInteriorOptions = [
+  { value: 'tripReady', label: 'Trip Ready' },
+  { value: 'basic', label: 'Basic' },
+  { value: 'complete', label: 'Complete' },
+  { value: 'carpetExtraction', label: 'Carpet Extraction' },
+  { value: 'leatherReconditioning', label: 'Leather Reconditioning' },
+  { value: 'stainRemoval', label: 'Stain Removal' }
+];
+const ServiceChecklistSection = ({
+  vehicleType,
+  quoteServices,
+  selectedExteriorServices,
+  selectedInteriorServices,
+  onExteriorServicesChange,
+  onInteriorServicesChange
+}: {
+  vehicleType: string;
+  quoteServices: { services: Array<Service> };
+  selectedExteriorServices: string[];
+  selectedInteriorServices: string[];
+  onExteriorServicesChange: (services: string[]) => void;
+  onInteriorServicesChange: (services: string[]) => void;
+}) => {
+  const isAircraft = vehicleType === 'Aircraft';
+  const exteriorOptions = isAircraft ? aircraftExteriorOptions : autoVesselExteriorOptions;
+  const interiorOptions = isAircraft ? aircraftInteriorOptions : autoVesselInteriorOptions;
+
+  // Initialize with quote services
+  useEffect(() => {
+    if (quoteServices?.services) {
+      const exteriorServices = quoteServices.services
+        .filter(service => service.type === 'exterior')
+        .map(service => service.name);
+      const interiorServices = quoteServices.services
+        .filter(service => service.type === 'interior')
+        .map(service => service.name);
+
+      onExteriorServicesChange(exteriorServices);
+      onInteriorServicesChange(interiorServices);
+    }
+  }, [quoteServices, onExteriorServicesChange, onInteriorServicesChange]);
+
+  return (
+    <div className="bg-gray-50 p-4 rounded-lg">
+      <h3 className="text-lg font-semibold mb-4">Services Checklist</h3>
+      <div className="grid grid-cols-2 gap-8">
+        {/* Exterior Services */}
+        <div>
+          <h4 className="font-medium text-gray-700 mb-2">Exterior Services</h4>
+          <div className="space-y-2">
+            {exteriorOptions.map((service) => (
+              <label key={service.value} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={selectedExteriorServices.includes(service.value)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      onExteriorServicesChange([...selectedExteriorServices, service.value]);
+                    } else {
+                      onExteriorServicesChange(
+                        selectedExteriorServices.filter(s => s !== service.value)
+                      );
+                    }
+                  }}
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-gray-700">{service.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Interior Services */}
+        <div>
+          <h4 className="font-medium text-gray-700 mb-2">Interior Services</h4>
+          <div className="space-y-2">
+            {interiorOptions.map((service) => (
+              <label key={service.value} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={selectedInteriorServices.includes(service.value)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      onInteriorServicesChange([...selectedInteriorServices, service.value]);
+                    } else {
+                      onInteriorServicesChange(
+                        selectedInteriorServices.filter(s => s !== service.value)
+                      );
+                    }
+                  }}
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-gray-700">{service.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
 
 const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProps) => {
   const [loading, setLoading] = useState(false);
@@ -34,17 +169,35 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
   const [afterImages, setAfterImages] = useState<File[]>([]);
   const [comments, setComments] = useState('');
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [selectedExteriorServices, setSelectedExteriorServices] = useState<string[]>([]);
+  const [selectedInteriorServices, setSelectedInteriorServices] = useState<string[]>([]);
+
 
   // Initialize selected services from quote
   useEffect(() => {
-    if (quoteData?.services) {
-      const services = [
-        ...(quoteData.services.exterior || []),
-        ...(quoteData.services.interior || [])
-      ];
-      setSelectedServices(services);
+    if (workOrderData?.completedServices) {
+      const exterior = workOrderData.completedServices
+        .filter((service: { type: string; name: string; }) => service.type === 'exterior')
+        .map((service: { name: string; }) => service.name);
+      const interior = workOrderData.completedServices
+        .filter((service: { type: string; name: string; }) => service.type === 'interior')
+        .map((service: { name: string; }) => service.name);
+        
+      setSelectedExteriorServices(exterior);
+      setSelectedInteriorServices(interior);
+    } else if (quoteData?.serviceDetails?.services) {
+      const exterior = quoteData.serviceDetails.services
+        .filter((service: Service) => service.type === 'exterior')
+        .map((service: Service) => service.name);
+      const interior = quoteData.serviceDetails.services
+        .filter((service: Service) => service.type === 'interior')
+        .map((service: Service) => service.name);
+        
+      setSelectedExteriorServices(exterior);
+      setSelectedInteriorServices(interior);
     }
-  }, [quoteData]);
+  }, [quoteData, workOrderData]);
+
 
   const handleImageUpload = async (images: File[], type: 'before' | 'after') => {
     if (!workOrderData?._id) return;
@@ -176,22 +329,49 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
 
   const handleSubmit = async () => {
     if (!workOrderData?._id) return;
+    
 
     // Validate required fields
     if (timeEntries.some(entry => !entry.name || !entry.workPerformed)) {
       setError('Please complete all time entry fields');
+      // return;
+    }
+    console.log(error)
+
+    if (selectedExteriorServices.length === 0 && selectedInteriorServices.length === 0) {
+      setError('Please select at least one service');
       return;
     }
 
-    if (selectedServices.length === 0) {
-      setError('Please select at least one completed service');
-      return;
-    }
+    
 
     setLoading(true);
     setError('');
 
     try {
+      // Combine exterior and interior services
+      const allSelectedServices: Service[] = [
+        ...selectedExteriorServices.map(name => ({
+          name,
+          type: 'exterior' as const,
+          displayName: aircraftExteriorOptions.find(opt => opt.value === name)?.label || name,
+          status: 'completed' as const,
+          price: quoteData?.serviceDetails?.services.find(
+            (s: Service) => s.name === name && s.type === 'exterior'
+          )?.price
+        })),
+        ...selectedInteriorServices.map(name => ({
+          name,
+          type: 'interior' as const,
+          displayName: aircraftInteriorOptions.find(opt => opt.value === name)?.label || name,
+          status: 'completed' as const,
+          price: quoteData?.serviceDetails?.services.find(
+            (s: Service) => s.name === name && s.type === 'interior'
+          )?.price
+        }))
+      ];
+
+
       // First, submit the form data
       const formData: WorkOrderUpdateData = {
         timeEntries: timeEntries.map(entry => ({
@@ -199,7 +379,7 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
           hours: Number(entry.hours) || 0
         })),
         comments,
-        completedServices: selectedServices,
+        completedServices: allSelectedServices,
         status: 'Completed',
         completedAt: new Date().toISOString()
       };
@@ -213,39 +393,30 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
         throw new Error(workOrderResponse.error);
       }
 
-      // Upload before images if any exist
+
+      // Handle image uploads
       if (beforeImages.length > 0) {
         const beforeResponse = await apiService.uploadWorkOrderImages(
           workOrderData._id,
           Array.from(beforeImages),
           'before'
         );
-
-        if (beforeResponse.error) {
-          throw new Error(beforeResponse.error);
-        }
       }
 
-      // Upload after images if any exist
       if (afterImages.length > 0) {
         const afterResponse = await apiService.uploadWorkOrderImages(
           workOrderData._id,
           Array.from(afterImages),
           'after'
         );
-
-        if (afterResponse.error) {
-          throw new Error(afterResponse.error);
-        }
       }
 
-      // Fetch the latest work order data after all updates
+      // Fetch updated work order data
       const refreshedData = await apiService.getWorkOrderByQuoteId(workOrderData.quoteId);
       if (refreshedData.error) {
         throw new Error(refreshedData.error);
       }
 
-      // Update the parent component with the refreshed data
       if (refreshedData.data) {
         onUpdate(refreshedData.data);
       }
@@ -255,6 +426,7 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
       setLoading(false);
     }
   };
+
 
   return (
     <div className="space-y-8">
@@ -274,28 +446,14 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
       </div>
 
       {/* Services Checklist */}
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="text-lg font-semibold mb-4">Services Checklist</h3>
-        <div className="space-y-2">
-          {selectedServices.map((service, index) => (
-            <label key={index} className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={selectedServices.includes(service)}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setSelectedServices(prev => [...prev, service]);
-                  } else {
-                    setSelectedServices(prev => prev.filter(s => s !== service));
-                  }
-                }}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span>{service}</span>
-            </label>
-          ))}
-        </div>
-      </div>
+      <ServiceChecklistSection
+        vehicleType={quoteData?.vehicleType}
+        quoteServices={quoteData?.serviceDetails}
+        selectedExteriorServices={selectedExteriorServices}
+        selectedInteriorServices={selectedInteriorServices}
+        onExteriorServicesChange={setSelectedExteriorServices}
+        onInteriorServicesChange={setSelectedInteriorServices}
+      />
 
       {/* Time Entries */}
       <div className="bg-gray-50 p-4 rounded-lg">

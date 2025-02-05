@@ -13,7 +13,23 @@ export default function Header() {
 
   useEffect(() => {
     // Check authentication status on mount and after any login/logout
-    setIsAuthenticated(apiService.isAuthenticated());
+    const checkAuth = () => {
+      setIsAuthenticated(apiService.isAuthenticated());
+    };
+
+    // Initial check
+    checkAuth();
+
+    // Listen for storage events to detect login/logout in other tabs
+    window.addEventListener('storage', checkAuth);
+
+    // Custom event listener for login/logout in same tab
+    window.addEventListener('authStateChange', checkAuth);
+
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+      window.removeEventListener('authStateChange', checkAuth);
+    };
   }, []);
 
   const handleLogout = () => {
@@ -50,17 +66,17 @@ export default function Header() {
             <Link href="/contact" className="text-gray-700 hover:text-gray-900">
               Contact
             </Link>
-            <a 
-              href="tel:559-425-8620" 
+            <a
+              href="tel:559-425-8620"
               className="text-gray-700 hover:text-gray-900"
             >
               559-425-8620
             </a>
-            
+
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
-                <Link 
-                  href="/dashboard" 
+                <Link
+                  href="/dashboard"
                   className="text-gray-700 hover:text-gray-900"
                 >
                   Dashboard

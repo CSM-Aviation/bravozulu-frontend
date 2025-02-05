@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { apiService } from '../../APIServices/apiService';
+import { apiService, Service } from '../../APIServices/apiService';
 import { Loader2, ClipboardCheck, Clock, AlertTriangle, ChevronDown } from 'lucide-react';
 import WorkOrderForm from './WorkOrderForm';
 
@@ -8,6 +8,61 @@ interface WorkOrderSectionProps {
   status: string;
   quoteData: any;
 }
+
+const ServicesList = ({ services }: { services: Service[] }) => {
+  // Separate services by type
+  const exteriorServices = services.filter((service: Service) => service.type === 'exterior');
+  const interiorServices = services.filter((service: Service) => service.type === 'interior');
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 gap-4">
+        {/* Exterior Services */}
+        {exteriorServices.length > 0 && (
+          <div>
+            <h4 className="font-semibold mb-2">Completed Exterior Services</h4>
+            <div className="bg-white rounded-md border border-gray-200">
+              {exteriorServices.map((service, index) => (
+                <div
+                  key={service.name}
+                  className={`px-4 py-2 flex justify-between items-center ${index !== exteriorServices.length - 1 ? 'border-b border-gray-200' : ''
+                    }`}
+                >
+                  <span className="text-gray-700">{service.displayName}</span>
+                  {/* {service.price && (
+                    <span className="text-gray-600">${service.price.toFixed(2)}</span>
+                  )} */}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Interior Services */}
+        {interiorServices.length > 0 && (
+          <div>
+            <h4 className="font-semibold mb-2">Completed Interior Services</h4>
+            <div className="bg-white rounded-md border border-gray-200">
+              {interiorServices.map((service, index) => (
+                <div
+                  key={service.name}
+                  className={`px-4 py-2 flex justify-between items-center ${index !== interiorServices.length - 1 ? 'border-b border-gray-200' : ''
+                    }`}
+                >
+                  <span className="text-gray-700">{service.displayName}</span>
+                  {/* {service.price && (
+                    <span className="text-gray-600">${service.price.toFixed(2)}</span>
+                  )} */}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 
 const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, quoteData }) => {
   const [workOrder, setWorkOrder] = useState<any>(null);
@@ -122,13 +177,12 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
           >
             <h3 className="text-lg font-semibold">Work Order Details</h3>
             <ChevronDown
-              className={`w-5 h-5 transform transition-transform ${expanded ? 'rotate-180' : ''
-                }`}
+              className={`w-5 h-5 transform transition-transform ${expanded ? 'rotate-180' : ''}`}
             />
           </button>
 
           {expanded && (
-            <div className="mt-4">
+            <div className="mt-4 space-y-8">
               {workOrder.status !== 'Completed' ? (
                 <WorkOrderForm
                   quoteData={quoteData}
@@ -137,13 +191,42 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
                 />
               ) : (
                 <div className="space-y-6">
-                  {/* Display completed work order details */}
+                  {/* Completion Details */}
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h4 className="font-semibold mb-2">Completion Details</h4>
                     <div className="text-sm text-gray-600">
                       Completed on: {new Date(workOrder.completedAt).toLocaleDateString()}
                     </div>
                   </div>
+
+                  {/* Completed Services */}
+                  {workOrder.completedServices && workOrder.completedServices.length > 0 && (
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-semibold mb-4">Completed Services</h4>
+                      <ServicesList services={workOrder.completedServices} />
+                    </div>
+                  )}
+
+                  {/* Labor Details */}
+                  {/* {workOrder.laborDetails && (
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-semibold mb-4">Labor Details</h4>
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span>Total Hours:</span>
+                          <span>{workOrder.laborDetails.totalHours}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Hourly Rate:</span>
+                          <span>${workOrder.laborDetails.hourlyRate}/hr</span>
+                        </div>
+                        <div className="flex justify-between font-semibold">
+                          <span>Total Labor Cost:</span>
+                          <span>${workOrder.laborDetails.laborCost.toFixed(2)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  )} */}
 
                   {/* Time Entries */}
                   {workOrder.timeEntries && workOrder.timeEntries.length > 0 && (
@@ -160,8 +243,8 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
                             </tr>
                           </thead>
                           <tbody>
-                            {workOrder.timeEntries.map((entry: any, index: number) => (
-                              <tr key={index}>
+                            {workOrder.timeEntries.map((entry: { date: string; name: string; hours: number; workPerformed: string }, index: number) => (
+                              <tr key={index} className="border-b">
                                 <td className="px-4 py-2">{entry.date}</td>
                                 <td className="px-4 py-2">{entry.name}</td>
                                 <td className="px-4 py-2">{entry.hours}</td>

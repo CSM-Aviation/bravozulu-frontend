@@ -1,6 +1,9 @@
 'use client'
-import React, { useEffect, useRef, useState } from 'react';
-import { apiService, QuoteData } from '../APIServices/apiService';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import { apiService, QuoteData, ServiceItem } from '../APIServices/apiService';
+import RegistrationDropdown from '../components/RegistrationDropdown';
+import ServiceSelectionSection from '../components/ServiceSelectionSection';
+
 // import { useRouter } from 'next/navigation';
 
 const Quote = () => {
@@ -9,8 +12,11 @@ const Quote = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [vehicleType, setVehicleType] = useState<'Aircraft' | 'Automobile' | 'Vessel'>('Aircraft');
+  const [selectedExterior, setSelectedExterior] = useState<string[]>([]);
+  const [selectedInterior, setSelectedInterior] = useState<string[]>([]);
+  const [specialRequests, setSpecialRequests] = useState('');
   const [formData, setFormData] = useState<QuoteData>({
-    status:'Need Response',
+    status: 'Need Response',
     firstName: '',
     lastName: '',
     companyName: '',
@@ -26,7 +32,11 @@ const Quote = () => {
     boatNumber: '',
     vesselType: '',
     length: undefined,
-    createdAt:''
+    isInFleet: false,
+    createdAt: '',
+    serviceDetails: {
+      services: []
+    }
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -37,23 +47,38 @@ const Quote = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccess(false);
 
-    // Create submission data by removing undefined/empty values
-    const submissionData = {
+    // Transform selected services into ServiceItem array
+    const transformedServices: ServiceItem[] = [
+      // Transform exterior services
+      ...selectedExterior.map(service => ({
+        type: 'exterior' as const,
+        name: service,
+        displayName: getDisplayName(service),
+        status: 'pending' as const
+      })),
+      // Transform interior services
+      ...selectedInterior.map(service => ({
+        type: 'interior' as const,
+        name: service,
+        displayName: getDisplayName(service),
+        status: 'pending' as const
+      }))
+    ];
+
+    const quoteData: Partial<QuoteData> = {
       ...formData,
-      companyName: formData.companyName || undefined,
-      // Convert numeric fields when needed
-      year: formData.year ? parseInt(formData.year.toString()) : undefined,
-      length: formData.length ? parseInt(formData.length.toString()) : undefined,
+      serviceDetails: {
+        services: transformedServices,
+        specialRequests: specialRequests || undefined
+      }
     };
 
+    setLoading(true);
     try {
-      const response = await apiService.submitQuote(submissionData);
+      const response = await apiService.submitQuote(quoteData);
       if (response.error) {
         setError(response.error);
       } else {
@@ -66,6 +91,27 @@ const Quote = () => {
     }
   };
 
+  const getDisplayName = (serviceName: string): string => {
+    const displayNames: Record<string, string> = {
+      tripReady: 'Trip Ready',
+      basic: 'Basic',
+      basicPlus: 'Basic Plus',
+      complete: 'Complete',
+      wetWash: 'Wet Wash',
+      dryWash: 'Dry Wash',
+      waxing: 'Waxing/Buffing',
+      brightwork: 'Brightwork Polishing',
+      boots: 'Boot Treatment',
+      gearWells: 'Gear Wells',
+      carpetExtraction: 'Carpet Extraction',
+      leatherReconditioning: 'Leather Reconditioning',
+      stainRemoval: 'Stain Removal'
+    };
+
+    return displayNames[serviceName] || serviceName;
+  };
+
+  
   const formRefs = {
     customerInfo: useRef(null),
     vehicleInfo: useRef(null)
@@ -93,6 +139,36 @@ const Quote = () => {
     return () => observer.disconnect();
   }, [formRefs]);
 
+  const resetForm = () => {
+    setSuccess(false);
+    setSelectedExterior([]);
+    setSelectedInterior([]);
+    setSpecialRequests('');
+    setFormData({
+      status: 'Need Response',
+      firstName: '',
+      lastName: '',
+      companyName: '',
+      email: '',
+      phoneNumber: '',
+      vehicleType: 'Aircraft',
+      registrationNumber: '',
+      serviceType: '',
+      serviceLocation: 'FAT',
+      year: undefined,
+      make: '',
+      model: '',
+      boatNumber: '',
+      vesselType: '',
+      length: undefined,
+      isInFleet: false,
+      createdAt: '',
+      serviceDetails: {
+        services: []
+      }
+    });
+  };
+
   if (success) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 py-12">
@@ -103,9 +179,15 @@ const Quote = () => {
             </svg>
           </div>
           <h1 className="text-4xl font-bold mb-4 text-gray-800">Thank you!</h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-gray-600 mb-8">
             Your quote request has been sent. We will get in touch with you shortly after reviewing your servicing details.
           </p>
+          <button
+            onClick={resetForm}
+            className="bg-blue-500 text-white py-3 px-8 rounded-lg text-lg font-semibold hover:bg-blue-600 transform hover:scale-[1.02] transition-all duration-200"
+          >
+            Submit New Quote
+          </button>
         </div>
       </div>
     );
@@ -117,7 +199,7 @@ const Quote = () => {
         <h1 className="text-4xl font-bold text-center mb-12 text-gray-800 tracking-tight">
           QUOTE REQUEST
         </h1>
-        
+
         <form onSubmit={handleSubmit} className="space-y-12">
           {/* Customer Information Section */}
           <div ref={formRefs.customerInfo} className="transform transition-all duration-700 opacity-0 translate-y-10">
@@ -126,8 +208,8 @@ const Quote = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">First Name *</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleInputChange}
@@ -137,8 +219,8 @@ const Quote = () => {
                 </div>
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">Last Name *</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleInputChange}
@@ -149,7 +231,7 @@ const Quote = () => {
               </div>
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">Company Name (Optional)</label>
-                <input 
+                <input
                   type="text"
                   name="companyName"
                   value={formData.companyName}
@@ -160,8 +242,8 @@ const Quote = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">Email *</label>
-                  <input 
-                    type="email" 
+                  <input
+                    type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
@@ -171,7 +253,7 @@ const Quote = () => {
                 </div>
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">Phone Number *</label>
-                  <input 
+                  <input
                     type="tel"
                     name="phoneNumber"
                     value={formData.phoneNumber}
@@ -190,7 +272,7 @@ const Quote = () => {
             <div className="space-y-6">
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">Vehicle Type *</label>
-                <select 
+                <select
                   name="vehicleType"
                   value={vehicleType}
                   onChange={(e) => setVehicleType(e.target.value as 'Aircraft' | 'Automobile' | 'Vessel')}
@@ -204,44 +286,57 @@ const Quote = () => {
 
               {vehicleType === 'Aircraft' && (
                 <div className="space-y-6">
-                  <div>
-                    <label className="block text-gray-800 font-semibold mb-2">Registration Number *</label>
-                    <input 
-                      type="text"
-                      name="registrationNumber"
-                      value={formData.registrationNumber}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-gray-800 font-semibold mb-2">Registration Number *</label>
+                      <RegistrationDropdown
+                        value={formData.registrationNumber || ''}
+                        onChange={(value, isInFleet) => {
+                          if (value === 'other') {
+                            setFormData(prev => ({
+                              ...prev,
+                              registrationNumber: '',
+                              isInFleet: false
+                            }));
+                          } else {
+                            setFormData(prev => ({
+                              ...prev,
+                              registrationNumber: value,
+                              isInFleet
+                            }));
+                          }
+                        }}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                      {formData.registrationNumber === 'other' && (
+                        <input
+                          type="text"
+                          name="registrationNumber"
+                          value={formData.registrationNumber}
+                          onChange={handleInputChange}
+                          placeholder="Enter Registration Number"
+                          required
+                          className="mt-2 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-gray-800 font-semibold mb-2">Services Requested *</label>
+                      <select
+                        name="serviceType"
+                        value={formData.serviceType}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="">Select a service</option>
+                        <option value="exterior">Exterior Detailing</option>
+                        <option value="interior">Interior Detailing</option>
+                        <option value="both">Both Interior & Exterior</option>
+                      </select>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-gray-800 font-semibold mb-2">Services Requested *</label>
-                    <select 
-                      name="serviceType"
-                      value={formData.serviceType}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    >
-                      <option value="">Select a service</option>
-                      <option value="exterior">Exterior Detailing</option>
-                      <option value="interior">Interior Detailing</option>
-                      <option value="both">Both Interior & Exterior</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-gray-800 font-semibold mb-2">Service Location</label>
-                    <select 
-                      name="serviceLocation"
-                      value={formData.serviceLocation}
-                      onChange={handleInputChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    >
-                      <option value="FAT">FAT</option>
-                      <option value="MJC">MJC</option>
-                    </select>
-                  </div>
+
                 </div>
               )}
 
@@ -250,7 +345,7 @@ const Quote = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                       <label className="block text-gray-800 font-semibold mb-2">Year *</label>
-                      <input 
+                      <input
                         type="number"
                         name="year"
                         value={formData.year}
@@ -261,7 +356,7 @@ const Quote = () => {
                     </div>
                     <div>
                       <label className="block text-gray-800 font-semibold mb-2">Make *</label>
-                      <input 
+                      <input
                         type="text"
                         name="make"
                         value={formData.make}
@@ -272,7 +367,7 @@ const Quote = () => {
                     </div>
                     <div>
                       <label className="block text-gray-800 font-semibold mb-2">Model *</label>
-                      <input 
+                      <input
                         type="text"
                         name="model"
                         value={formData.model}
@@ -289,7 +384,7 @@ const Quote = () => {
                 <div className="space-y-6">
                   <div>
                     <label className="block text-gray-800 font-semibold mb-2">Boat Number *</label>
-                    <input 
+                    <input
                       type="text"
                       name="boatNumber"
                       value={formData.boatNumber}
@@ -300,7 +395,7 @@ const Quote = () => {
                   </div>
                   <div>
                     <label className="block text-gray-800 font-semibold mb-2">Vessel Type *</label>
-                    <input 
+                    <input
                       type="text"
                       name="vesselType"
                       value={formData.vesselType}
@@ -312,7 +407,7 @@ const Quote = () => {
                   </div>
                   <div>
                     <label className="block text-gray-800 font-semibold mb-2">Length (ft) *</label>
-                    <input 
+                    <input
                       type="number"
                       name="length"
                       value={formData.length}
@@ -326,8 +421,47 @@ const Quote = () => {
             </div>
           </div>
 
-          <button 
-            type="submit" 
+          {/* Service Selection Section */}
+          {vehicleType === 'Aircraft' && (
+            <ServiceSelectionSection
+              vehicleType={vehicleType}
+              selectedExterior={selectedExterior}
+              selectedInterior={selectedInterior}
+              onExteriorChange={setSelectedExterior}
+              onInteriorChange={setSelectedInterior}
+              serviceType={formData.serviceType}
+            />
+          )}
+          <div>
+            <label className="block text-gray-800 font-semibold mb-2">Service Location</label>
+            <select
+              name="serviceLocation"
+              value={formData.serviceLocation}
+              onChange={handleInputChange}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="FAT">FAT</option>
+              <option value="MJC">MJC</option>
+            </select>
+          </div>
+
+          {/* Special Requests */}
+          <div>
+            <label className="block text-gray-800 font-semibold mb-2">
+              Special Requests
+            </label>
+            <textarea
+              name="specialRequests"
+              value={specialRequests}
+              onChange={(e) => setSpecialRequests(e.target.value)}
+              rows={4}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              placeholder="Any special requirements or additional information..."
+            />
+          </div>
+
+          <button
+            type="submit"
             disabled={loading}
             className="w-full bg-blue-500 text-white py-4 px-6 rounded-lg text-lg font-semibold hover:bg-blue-600 transform hover:scale-[1.02] transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >

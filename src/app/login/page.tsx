@@ -1,25 +1,20 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Lock, User } from 'lucide-react';
 import { apiService } from '../APIServices/apiService';
+import { useUser } from '../contexts/UserContext';
 
 const LoginPage = () => {
   const router = useRouter();
+  const { setUser } = useUser();
   const [credentials, setCredentials] = useState({
     username: '',
     password: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    // If already authenticated, redirect to dashboard
-    if (apiService.isAuthenticated()) {
-      router.push('/dashboard');
-    }
-  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,19 +23,23 @@ const LoginPage = () => {
 
     try {
       const response = await apiService.login(credentials);
-      
+
       if (response.error) {
         setError(response.error);
         return;
       }
 
-      // Store the received token in localStorage
+      // Store token and user data
       if (response.data?.token) {
         localStorage.setItem('authToken', response.data.token);
-      }
+        if (response.data.user) {
+          setUser(response.data.user);
+        }
+        window.dispatchEvent(new Event('authStateChange'));
 
-      // Successful login - redirect to dashboard
-      router.push('/dashboard');
+        // Redirect to dashboard after successful login
+        router.push('/dashboard');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.');
     } finally {
@@ -59,7 +58,7 @@ const LoginPage = () => {
             Access your dashboard
           </p>
         </div>
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div className="relative">
@@ -75,9 +74,9 @@ const LoginPage = () => {
                 className="appearance-none rounded-none relative block w-full px-12 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Username"
                 value={credentials.username}
-                onChange={(e) => setCredentials({ 
-                  ...credentials, 
-                  username: e.target.value 
+                onChange={(e) => setCredentials({
+                  ...credentials,
+                  username: e.target.value
                 })}
               />
             </div>
@@ -94,9 +93,9 @@ const LoginPage = () => {
                 className="appearance-none rounded-none relative block w-full px-12 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
                 value={credentials.password}
-                onChange={(e) => setCredentials({ 
-                  ...credentials, 
-                  password: e.target.value 
+                onChange={(e) => setCredentials({
+                  ...credentials,
+                  password: e.target.value
                 })}
               />
             </div>

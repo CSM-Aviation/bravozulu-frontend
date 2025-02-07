@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { apiService } from '../APIServices/apiService';
+import { apiService, FleetAircraft } from '../APIServices/apiService';
 
 interface RegistrationDropdownProps {
   value: string;
@@ -12,7 +12,7 @@ const RegistrationDropdown: React.FC<RegistrationDropdownProps> = ({
   onChange,
   className = ''
 }) => {
-  const [fleetAircraft, setFleetAircraft] = useState<any[]>([]);
+  const [fleetAircraft, setFleetAircraft] = useState<FleetAircraft[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showOtherInput, setShowOtherInput] = useState(false);

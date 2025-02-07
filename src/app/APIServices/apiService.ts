@@ -8,6 +8,16 @@ const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 // Types
 export interface AuthResponse {
   token: string;
+  error: string;
+  user: User
+}
+
+export interface User {
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
 }
 
 export interface LoginCredentials {
@@ -61,6 +71,9 @@ export interface QuoteData {
   isInFleet?: boolean;
   notes?: string;
   serviceDetails: QuoteServices;
+  pdfUrl?: string;
+  approvedUser?: User;
+  updatedAt?:string
   // pricing?: QuotePricing;
 }
 
@@ -82,6 +95,7 @@ export interface QuoteUpdateData {
   services: Array<Service>;
   notes?: string;
   specialRequests?: string;
+  approvedUser?: User;
 }
 
 export interface TimeEntry {
@@ -102,7 +116,7 @@ export interface WorkOrder {
   beforeImages: string[];
   afterImages: string[];
   comments?: string;
-  completedServices: string[];
+  completedServices: Service[];
   completedAt?: string;
   createdAt: string;
   updatedAt: string;
@@ -111,6 +125,7 @@ export interface WorkOrder {
     laborCost: number;
     hourlyRate: number;
   };
+  completedUser?: User
 }
 
 export interface WorkOrderUpdateRequest {
@@ -127,10 +142,11 @@ export interface WorkOrderUpdateData {
   comments?: string;
   status: 'Pending' | 'In Progress' | 'Completed';
   completedAt?: string;
+  completedUser?:User
 }
 
 
-interface FleetAircraft {
+export interface FleetAircraft {
   _id: string;
   tailNumber: string;
   type: string;
@@ -260,9 +276,17 @@ export const apiService = {
 
     // If it's an In Fleet aircraft, automatically approve and generate the quote
     if (response.data && response.data.isInFleet) {
-      if (quoteData.serviceDetails) {
-        quoteData.serviceDetails.totalPrice = response.data.pricing;
+      if (response.data.serviceDetails) {
+        quoteData.serviceDetails = response.data.serviceDetails;
       }
+      quoteData.approvedUser = {
+        username: "system",
+        firstName: "System",
+        lastName: "Automated",
+        email: "system@csmaviation.com",
+        role: "system"
+      }
+
       quoteData.isInFleet = response.data.isInFleet;
       await handleApiResponse(api.post(`/api/quotes/${response.data._id}/generate`, quoteData));
       await handleApiResponse(api.get(`/api/quotes/${response.data._id}/approve`));
@@ -299,7 +323,8 @@ export const apiService = {
         totalPrice,
         specialRequests: updateData.specialRequests
       },
-      notes: updateData.notes
+      notes: updateData.notes,
+      approvedUser: updateData.approvedUser
     };
 
     return handleApiResponse(
@@ -320,11 +345,11 @@ export const apiService = {
 
   // Add these methods to apiService.ts
 
-  uploadWorkOrderImages: async (workOrderId: string, files: File[], type: 'before' | 'after'): Promise<ApiResponse<any>> => {
+  uploadWorkOrderImages: async (workOrderId: string, files: File[], type: 'before' | 'after') => {
     const formData = new FormData();
 
     // Append each file with a unique field name
-    files.forEach((file, index) => {
+    files.forEach((file) => {
       formData.append(`${type}Images`, file);
     });
 

@@ -6,6 +6,8 @@ import { apiService, QuoteData, QuoteUpdateData, Service } from '../../../APISer
 import { PlusCircle, Send, Loader2, ChevronDown } from 'lucide-react';
 import WorkOrderSection from '../../WorkOrder/WorkOrderSection';
 import PricingBreakdown from '../../../components/PricingBreakdown';
+import PDFViewer from '@/app/components/PDFViewer';
+import { useUser } from '@/app/contexts/UserContext';
 
 const serviceOptions = {
   exterior: [
@@ -29,13 +31,6 @@ const serviceOptions = {
   ]
 };
 
-// export interface Service {
-//   type: 'interior' | 'exterior';
-//   name: string;
-//   displayName: string;
-//   price?: number;
-//   status?: 'pending' | 'completed';
-// }
 
 export default function QuoteReviewPage() {
   const params = useParams();
@@ -48,6 +43,7 @@ export default function QuoteReviewPage() {
   const [notes, setNotes] = useState('');
   const [isQuoteExpanded, setIsQuoteExpanded] = useState(true);
   const [isWorkOrderExpanded, setIsWorkOrderExpanded] = useState(false);
+  const { user } = useUser();
 
   const fetchQuote = useCallback(async () => {
     try {
@@ -136,12 +132,13 @@ export default function QuoteReviewPage() {
     setError('');
 
     try {
-      const quoteData : QuoteUpdateData = {
+      const quoteData: QuoteUpdateData = {
         services: services,
         notes: notes,
-        specialRequests: quote.serviceDetails.specialRequests || ''
+        specialRequests: quote.serviceDetails.specialRequests || '',
+        approvedUser: user ?? undefined
       };
-      const response = await apiService.generateQuote(quote._id as string, quoteData );
+      const response = await apiService.generateQuote(quote._id as string, quoteData);
 
       if (response.error) {
         throw new Error(response.error);
@@ -203,22 +200,22 @@ export default function QuoteReviewPage() {
               <div className="mb-8">
                 <h2 className="text-lg font-semibold mb-4">Customer Information</h2>
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
+                  <div className="bg-gray-50 p-4 rounded-lg">
                     <label className="block text-sm font-medium text-gray-600">Name</label>
-                    <div className="mt-1">{quote.firstName} {quote.lastName}</div>
+                    <div className="mt-1 font-medium">{quote.firstName} {quote.lastName}</div>
                   </div>
-                  <div>
+                  <div className="bg-gray-50 p-4 rounded-lg">
                     <label className="block text-sm font-medium text-gray-600">Email</label>
-                    <div className="mt-1">{quote.email}</div>
+                    <div className="mt-1 font-medium">{quote.email}</div>
                   </div>
-                  <div>
+                  <div className="bg-gray-50 p-4 rounded-lg">
                     <label className="block text-sm font-medium text-gray-600">Phone</label>
-                    <div className="mt-1">{quote.phoneNumber}</div>
+                    <div className="mt-1 font-medium">{quote.phoneNumber}</div>
                   </div>
                   {quote.companyName && (
-                    <div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
                       <label className="block text-sm font-medium text-gray-600">Company</label>
-                      <div className="mt-1">{quote.companyName}</div>
+                      <div className="mt-1 font-medium">{quote.companyName}</div>
                     </div>
                   )}
                 </div>
@@ -228,58 +225,58 @@ export default function QuoteReviewPage() {
               <div className="mb-8">
                 <h2 className="text-lg font-semibold mb-4">Vehicle Information</h2>
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
+                  <div className="bg-gray-50 p-4 rounded-lg">
                     <label className="block text-sm font-medium text-gray-600">Vehicle Type</label>
-                    <div className="mt-1">{quote.vehicleType}</div>
+                    <div className="mt-1 font-medium">{quote.vehicleType}</div>
                   </div>
 
                   {quote.vehicleType === 'Aircraft' && (
                     <>
-                      <div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
                         <label className="block text-sm font-medium text-gray-600">Registration Number</label>
-                        <div className="mt-1">{quote.registrationNumber}</div>
+                        <div className="mt-1 font-medium">{quote.registrationNumber}</div>
                       </div>
-                      <div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
                         <label className="block text-sm font-medium text-gray-600">Service Type</label>
-                        <div className="mt-1">{quote.serviceType}</div>
+                        <div className="mt-1 font-medium">{quote.serviceType}</div>
                       </div>
-                      <div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
                         <label className="block text-sm font-medium text-gray-600">Location</label>
-                        <div className="mt-1">{quote.serviceLocation}</div>
+                        <div className="mt-1 font-medium">{quote.serviceLocation}</div>
                       </div>
                     </>
                   )}
 
                   {quote.vehicleType === 'Automobile' && (
                     <>
-                      <div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
                         <label className="block text-sm font-medium text-gray-600">Year</label>
-                        <div className="mt-1">{quote.year}</div>
+                        <div className="mt-1 font-medium">{quote.year}</div>
                       </div>
-                      <div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
                         <label className="block text-sm font-medium text-gray-600">Make</label>
-                        <div className="mt-1">{quote.make}</div>
+                        <div className="mt-1 font-medium">{quote.make}</div>
                       </div>
-                      <div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
                         <label className="block text-sm font-medium text-gray-600">Model</label>
-                        <div className="mt-1">{quote.model}</div>
+                        <div className="mt-1 font-medium">{quote.model}</div>
                       </div>
                     </>
                   )}
 
                   {quote.vehicleType === 'Vessel' && (
                     <>
-                      <div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
                         <label className="block text-sm font-medium text-gray-600">Boat Number</label>
-                        <div className="mt-1">{quote.boatNumber}</div>
+                        <div className="mt-1 font-medium">{quote.boatNumber}</div>
                       </div>
-                      <div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
                         <label className="block text-sm font-medium text-gray-600">Vessel Type</label>
-                        <div className="mt-1">{quote.vesselType}</div>
+                        <div className="mt-1 font-medium">{quote.vesselType}</div>
                       </div>
-                      <div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
                         <label className="block text-sm font-medium text-gray-600">Length</label>
-                        <div className="mt-1">{quote.length} ft</div>
+                        <div className="mt-1 font-medium">{quote.length} ft</div>
                       </div>
                     </>
                   )}
@@ -380,10 +377,23 @@ export default function QuoteReviewPage() {
               )} */}
 
               {/* Pricing Breakdown */}
-              {quote.status != 'Need Response' && quote.serviceDetails && <PricingBreakdown serviceDetails={quote.serviceDetails} />}
+              {quote.status !== 'Need Response' && quote.serviceDetails && (
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <PricingBreakdown serviceDetails={quote.serviceDetails} />
+                  {quote.pdfUrl && (
+                    <div className="mt-6">
+                      <PDFViewer
+                        quoteId={quote._id}
+                        pdfUrl={quote.pdfUrl}
+                        title="View Quote PDF"
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Notes Section */}
-              <div className="mb-8">
+              <div className="mb-8 bg-gray-50 p-4 rounded-lg">
                 <h2 className="text-lg font-semibold mb-4">Additional Notes</h2>
                 <textarea
                   value={notes}
@@ -404,6 +414,23 @@ export default function QuoteReviewPage() {
 
               {/* Action Buttons */}
               <div className="flex justify-end gap-4">
+                {(quote.status === 'Approved' || quote.status === 'Completed') && (
+                  <div className="mr-auto text-sm text-gray-600">
+                    Approved by: {quote.approvedUser?.firstName} on{' '}
+                    {new Date(quote.updatedAt!).toLocaleDateString('en-US', {
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                    {new Date(quote.updatedAt!).getDate() >= 1 && new Date(quote.updatedAt!).getDate() <= 31 && ['st', 'nd', 'rd', 'th'][
+                      (new Date(quote.updatedAt!).getDate() % 10 > 3) ? 3 : new Date(quote.updatedAt!).getDate() % 10 - 1
+                    ]}, {new Date(quote.updatedAt!).getFullYear()} at{' '}
+                    {new Date(quote.updatedAt!).toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true
+                    })}
+                  </div>
+                )}
                 <button
                   type="button"
                   onClick={() => router.push('/dashboard')}
@@ -443,7 +470,7 @@ export default function QuoteReviewPage() {
               onClick={() => setIsWorkOrderExpanded(!isWorkOrderExpanded)}
               className="w-full flex justify-between items-center mb-4"
             >
-              <h2 className="text-lg font-semibold">Work Order</h2>
+              <h1 className="text-2xl font-bold">Work Order</h1>
               <ChevronDown
                 className={`w-6 h-6 transform transition-transform ${isWorkOrderExpanded ? 'rotate-180' : ''
                   }`}

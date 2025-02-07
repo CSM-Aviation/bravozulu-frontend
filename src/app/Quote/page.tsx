@@ -3,7 +3,6 @@ import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { apiService, QuoteData, ServiceItem } from '../APIServices/apiService';
 import RegistrationDropdown from '../components/RegistrationDropdown';
 import ServiceSelectionSection from '../components/ServiceSelectionSection';
-import Router from "next/router";
 
 // import { useRouter } from 'next/navigation';
 

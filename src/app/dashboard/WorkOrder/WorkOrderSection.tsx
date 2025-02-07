@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { apiService, Service } from '../../APIServices/apiService';
-import { Loader2, ClipboardCheck, Clock, AlertTriangle, ChevronDown } from 'lucide-react';
+import { apiService, QuoteData, Service, WorkOrder } from '../../APIServices/apiService';
+import { Loader2, ClipboardCheck, Clock, AlertTriangle } from 'lucide-react';
 import WorkOrderForm from './WorkOrderForm';
+import PDFViewer from '@/app/components/PDFViewer';
 
 interface WorkOrderSectionProps {
   quoteId: string;
   status: string;
-  quoteData: any;
+  quoteData: QuoteData;
 }
 
 const ServicesList = ({ services }: { services: Service[] }) => {
@@ -20,7 +21,7 @@ const ServicesList = ({ services }: { services: Service[] }) => {
         {/* Exterior Services */}
         {exteriorServices.length > 0 && (
           <div>
-            <h4 className="font-semibold mb-2">Completed Exterior Services</h4>
+            <h4 className="font-semibold mb-2">Exterior</h4>
             <div className="bg-white rounded-md border border-gray-200">
               {exteriorServices.map((service, index) => (
                 <div
@@ -41,7 +42,7 @@ const ServicesList = ({ services }: { services: Service[] }) => {
         {/* Interior Services */}
         {interiorServices.length > 0 && (
           <div>
-            <h4 className="font-semibold mb-2">Completed Interior Services</h4>
+            <h4 className="font-semibold mb-2">Interior</h4>
             <div className="bg-white rounded-md border border-gray-200">
               {interiorServices.map((service, index) => (
                 <div
@@ -63,9 +64,8 @@ const ServicesList = ({ services }: { services: Service[] }) => {
   );
 };
 
-
 const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, quoteData }) => {
-  const [workOrder, setWorkOrder] = useState<any>(null);
+  const [workOrder, setWorkOrder] = useState<WorkOrder | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [expanded, setExpanded] = useState(true);
@@ -81,6 +81,7 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
         }
         if (response.data) {
           setWorkOrder(response.data);
+          setExpanded(true)
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch work order');
@@ -92,7 +93,7 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
     fetchWorkOrder();
   }, [quoteId, status]);
 
-  const handleWorkOrderUpdate = async (updateData: any) => {
+  const handleWorkOrderUpdate = async (updateData: WorkOrder) => {
     try {
       setLoading(true);
       // Just update the local state with the new work order data
@@ -170,8 +171,8 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
         </div>
 
         {/* Collapsible Content */}
-        <div className="p-6">
-          <button
+        <div className="p-3">
+          {/* <button
             onClick={() => setExpanded(!expanded)}
             className="flex justify-between items-center w-full mb-4"
           >
@@ -179,7 +180,7 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
             <ChevronDown
               className={`w-5 h-5 transform transition-transform ${expanded ? 'rotate-180' : ''}`}
             />
-          </button>
+          </button> */}
 
           {expanded && (
             <div className="mt-4 space-y-8">
@@ -192,12 +193,53 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
               ) : (
                 <div className="space-y-6">
                   {/* Completion Details */}
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2">Completion Details</h4>
-                    <div className="text-sm text-gray-600">
-                      Completed on: {new Date(workOrder.completedAt).toLocaleDateString()}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-semibold mb-2">Vehicle Type</h4>
+                      <div className="text-sm text-gray-600">
+                        {quoteData.vehicleType}
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-semibold mb-2">Completion Details</h4>
+                      <div className="text-sm text-gray-600">
+                        Completed by: {workOrder.completedUser?.firstName} on{' '}
+
+                        {new Date(workOrder.completedAt!).toLocaleDateString('en-US', {
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                        {new Date(workOrder.completedAt!).getDate() >= 1 && new Date(workOrder.completedAt!).getDate() <= 31 && ['st', 'nd', 'rd', 'th'][
+                          (new Date(workOrder.completedAt!).getDate() % 10 > 3) ? 3 : new Date(workOrder.completedAt!).getDate() % 10 - 1
+                        ]}, {new Date(workOrder.completedAt!).getFullYear()} at{' '}
+                        {new Date(workOrder.completedAt!).toLocaleTimeString('en-US', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: true
+                        })}
+
+                      </div>
                     </div>
                   </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-semibold mb-2">Registration Number</h4>
+                      <div className="text-sm text-gray-600">
+                        {quoteData.registrationNumber}
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-semibold mb-2">Service Location</h4>
+                      <div className="text-sm text-gray-600">
+                        {quoteData.serviceLocation}
+                      </div>
+                    </div>
+                  </div>
+
+
 
                   {/* Completed Services */}
                   {workOrder.completedServices && workOrder.completedServices.length > 0 && (
@@ -256,6 +298,25 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
                       </div>
                     </div>
                   )}
+
+                  {/* Documents */}
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-4">Documents</h4>
+                    <div className="space-y-4">
+                      {quoteData.pdfUrl && (
+                        <PDFViewer
+                          pdfUrl={quoteData.pdfUrl}
+                          title="View Quote PDF"
+                        />
+                      )}
+                      {/* {workOrder.invoiceDetails?.url && (
+                        <PDFViewer
+                          pdfUrl={workOrder.invoiceDetails.url}
+                          title="View Invoice PDF"
+                        />
+                      )} */}
+                    </div>
+                  </div>
 
                   {/* Comments */}
                   {workOrder.comments && (

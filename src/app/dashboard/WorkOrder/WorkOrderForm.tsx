@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Loader2, Upload, Plus, X, Camera } from 'lucide-react';
-import { apiService, Service, WorkOrderUpdateData } from '../../APIServices/apiService';
+import { Loader2, Plus, X } from 'lucide-react';
+import { apiService, QuoteData, Service, WorkOrder, WorkOrderUpdateData } from '../../APIServices/apiService';
+import ImageUploadSection from '@/app/components/ImageUploadSection';
+import { useUser } from '@/app/contexts/UserContext';
 
 interface TimeEntry {
   date: string;
@@ -12,9 +14,9 @@ interface TimeEntry {
 }
 
 interface WorkOrderFormProps {
-  quoteData: any;
-  workOrderData: any;
-  onUpdate: (data: any) => void;
+  quoteData: QuoteData;
+  workOrderData: WorkOrder;
+  onUpdate: (data: WorkOrder) => void;
 }
 
 // Service options from ServiceSelectionSection
@@ -168,9 +170,9 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
   const [beforeImages, setBeforeImages] = useState<File[]>([]);
   const [afterImages, setAfterImages] = useState<File[]>([]);
   const [comments, setComments] = useState('');
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedExteriorServices, setSelectedExteriorServices] = useState<string[]>([]);
   const [selectedInteriorServices, setSelectedInteriorServices] = useState<string[]>([]);
+  const { user } = useUser();
 
 
   // Initialize selected services from quote
@@ -182,7 +184,7 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
       const interior = workOrderData.completedServices
         .filter((service: { type: string; name: string; }) => service.type === 'interior')
         .map((service: { name: string; }) => service.name);
-        
+
       setSelectedExteriorServices(exterior);
       setSelectedInteriorServices(interior);
     } else if (quoteData?.serviceDetails?.services) {
@@ -192,7 +194,7 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
       const interior = quoteData.serviceDetails.services
         .filter((service: Service) => service.type === 'interior')
         .map((service: Service) => service.name);
-        
+
       setSelectedExteriorServices(exterior);
       setSelectedInteriorServices(interior);
     }
@@ -230,11 +232,6 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
     }
   };
 
-
-  const handleImageSelection = async (event: React.ChangeEvent<HTMLInputElement>, type: 'before' | 'after') => {
-    const files = Array.from(event.target.files || []);
-    await handleImageUpload(files, type);
-  };
 
   const removeImage = (index: number, type: 'before' | 'after') => {
     if (type === 'before') {
@@ -280,56 +277,9 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
     }));
   };
 
-  // const handleSubmit = async () => {
-  //   if (!workOrderData?._id) return;
-
-  //   // Validate required fields
-  //   if (timeEntries.some(entry => !entry.name || !entry.workPerformed)) {
-  //     setError('Please complete all time entry fields');
-  //     return;
-  //   }
-
-  //   if (selectedServices.length === 0) {
-  //     setError('Please select at least one completed service');
-  //     return;
-  //   }
-
-  //   setLoading(true);
-  //   setError('');
-
-  //   try {
-  //     // Submit form data
-  //     const formData: WorkOrderUpdateData = {
-  //       timeEntries: timeEntries.map(entry => ({
-  //         ...entry,
-  //         hours: Number(entry.hours) || 0
-  //       })),
-  //       comments,
-  //       completedServices: selectedServices,
-  //       status: 'Completed',
-  //       completedAt: new Date().toISOString()
-  //     };
-
-  //     const response = await apiService.updateWorkOrder(workOrderData._id, formData);
-
-  //     if (response.error) {
-  //       throw new Error(response.error);
-  //     }
-
-  //     if (response.data) {
-  //       onUpdate(response.data);
-  //     }
-  //   } catch (err) {
-  //     setError(err instanceof Error ? err.message : 'Failed to update work order');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-
   const handleSubmit = async () => {
     if (!workOrderData?._id) return;
-    
+
 
     // Validate required fields
     if (timeEntries.some(entry => !entry.name || !entry.workPerformed)) {
@@ -342,8 +292,6 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
       setError('Please select at least one service');
       return;
     }
-
-    
 
     setLoading(true);
     setError('');
@@ -381,7 +329,8 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
         comments,
         completedServices: allSelectedServices,
         status: 'Completed',
-        completedAt: new Date().toISOString()
+        completedAt: new Date().toISOString(),
+        completedUser: user ?? undefined
       };
 
       const workOrderResponse = await apiService.updateWorkOrder(
@@ -396,7 +345,7 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
 
       // Handle image uploads
       if (beforeImages.length > 0) {
-        const beforeResponse = await apiService.uploadWorkOrderImages(
+        await apiService.uploadWorkOrderImages(
           workOrderData._id,
           Array.from(beforeImages),
           'before'
@@ -404,7 +353,7 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
       }
 
       if (afterImages.length > 0) {
-        const afterResponse = await apiService.uploadWorkOrderImages(
+        await apiService.uploadWorkOrderImages(
           workOrderData._id,
           Array.from(afterImages),
           'after'
@@ -503,13 +452,45 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
                 className="p-2 border rounded bg-gray-100"
               />
               <div className="flex items-center gap-2">
-                <input
+                {/* <input
                   type="text"
                   value={entry.workPerformed}
                   onChange={(e) => updateTimeEntry(index, 'workPerformed', e.target.value)}
                   placeholder="Work performed"
                   className="p-2 border rounded flex-grow"
-                />
+                /> */}
+                <select
+                  value={entry.workPerformed}
+                  onChange={(e) => updateTimeEntry(index, 'workPerformed', e.target.value)}
+                  className="p-2 border rounded flex-grow"
+                  required
+                >
+                  <option value="">Select Work Performed</option>
+                  <optgroup label="Exterior Services">
+                    {aircraftExteriorOptions.map(option => (
+                      <option key={`exterior-${option.value}`} value={`${option.label}-Exterior`}>
+                        {option.label} - Exterior
+                      </option>
+                    ))}
+                    {autoVesselExteriorOptions.map(option => (
+                      <option key={`exterior-auto-${option.value}`} value={`${option.label}-Exterior`}>
+                        {option.label} - Exterior
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Interior Services">
+                    {aircraftInteriorOptions.map(option => (
+                      <option key={`interior-${option.value}`} value={`${option.label}-Interior`}>
+                        {option.label} - Interior
+                      </option>
+                    ))}
+                    {autoVesselInteriorOptions.map(option => (
+                      <option key={`interior-auto-${option.value}`} value={`${option.label}-Interior`}>
+                        {option.label} - Interior
+                      </option>
+                    ))}
+                  </optgroup>
+                </select>
                 {timeEntries.length > 1 && (
                   <button
                     type="button"
@@ -526,8 +507,7 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
       </div>
 
       {/* Image Upload */}
-      <div className="grid grid-cols-2 gap-8">
-        {/* Before Images */}
+      {/* <div className="grid grid-cols-2 gap-8">
         <div className="bg-gray-50 p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">Before Images</h3>
           <div className="space-y-4">
@@ -565,7 +545,6 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
           </div>
         </div>
 
-        {/* After Images */}
         <div className="bg-gray-50 p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">After Images</h3>
           <div className="space-y-4">
@@ -602,6 +581,21 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
             </div>
           </div>
         </div>
+      </div> */}
+
+      <div className="grid grid-cols-2 gap-8">
+        <ImageUploadSection
+          title="Before Images"
+          images={beforeImages}
+          onImagesAdded={(files) => handleImageUpload(files, 'before')}
+          onImageRemoved={(index) => removeImage(index, 'before')}
+        />
+        <ImageUploadSection
+          title="After Images"
+          images={afterImages}
+          onImagesAdded={(files) => handleImageUpload(files, 'after')}
+          onImageRemoved={(index) => removeImage(index, 'after')}
+        />
       </div>
 
       {/* Comments */}

@@ -48,30 +48,27 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to BravoZulu
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-xl w-full space-y-8 bg-white p-12 rounded-2xl shadow-xl">
+        <div className="space-y-2">
+          <h2 className="text-center text-4xl font-bold text-gray-900 font-sans">
+            Welcome Back
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Access your dashboard
+          <p className="mt-2 text-center text-lg text-gray-600">
+            Sign in to continue to BravoZulu
           </p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+          <div className="space-y-5">
             <div className="relative">
-              <label htmlFor="username" className="sr-only">
-                Username
-              </label>
-              <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400" />
               <input
                 id="username"
                 name="username"
                 type="text"
                 required
-                className="appearance-none rounded-none relative block w-full px-12 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className="appearance-none relative block w-full pl-14 pr-4 py-4 border-2 border-gray-200 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg transition-all duration-200 hover:border-gray-300"
                 placeholder="Username"
                 value={credentials.username}
                 onChange={(e) => setCredentials({
@@ -81,16 +78,13 @@ const LoginPage = () => {
               />
             </div>
             <div className="relative">
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400" />
               <input
                 id="password"
                 name="password"
                 type="password"
                 required
-                className="appearance-none rounded-none relative block w-full px-12 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className="appearance-none relative block w-full pl-14 pr-4 py-4 border-2 border-gray-200 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg transition-all duration-200 hover:border-gray-300"
                 placeholder="Password"
                 value={credentials.password}
                 onChange={(e) => setCredentials({
@@ -102,7 +96,7 @@ const LoginPage = () => {
           </div>
 
           {error && (
-            <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded-md">
+            <div className="text-red-500 text-md text-center bg-red-50 p-4 rounded-lg border border-red-200">
               {error}
             </div>
           )}
@@ -111,18 +105,18 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-400 disabled:cursor-not-allowed transition-colors duration-200"
+              className="group relative w-full flex justify-center py-4 px-6 border border-transparent text-lg font-semibold rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:bg-blue-400 disabled:cursor-not-allowed transition-all duration-200 md:text-xl md:py-5"
             >
               {loading ? (
-                <span className="flex items-center">
+                <span className="flex items-center space-x-3">
                   <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Signing in...
+                  <span className="md:text-lg">Signing in...</span>
                 </span>
               ) : (
-                'Sign in'
+                'Sign In'
               )}
             </button>
           </div>

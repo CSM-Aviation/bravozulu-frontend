@@ -378,18 +378,18 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
 
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 p-4 max-w-4xl mx-auto">
       {/* Vehicle Information */}
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="text-lg font-semibold mb-4">Vehicle Information</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
+      <div className="bg-white shadow-sm rounded-xl p-6 border border-gray-100">
+        <h3 className="text-xl font-semibold mb-4 text-gray-800">Vehicle Information</h3>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-600">Vehicle Type</label>
-            <div className="mt-1">{quoteData?.vehicleType}</div>
+            <div className="mt-1 text-gray-900 font-medium">{quoteData?.vehicleType}</div>
           </div>
-          <div>
+          <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-600">Registration Number</label>
-            <div className="mt-1">{quoteData?.registrationNumber}</div>
+            <div className="mt-1 text-gray-900 font-medium">{quoteData?.registrationNumber}</div>
           </div>
         </div>
       </div>
@@ -405,185 +405,128 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
       />
 
       {/* Time Entries */}
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Time Entries</h3>
+      <div className="bg-white shadow-sm rounded-xl p-6 border border-gray-100">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-semibold text-gray-800">Time Entries</h3>
           <button
             type="button"
             onClick={addTimeEntry}
-            className="flex items-center text-blue-600 hover:text-blue-700"
+            className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
-            <Plus className="w-5 h-5 mr-1" />
-            Add Entry
+            <Plus className="w-5 h-5" />
+            <span>Add Entry</span>
           </button>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-6">
           {timeEntries.map((entry, index) => (
-            <div key={index} className="grid grid-cols-6 gap-4 items-start">
-              <input
-                type="date"
-                value={entry.date}
-                onChange={(e) => updateTimeEntry(index, 'date', e.target.value)}
-                className="p-2 border rounded"
-              />
-              <input
-                type="text"
-                value={entry.name}
-                onChange={(e) => updateTimeEntry(index, 'name', e.target.value)}
-                placeholder="Name"
-                className="p-2 border rounded"
-              />
-              <input
-                type="time"
-                value={entry.startTime}
-                onChange={(e) => updateTimeEntry(index, 'startTime', e.target.value)}
-                className="p-2 border rounded"
-              />
-              <input
-                type="time"
-                value={entry.endTime}
-                onChange={(e) => updateTimeEntry(index, 'endTime', e.target.value)}
-                className="p-2 border rounded"
-              />
-              <input
-                type="number"
-                value={entry.hours}
-                readOnly
-                className="p-2 border rounded bg-gray-100"
-              />
-              <div className="flex items-center gap-2">
-                {/* <input
-                  type="text"
-                  value={entry.workPerformed}
-                  onChange={(e) => updateTimeEntry(index, 'workPerformed', e.target.value)}
-                  placeholder="Work performed"
-                  className="p-2 border rounded flex-grow"
-                /> */}
-                <select
-                  value={entry.workPerformed}
-                  onChange={(e) => updateTimeEntry(index, 'workPerformed', e.target.value)}
-                  className="p-2 border rounded flex-grow"
-                  required
-                >
-                  <option value="">Select Work Performed</option>
-                  <optgroup label="Exterior Services">
-                    {aircraftExteriorOptions.map(option => (
-                      <option key={`exterior-${option.value}`} value={`${option.label}-Exterior`}>
-                        {option.label} - Exterior
-                      </option>
-                    ))}
-                    {autoVesselExteriorOptions.map(option => (
-                      <option key={`exterior-auto-${option.value}`} value={`${option.label}-Exterior`}>
-                        {option.label} - Exterior
-                      </option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="Interior Services">
-                    {aircraftInteriorOptions.map(option => (
-                      <option key={`interior-${option.value}`} value={`${option.label}-Interior`}>
-                        {option.label} - Interior
-                      </option>
-                    ))}
-                    {autoVesselInteriorOptions.map(option => (
-                      <option key={`interior-auto-${option.value}`} value={`${option.label}-Interior`}>
-                        {option.label} - Interior
-                      </option>
-                    ))}
-                  </optgroup>
-                </select>
-                {timeEntries.length > 1 && (
+            <div key={index} className="space-y-4 p-4 bg-gray-50 rounded-lg">
+              <div className="grid md:grid-cols-2 lg:grid-cols-6 gap-4">
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-gray-600">Date</label>
+                  <input
+                    type="date"
+                    value={entry.date}
+                    onChange={(e) => updateTimeEntry(index, 'date', e.target.value)}
+                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-gray-600">Name</label>
+                  <input
+                    type="text"
+                    value={entry.name}
+                    onChange={(e) => updateTimeEntry(index, 'name', e.target.value)}
+                    placeholder="Technician name"
+                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-gray-600">Start Time</label>
+                  <input
+                    type="time"
+                    value={entry.startTime}
+                    onChange={(e) => updateTimeEntry(index, 'startTime', e.target.value)}
+                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-gray-600">End Time</label>
+                  <input
+                    type="time"
+                    value={entry.endTime}
+                    onChange={(e) => updateTimeEntry(index, 'endTime', e.target.value)}
+                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-gray-600">Hours</label>
+                  <input
+                    type="number"
+                    value={entry.hours}
+                    readOnly
+                    className="w-full p-2 border rounded-lg bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-gray-600">Work Performed</label>
+                  <select
+                    value={entry.workPerformed}
+                    onChange={(e) => updateTimeEntry(index, 'workPerformed', e.target.value)}
+                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
+                    required
+                  >
+                    <option value="">Select Work Performed</option>
+                    <optgroup label="Exterior Services">
+                      {aircraftExteriorOptions.map(option => (
+                        <option key={`exterior-${option.value}`} value={`${option.label}-Exterior`}>
+                          {option.label} - Exterior
+                        </option>
+                      ))}
+                      {autoVesselExteriorOptions.map(option => (
+                        <option key={`exterior-auto-${option.value}`} value={`${option.label}-Exterior`}>
+                          {option.label} - Exterior
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="Interior Services">
+                      {aircraftInteriorOptions.map(option => (
+                        <option key={`interior-${option.value}`} value={`${option.label}-Interior`}>
+                          {option.label} - Interior
+                        </option>
+                      ))}
+                      {autoVesselInteriorOptions.map(option => (
+                        <option key={`interior-auto-${option.value}`} value={`${option.label}-Interior`}>
+                          {option.label} - Interior
+                        </option>
+                      ))}
+                    </optgroup>
+                  </select>
+                </div>
+              </div>
+              {timeEntries.length > 1 && (
+                <div className="flex justify-end">
                   <button
                     type="button"
                     onClick={() => removeTimeEntry(index)}
-                    className="text-red-500 hover:text-red-600"
+                    className="text-red-500 hover:text-red-600 flex items-center text-sm"
                   >
-                    <X className="w-5 h-5" />
+                    <X className="w-4 h-4 mr-1" />
+                    Remove Entry
                   </button>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
       </div>
 
-      {/* Image Upload */}
-      {/* <div className="grid grid-cols-2 gap-8">
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="text-lg font-semibold mb-4">Before Images</h3>
-          <div className="space-y-4">
-            <label className="flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 cursor-pointer">
-              <div className="flex flex-col items-center">
-                <Camera className="w-8 h-8 text-gray-400" />
-                <span className="mt-2 text-sm text-gray-500">Upload images</span>
-              </div>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => handleImageSelection(e, 'before')}
-              />
-            </label>
-            <div className="grid grid-cols-2 gap-4">
-              {beforeImages.map((file, index) => (
-                <div key={index} className="relative">
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt={`Before ${index + 1}`}
-                    className="w-full h-32 object-cover rounded"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeImage(index, 'before')}
-                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="text-lg font-semibold mb-4">After Images</h3>
-          <div className="space-y-4">
-            <label className="flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 cursor-pointer">
-              <div className="flex flex-col items-center">
-                <Camera className="w-8 h-8 text-gray-400" />
-                <span className="mt-2 text-sm text-gray-500">Upload images</span>
-              </div>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => handleImageSelection(e, 'after')}
-              />
-            </label>
-            <div className="grid grid-cols-2 gap-4">
-              {afterImages.map((file, index) => (
-                <div key={index} className="relative">
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt={`After ${index + 1}`}
-                    className="w-full h-32 object-cover rounded"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeImage(index, 'after')}
-                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div> */}
-
-      <div className="grid grid-cols-2 gap-8">
+      {/* Image Upload Sections */}
+      <div className="grid md:grid-cols-2 gap-6">
         <ImageUploadSection
           title="Before Images"
           images={beforeImages}
@@ -611,12 +554,12 @@ const WorkOrderForm = ({ quoteData, workOrderData, onUpdate }: WorkOrderFormProp
       </div>
 
       {/* Submit Button */}
-      <div className="flex justify-end">
+      <div className="flex justify-center mt-8">
         <button
           type="button"
           onClick={handleSubmit}
           disabled={loading}
-          className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+          className="px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl disabled:opacity-50 w-full md:w-auto"
         >
           {loading ? (
             <>

@@ -195,71 +195,71 @@ const Quote = () => {
 
   return (
     <div className="min-h-screen text-black bg-gradient-to-b from-gray-50 to-gray-100 py-12">
-      <div className="max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-lg space-y-8">
-        <h1 className="text-4xl font-bold text-center mb-12 text-gray-800 tracking-tight">
+      <div className="max-w-6xl mx-auto p-12 bg-white rounded-xl shadow-lg space-y-12">
+        <h1 className="text-5xl font-bold text-center mb-12 text-gray-800 tracking-tight md:text-6xl">
           QUOTE REQUEST
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-12">
           {/* Customer Information Section */}
           <div ref={formRefs.customerInfo} className="transform transition-all duration-700 opacity-0 translate-y-10">
-            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Customer Information</h2>
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <h2 className="text-3xl font-semibold mb-8 text-gray-800">Customer Information</h2>
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <label className="block text-gray-800 font-semibold mb-2">First Name *</label>
+                  <label className="block text-xl text-gray-800 font-semibold mb-3">First Name *</label>
                   <input
                     type="text"
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleInputChange}
                     required
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-800 font-semibold mb-2">Last Name *</label>
+                  <label className="block text-xl text-gray-800 font-semibold mb-3">Last Name *</label>
                   <input
                     type="text"
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleInputChange}
                     required
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-gray-800 font-semibold mb-2">Company Name (Optional)</label>
+                <label className="block text-xl text-gray-800 font-semibold mb-3">Company Name (Optional)</label>
                 <input
                   type="text"
                   name="companyName"
                   value={formData.companyName}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <label className="block text-gray-800 font-semibold mb-2">Email *</label>
+                  <label className="block text-xl text-gray-800 font-semibold mb-3">Email *</label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-800 font-semibold mb-2">Phone Number *</label>
+                  <label className="block text-xl text-gray-800 font-semibold mb-3">Phone Number *</label>
                   <input
                     type="tel"
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
                     required
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -268,15 +268,15 @@ const Quote = () => {
 
           {/* Vehicle Information Section */}
           <div ref={formRefs.vehicleInfo} className="transform transition-all duration-700 opacity-0 translate-y-10">
-            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Vehicle Information</h2>
-            <div className="space-y-6">
+            <h2 className="text-3xl font-semibold mb-8 text-gray-800">Vehicle Information</h2>
+            <div className="space-y-8">
               <div>
-                <label className="block text-gray-800 font-semibold mb-2">Vehicle Type *</label>
+                <label className="block text-xl text-gray-800 font-semibold mb-3">Vehicle Type *</label>
                 <select
                   name="vehicleType"
                   value={vehicleType}
                   onChange={(e) => setVehicleType(e.target.value as 'Aircraft' | 'Automobile' | 'Vessel')}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="Aircraft">Aircraft</option>
                   <option value="Automobile">Automobile</option>
@@ -285,10 +285,10 @@ const Quote = () => {
               </div>
 
               {vehicleType === 'Aircraft' && (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                      <label className="block text-gray-800 font-semibold mb-2">Registration Number *</label>
+                      <label className="block text-xl text-gray-800 font-semibold mb-3">Registration Number *</label>
                       <RegistrationDropdown
                         value={formData.registrationNumber || ''}
                         onChange={(value, isInFleet) => {
@@ -306,7 +306,7 @@ const Quote = () => {
                             }));
                           }
                         }}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                       />
                       {formData.registrationNumber === 'other' && (
                         <input
@@ -316,18 +316,18 @@ const Quote = () => {
                           onChange={handleInputChange}
                           placeholder="Enter Registration Number"
                           required
-                          className="mt-2 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="mt-2 w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                         />
                       )}
                     </div>
                     <div>
-                      <label className="block text-gray-800 font-semibold mb-2">Services Requested *</label>
+                      <label className="block text-xl text-gray-800 font-semibold mb-3">Services Requested *</label>
                       <select
                         name="serviceType"
                         value={formData.serviceType}
                         onChange={handleInputChange}
                         required
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="">Select a service</option>
                         <option value="exterior">Exterior Detailing</option>
@@ -341,39 +341,39 @@ const Quote = () => {
               )}
 
               {vehicleType === 'Automobile' && (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div>
-                      <label className="block text-gray-800 font-semibold mb-2">Year *</label>
+                      <label className="block text-xl text-gray-800 font-semibold mb-3">Year *</label>
                       <input
                         type="number"
                         name="year"
                         value={formData.year}
                         onChange={handleInputChange}
                         required
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-800 font-semibold mb-2">Make *</label>
+                      <label className="block text-xl text-gray-800 font-semibold mb-3">Make *</label>
                       <input
                         type="text"
                         name="make"
                         value={formData.make}
                         onChange={handleInputChange}
                         required
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-800 font-semibold mb-2">Model *</label>
+                      <label className="block text-xl text-gray-800 font-semibold mb-3">Model *</label>
                       <input
                         type="text"
                         name="model"
                         value={formData.model}
                         onChange={handleInputChange}
                         required
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                   </div>
@@ -381,20 +381,20 @@ const Quote = () => {
               )}
 
               {vehicleType === 'Vessel' && (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   <div>
-                    <label className="block text-gray-800 font-semibold mb-2">Boat Number *</label>
+                    <label className="block text-xl text-gray-800 font-semibold mb-3">Boat Number *</label>
                     <input
                       type="text"
                       name="boatNumber"
                       value={formData.boatNumber}
                       onChange={handleInputChange}
                       required
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-800 font-semibold mb-2">Vessel Type *</label>
+                    <label className="block text-xl text-gray-800 font-semibold mb-3">Vessel Type *</label>
                     <input
                       type="text"
                       name="vesselType"
@@ -402,18 +402,18 @@ const Quote = () => {
                       onChange={handleInputChange}
                       required
                       placeholder="e.g., Yacht, Speedboat, etc."
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-800 font-semibold mb-2">Length (ft) *</label>
+                    <label className="block text-xl text-gray-800 font-semibold mb-3">Length (ft) *</label>
                     <input
                       type="number"
                       name="length"
                       value={formData.length}
                       onChange={handleInputChange}
                       required
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -424,6 +424,7 @@ const Quote = () => {
           {/* Service Selection Section */}
           {vehicleType === 'Aircraft' && (
             <ServiceSelectionSection
+              // className="space-y-8"
               vehicleType={vehicleType}
               selectedExterior={selectedExterior}
               selectedInterior={selectedInterior}
@@ -433,12 +434,12 @@ const Quote = () => {
             />
           )}
           <div>
-            <label className="block text-gray-800 font-semibold mb-2">Service Location</label>
+            <label className="block text-xl text-gray-800 font-semibold mb-3">Service Location</label>
             <select
               name="serviceLocation"
               value={formData.serviceLocation}
               onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
             >
               <option value="FAT">FAT</option>
               <option value="MJC">MJC</option>
@@ -447,7 +448,7 @@ const Quote = () => {
 
           {/* Special Requests */}
           <div>
-            <label className="block text-gray-800 font-semibold mb-2">
+            <label className="block text-xl text-gray-800 font-semibold mb-3">
               Special Requests
             </label>
             <textarea
@@ -455,7 +456,7 @@ const Quote = () => {
               value={specialRequests}
               onChange={(e) => setSpecialRequests(e.target.value)}
               rows={4}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
               placeholder="Any special requirements or additional information..."
             />
           </div>
@@ -463,7 +464,7 @@ const Quote = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-500 text-white py-4 px-6 rounded-lg text-lg font-semibold hover:bg-blue-600 transform hover:scale-[1.02] transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="w-full bg-blue-500 text-white py-5 px-8 rounded-xl text-xl font-semibold hover:bg-blue-600"
           >
             {loading ? 'Submitting...' : 'Submit Quote Request'}
           </button>

@@ -111,7 +111,7 @@ const Quote = () => {
     return displayNames[serviceName] || serviceName;
   };
 
-  
+
   const formRefs = {
     customerInfo: useRef(null),
     vehicleInfo: useRef(null)
@@ -182,12 +182,12 @@ const Quote = () => {
           <p className="text-xl text-gray-600 mb-8">
             Your quote request has been sent. We will get in touch with you shortly after reviewing your servicing details.
           </p>
-          <button
+          {/* <button
             onClick={resetForm}
             className="bg-blue-500 text-white py-3 px-8 rounded-lg text-lg font-semibold hover:bg-blue-600 transform hover:scale-[1.02] transition-all duration-200"
           >
             Submit New Quote
-          </button>
+          </button> */}
         </div>
       </div>
     );

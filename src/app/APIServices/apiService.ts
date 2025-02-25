@@ -73,7 +73,7 @@ export interface QuoteData {
   serviceDetails: QuoteServices;
   pdfUrl?: string;
   approvedUser?: User;
-  updatedAt?:string
+  updatedAt?: string
   // pricing?: QuotePricing;
 }
 
@@ -142,7 +142,7 @@ export interface WorkOrderUpdateData {
   comments?: string;
   status: 'Pending' | 'In Progress' | 'Completed';
   completedAt?: string;
-  completedUser?:User
+  completedUser?: User
 }
 
 
@@ -382,6 +382,10 @@ export const apiService = {
 
   addFleetAircraft: async (aircraft: Omit<FleetAircraft, '_id' | 'isActive'>): Promise<ApiResponse<FleetAircraft>> => {
     return handleApiResponse(api.post('/api/fleet', aircraft));
+  },
+
+  async getAircraftByNNumber(nNumber: string): Promise<ApiResponse<any>> {
+    return handleApiResponse(api.get(`/api/aircraft/${nNumber}`));
   },
 
   // Helper method to check if user is authenticated

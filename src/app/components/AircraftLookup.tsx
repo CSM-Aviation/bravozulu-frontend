@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Search, Loader } from 'lucide-react';
-import { apiService } from '../APIServices/apiService';
+import { AircraftData, apiService } from '../APIServices/apiService';
 
 interface AircraftLookupProps {
-    onAircraftFound: (aircraftData: any) => void;
+    onAircraftFound: (aircraftData: AircraftData) => void;
     value: string;
     onChange: (value: string) => void;
     className?: string;

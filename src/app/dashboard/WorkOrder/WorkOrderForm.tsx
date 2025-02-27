@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Loader2, Plus, X } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
 import { apiService, QuoteData, Service, WorkOrder, WorkOrderUpdateData } from '../../APIServices/apiService';
 import ImageUploadSection from '@/app/components/ImageUploadSection';
 import { useUser } from '@/app/contexts/UserContext';

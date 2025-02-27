@@ -1,8 +1,8 @@
 
-import { workOptions } from '@/app/components/TimeEntriesComponent';
+import { TimeEntry, workOptions } from '@/app/components/TimeEntriesComponent';
 
 
-export const TimeEntriesSummary = ({ timeEntries }: { timeEntries: any[] }) => {
+export const TimeEntriesSummary = ({ timeEntries }: { timeEntries: TimeEntry[] }) => {
     if (!timeEntries || timeEntries.length === 0) {
       return <div className="text-gray-500 italic text-center py-4">No time entries recorded</div>;
     }
@@ -11,7 +11,7 @@ export const TimeEntriesSummary = ({ timeEntries }: { timeEntries: any[] }) => {
     const totalHours = timeEntries.reduce((sum, entry) => sum + (Number(entry.hours) || 0), 0);
   
     // Group entries by work type
-    const workSummary = timeEntries.reduce((acc, entry) => {
+    const workSummary = timeEntries.reduce((acc: { [key: string]: number }, entry) => {
       const workType = entry.workPerformed;
       if (!acc[workType]) {
         acc[workType] = 0;

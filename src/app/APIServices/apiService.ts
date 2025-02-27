@@ -125,7 +125,7 @@ export interface WorkOrder {
     laborCost: number;
     hourlyRate: number;
   };
-  wordorderDocument?:{
+  wordorderDocument?: {
     generatedAt: string;
     url: string;
     woS3Key: string
@@ -181,6 +181,17 @@ export interface PricingBreakdown {
 export interface QuotePricing {
   total: number;
   breakdown: PricingBreakdown;
+}
+
+export interface AircraftData {
+  nNumber: string;
+  manufacturer: string;
+  model: string;
+  serialNumber: string;
+  owner: string;
+  status: string;
+  registrationDate: string;
+  expirationDate: string;
 }
 
 export interface ApiResponse<T> {
@@ -390,7 +401,7 @@ export const apiService = {
     return handleApiResponse(api.post('/api/fleet', aircraft));
   },
 
-  async getAircraftByNNumber(nNumber: string): Promise<ApiResponse<any>> {
+  async getAircraftByNNumber(nNumber: string): Promise<ApiResponse<AircraftData>> {
     return handleApiResponse(api.get(`/api/aircraft/${nNumber}`));
   },
 

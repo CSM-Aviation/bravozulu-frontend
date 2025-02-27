@@ -53,7 +53,11 @@ const serviceOptions = {
 };
 
 // Component for section headers
-const SectionHeader = ({ icon: Icon, title, children }: { icon: any, title: string, children?: React.ReactNode }) => (
+const SectionHeader = ({ icon: Icon, title, children }: { 
+  icon: React.ElementType, 
+  title: string, 
+  children?: React.ReactNode 
+}) => (
   <div className="flex justify-between items-center mb-4">
     <div className="flex items-center">
       <Icon className="h-5 w-5 text-blue-600 mr-2" />
@@ -101,7 +105,11 @@ const StatusBadge = ({ status }: { status: string }) => {
 };
 
 // Component for info card
-const InfoCard = ({ label, value, icon: Icon }: { label: string, value: string | React.ReactNode, icon?: any }) => (
+const InfoCard = ({ label, value, icon: Icon }: { 
+  label: string, 
+  value: string | React.ReactNode, 
+  icon?: React.ElementType 
+}) => (
   <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
     <div className="flex items-start">
       {Icon && <Icon className="h-5 w-5 text-gray-500 mr-2 mt-0.5" />}
@@ -123,7 +131,7 @@ const CollapsibleSection = ({
   badge
 }: {
   title: string,
-  icon: any,
+  icon: React.ElementType,
   isExpanded: boolean,
   onToggle: () => void,
   children: React.ReactNode,
@@ -304,7 +312,7 @@ export default function QuoteReviewPage() {
         <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-gray-800 mb-2">Quote Not Found</h2>
-          <p className="text-gray-600 mb-6">The quote you're looking for couldn't be found. It may have been deleted or you may not have access to it.</p>
+          <p className="text-gray-600 mb-6">The quote you`&apos;`re looking for couldn`&apos;`t be found. It may have been deleted or you may not have access to it.</p>
           <button
             onClick={() => router.push('/dashboard')}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
@@ -484,8 +492,6 @@ export default function QuoteReviewPage() {
             </div>
           </div>
 
-
-
           {/* Services Section */}
           {quote.status === 'Need Response' ? (
             <div className="mb-8">
@@ -511,7 +517,7 @@ export default function QuoteReviewPage() {
                 <div className="divide-y divide-gray-200">
                   {services.length === 0 ? (
                     <div className="py-6 text-center text-gray-500">
-                      No services added yet. Click "Add Service" to get started.
+                      No services added yet. Click `&ldquo;`Add Service`&ldquo;` to get started.
                     </div>
                   ) : (
                     services.map((service, index) => (

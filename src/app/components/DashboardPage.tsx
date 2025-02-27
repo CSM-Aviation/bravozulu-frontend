@@ -11,7 +11,6 @@ import {
   Filter,
   ChevronDown,
   ChevronUp,
-  Calendar,
   RefreshCw,
   Download,
   Printer
@@ -40,7 +39,7 @@ export default function Dashboard() {
   // Date filter state
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [datePreset, setDatePreset] = useState('Current month');
+  const [, setDatePreset] = useState('Current month');
 
   // Sorting state
   const [sortBy, setSortBy] = useState<'customer' | 'vehicleType' | 'status' | 'createdAt' | 'total'>('createdAt');

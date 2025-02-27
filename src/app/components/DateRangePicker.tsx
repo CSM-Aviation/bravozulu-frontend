@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Calendar, ChevronLeft, ChevronRight, CalendarIcon, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CalendarIcon, X } from 'lucide-react';
 
 interface DateRange {
     from: Date | null;

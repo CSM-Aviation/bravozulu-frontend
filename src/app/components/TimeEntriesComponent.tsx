@@ -1,6 +1,6 @@
 // Updated TimeEntriesComponent.tsx with auto-save functionality
 import React, { useState, useEffect, useCallback } from 'react';
-import { Clock, Plus, Trash2, Edit, Save, X, Check } from 'lucide-react';
+import { Clock, Plus, Trash2, Edit, Save, X } from 'lucide-react';
 
 // Time entry interface
 export interface TimeEntry {
@@ -11,6 +11,7 @@ export interface TimeEntry {
     endTime: string;
     hours: number;
     workPerformed: string;
+    workType?: string;
 }
 
 // Work options based on service types
@@ -52,7 +53,7 @@ const TimeEntriesComponent: React.FC<TimeEntriesProps> = ({
     // State for validation errors
     const [errors, setErrors] = useState<Record<string, string>>({});
     // State for saving status
-    const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+    const [, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
     // State to track if we need to save changes
     const [pendingChanges, setPendingChanges] = useState(false);
 
@@ -284,7 +285,7 @@ const TimeEntriesComponent: React.FC<TimeEntriesProps> = ({
             {entriesWithIds.length === 0 ? (
                 <div className="text-center py-10 text-gray-500 bg-gray-50 rounded-lg">
                     <Clock className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                    <p>No time entries yet. Click "Add Entry" to get started.</p>
+                    <p>No time entries yet. Click `&ldquo;`Add Entry`&ldquo;` to get started.</p>
                 </div>
             ) : (
                 <div className="overflow-x-auto">

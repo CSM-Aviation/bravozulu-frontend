@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { apiService, QuoteData, Service, WorkOrder } from '../../APIServices/apiService';
-import { Loader2, ClipboardCheck, Clock, AlertTriangle, FileText, User, Calendar, MapPin, CheckSquare, MessageSquare, Image, Clock4 } from 'lucide-react';
+import { apiService, QuoteData, WorkOrder } from '../../APIServices/apiService';
+import { Loader2, ClipboardCheck, Clock, AlertTriangle, Calendar, MapPin, CheckSquare, MessageSquare} from 'lucide-react';
 import WorkOrderForm from './WorkOrderForm';
 import PDFViewer from '@/app/components/PDFViewer';
-import { workOptions } from '@/app/components/TimeEntriesComponent';
 import { TimeEntriesSummary } from '@/app/components/TimeEntriesSummary';
 import { ServicesList } from '@/app/components/ServicesListView';
 import { ImageGallery } from '@/app/components/ImageGalleryView';
@@ -22,7 +21,7 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
   const [workOrder, setWorkOrder] = useState<WorkOrder | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [expanded, setExpanded] = useState(true);
+  const [, setExpanded] = useState(true);
 
   useEffect(() => {
     const fetchWorkOrder = async () => {
@@ -60,19 +59,6 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
   if (status !== 'Approved' && status !== 'Completed') {
     return null;
   }
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'Pending':
-        return <Clock className="w-5 h-5 text-yellow-500" />;
-      case 'In Progress':
-        return <Loader2 className="w-5 h-5 text-blue-500" />;
-      case 'Completed':
-        return <ClipboardCheck className="w-5 h-5 text-green-500" />;
-      default:
-        return null;
-    }
-  };
 
   if (loading) {
     return (

@@ -140,36 +140,6 @@ const Quote = () => {
     return () => observer.disconnect();
   }, [formRefs]);
 
-  const resetForm = () => {
-    setSuccess(false);
-    setSelectedExterior([]);
-    setSelectedInterior([]);
-    setSpecialRequests('');
-    setFormData({
-      status: 'Need Response',
-      firstName: '',
-      lastName: '',
-      companyName: '',
-      email: '',
-      phoneNumber: '',
-      vehicleType: 'Aircraft',
-      registrationNumber: '',
-      serviceType: '',
-      serviceLocation: 'FAT',
-      year: undefined,
-      make: '',
-      model: '',
-      boatNumber: '',
-      vesselType: '',
-      length: undefined,
-      isInFleet: false,
-      createdAt: '',
-      serviceDetails: {
-        services: []
-      }
-    });
-  };
-
   if (success) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 py-12">
@@ -470,7 +440,7 @@ const Quote = () => {
             {loading ?
               <>
                 <Loader2 className="w-5 h-5 mr-2 animate-spin inline" />
-                'Submitting...'
+                Submitting...
               </>
 
               : 'Submit Quote Request'}

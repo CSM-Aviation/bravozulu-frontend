@@ -62,10 +62,17 @@ const AircraftLookup: React.FC<AircraftLookupProps> = ({
                 <button
                     type="button"
                     onClick={handleSearch}
-                    className="ml-2 p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+                    className="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 disabled:bg-gray-300 disabled:text-gray-500 flex items-center gap-2"
                     disabled={loading}
                 >
-                    {loading ? <Loader className="w-5 h-5 animate-spin" /> : <Search className="w-5 h-5" />}
+                    <span className="flex items-center gap-2">
+                        Search FAA Registry 
+                        {loading ? (
+                            <Loader className="w-5 h-5 animate-spin" />
+                        ) : (
+                            <Search className="w-5 h-5" />
+                        )}
+                    </span>
                 </button>
             </div>
 

@@ -125,6 +125,12 @@ export interface WorkOrder {
     laborCost: number;
     hourlyRate: number;
   };
+  wordorderDocument?:{
+    generatedAt: string;
+    url: string;
+    woS3Key: string
+
+  }
   completedUser?: User
 }
 

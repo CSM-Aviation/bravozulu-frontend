@@ -64,7 +64,7 @@ export default function Header() {
             </button>
             <Link href="/" className="flex-shrink-0 flex items-center ml-2 md:ml-0">
               <Image
-                src="/BravoZulu_logo.avif"
+                src="/BravoZulu_logo.png"
                 alt="Bravo Zulu Services Logo"
                 width={200}
                 height={200}

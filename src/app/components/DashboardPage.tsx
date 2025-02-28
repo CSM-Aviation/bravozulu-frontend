@@ -111,14 +111,16 @@ export default function Dashboard() {
 
     // Apply date filter
     if (start && end) {
-      const startDt = new Date(start);
-      const endDt = new Date(end);
-      endDt.setHours(23, 59, 59, 999); // Set to end of day
-      // console.log("startDt: {}",startDt)
-      // console.log("endDt: {}",endDt)
+      // Create dates with the time set to local midnight to avoid timezone issues
+      const startDt = new Date(`${start}T00:00:00`);
+
+      // For end date, we want to include the entire day
+      const endDt = new Date(`${end}T23:59:59.999`);
+      console.log("startDt: {}", startDt)
+      console.log("endDt: {}", endDt)
       result = result.filter(quote => {
         const createdDate = new Date(quote.createdAt);
-        // console.log("createdDate: {}",createdDate)
+        console.log("createdDate: {}", createdDate)
         return createdDate >= startDt && createdDate <= endDt;
       });
     }
@@ -168,8 +170,8 @@ export default function Dashboard() {
   }, [quotes, searchTerm, statusFilter, startDate, endDate, sortBy, sortDirection]);
 
   const handleDateFilterChange = (start: string, end: string, preset?: string) => {
-    console.log("start: {}",start)
-    console.log("end: {}",end)
+    console.log("start: {}", start)
+    console.log("end: {}", end)
     setStartDate(start);
     setEndDate(end);
     if (preset) {
@@ -406,7 +408,7 @@ export default function Dashboard() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Quote ID
                   </th>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
                     onClick={() => handleSort('customer')}
                   >
@@ -424,7 +426,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
                     onClick={() => handleSort('vehicleType')}
                   >
@@ -442,7 +444,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
                     onClick={() => handleSort('status')}
                   >
@@ -460,7 +462,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
                     onClick={() => handleSort('createdAt')}
                   >
@@ -478,7 +480,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
                     onClick={() => handleSort('total')}
                   >

@@ -73,7 +73,7 @@ export interface QuoteData {
   serviceDetails: QuoteServices;
   pdfUrl?: string;
   approvedUser?: User;
-  updatedAt?:string
+  updatedAt?: string
   // pricing?: QuotePricing;
 }
 
@@ -125,6 +125,12 @@ export interface WorkOrder {
     laborCost: number;
     hourlyRate: number;
   };
+  wordorderDocument?: {
+    generatedAt: string;
+    url: string;
+    woS3Key: string
+
+  }
   completedUser?: User
 }
 
@@ -142,7 +148,7 @@ export interface WorkOrderUpdateData {
   comments?: string;
   status: 'Pending' | 'In Progress' | 'Completed';
   completedAt?: string;
-  completedUser?:User
+  completedUser?: User
 }
 
 
@@ -175,6 +181,17 @@ export interface PricingBreakdown {
 export interface QuotePricing {
   total: number;
   breakdown: PricingBreakdown;
+}
+
+export interface AircraftData {
+  nNumber: string;
+  manufacturer: string;
+  model: string;
+  serialNumber: string;
+  owner: string;
+  status: string;
+  registrationDate: string;
+  expirationDate: string;
 }
 
 export interface ApiResponse<T> {
@@ -231,9 +248,11 @@ async function handleApiResponse<T>(promise: Promise<AxiosResponse<T>>): Promise
       switch (status) {
         case 401:
           console.error('Authentication error: Please log in again');
+          apiService.logout()
           break;
         case 403:
           console.error('Authorization error: You do not have permission to perform this action');
+          apiService.logout()
           break;
         case 404:
           console.error('Resource not found');
@@ -382,6 +401,10 @@ export const apiService = {
 
   addFleetAircraft: async (aircraft: Omit<FleetAircraft, '_id' | 'isActive'>): Promise<ApiResponse<FleetAircraft>> => {
     return handleApiResponse(api.post('/api/fleet', aircraft));
+  },
+
+  async getAircraftByNNumber(nNumber: string): Promise<ApiResponse<AircraftData>> {
+    return handleApiResponse(api.get(`/api/aircraft/${nNumber}`));
   },
 
   // Helper method to check if user is authenticated

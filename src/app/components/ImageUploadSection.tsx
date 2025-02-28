@@ -24,7 +24,7 @@ const ImageUploadSection = ({
   };
 
   return (
-    <div className="bg-gray-50 p-4 rounded-lg">
+    <div className="bg-gray-50 text-black p-4 rounded-lg">
       <h3 className="text-lg font-semibold mb-4">{title}</h3>
       <div className="space-y-4">
         <div className="gap-4">

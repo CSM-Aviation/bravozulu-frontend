@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { apiService, FleetAircraft } from '../APIServices/apiService';
+import { AircraftData, apiService, FleetAircraft } from '../APIServices/apiService';
+import AircraftLookup from './AircraftLookup';
+import AircraftDetails from './AircraftDetails';
 
 interface RegistrationDropdownProps {
   value: string;
-  onChange: (value: string, isInFleet: boolean) => void;
+  onChange: (value: string, isInFleet: boolean, aircraftType?: string) => void;
   className?: string;
 }
 
@@ -17,6 +19,7 @@ const RegistrationDropdown: React.FC<RegistrationDropdownProps> = ({
   const [error, setError] = useState('');
   const [showOtherInput, setShowOtherInput] = useState(false);
   const [customRegistration, setCustomRegistration] = useState('');
+  const [aircraftData, setAircraftData] = useState<AircraftData>();
 
   useEffect(() => {
     const fetchFleetAircraft = async () => {
@@ -41,22 +44,27 @@ const RegistrationDropdown: React.FC<RegistrationDropdownProps> = ({
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
     setShowOtherInput(selectedValue === 'other');
+    setAircraftData(undefined);
     
     if (selectedValue === 'other') {
       setCustomRegistration('');
       onChange('', false); // Reset the value when switching to "Other"
     } else {
-      const isInFleet = fleetAircraft.some(
-        aircraft => aircraft.tailNumber === selectedValue
-      );
-      onChange(selectedValue, isInFleet);
+      const aircraft = fleetAircraft.find(aircraft => aircraft.tailNumber === selectedValue);
+      const isInFleet = !!aircraft;
+      onChange(selectedValue, isInFleet, aircraft?.type);
     }
   };
 
-  const handleCustomInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+  const handleCustomInputChange = (value: string) => {
     setCustomRegistration(value);
     onChange(value, false); // Custom registrations are always not in-fleet
+  };
+
+  const handleAircraftFound = (data: AircraftData) => {
+    setAircraftData(data);
+    // Pass aircraft model info to the parent component
+    onChange(data.nNumber, false, `${data.manufacturer} ${data.model}`);
   };
 
   if (loading) {
@@ -97,14 +105,21 @@ const RegistrationDropdown: React.FC<RegistrationDropdownProps> = ({
       </select>
 
       {showOtherInput && (
-        <input
-          type="text"
-          value={customRegistration}
-          onChange={handleCustomInputChange}
-          placeholder="Enter Registration Number"
-          className={className}
-          required
-        />
+        <>
+          <AircraftLookup
+            value={customRegistration}
+            onChange={handleCustomInputChange}
+            onAircraftFound={handleAircraftFound}
+            className={className}
+          />
+          
+          {aircraftData && (
+            <AircraftDetails 
+              aircraftData={aircraftData} 
+              onClose={() => setAircraftData(undefined)} 
+            />
+          )}
+        </>
       )}
     </div>
   );

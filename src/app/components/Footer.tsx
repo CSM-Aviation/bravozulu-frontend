@@ -14,7 +14,7 @@ export default function Footer() {
           <div className="space-y-4">
             <Link href="/" className="block">
               <Image
-                src="/BravoZulu_logo.avif"
+                src="/BravoZulu_logo.png"
                 alt="Bravo Zulu Services Logo"
                 width={140}
                 height={140}

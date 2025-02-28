@@ -114,9 +114,11 @@ export default function Dashboard() {
       const startDt = new Date(start);
       const endDt = new Date(end);
       endDt.setHours(23, 59, 59, 999); // Set to end of day
-
+      // console.log("startDt: {}",startDt)
+      // console.log("endDt: {}",endDt)
       result = result.filter(quote => {
         const createdDate = new Date(quote.createdAt);
+        // console.log("createdDate: {}",createdDate)
         return createdDate >= startDt && createdDate <= endDt;
       });
     }
@@ -166,6 +168,8 @@ export default function Dashboard() {
   }, [quotes, searchTerm, statusFilter, startDate, endDate, sortBy, sortDirection]);
 
   const handleDateFilterChange = (start: string, end: string, preset?: string) => {
+    console.log("start: {}",start)
+    console.log("end: {}",end)
     setStartDate(start);
     setEndDate(end);
     if (preset) {

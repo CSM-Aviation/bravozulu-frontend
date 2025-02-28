@@ -248,9 +248,11 @@ async function handleApiResponse<T>(promise: Promise<AxiosResponse<T>>): Promise
       switch (status) {
         case 401:
           console.error('Authentication error: Please log in again');
+          apiService.logout()
           break;
         case 403:
           console.error('Authorization error: You do not have permission to perform this action');
+          apiService.logout()
           break;
         case 404:
           console.error('Resource not found');

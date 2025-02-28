@@ -143,6 +143,7 @@ const DateRangePickerCalendar: React.FC<DateRangePickerCalendarProps> = ({
             setSelectedPreset('Custom');
             onFilterChange(formatDateValue(from < date ? from : date), formatDateValue(from < date ? date : from), 'Custom');
         }
+        // console.log(dateRange)
     };
 
     const clearDates = () => {

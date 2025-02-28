@@ -459,12 +459,10 @@ const TimeEntriesComponent: React.FC<TimeEntriesProps> = ({
                 </div>
             )}
 
-            {/* Summary of work performed (when there are entries) */}
-            {entriesWithIds.length > 0 && (
+            {/* {entriesWithIds.length > 0 && (
                 <div className="mt-6 pt-4 border-t border-gray-200">
                     <h4 className="text-md font-semibold text-gray-700 mb-3">Work Summary</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Group by type (Interior/Exterior) */}
                         {['Exterior', 'Interior'].map(type => {
                             const typeEntries = entriesWithIds.filter(entry =>
                                 entry.workPerformed && entry.workPerformed.includes(type)
@@ -499,7 +497,9 @@ const TimeEntriesComponent: React.FC<TimeEntriesProps> = ({
                         })}
                     </div>
                 </div>
-            )}
+            )} */}
+
+            
         </div>
     );
 };

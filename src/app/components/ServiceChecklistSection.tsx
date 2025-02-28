@@ -77,7 +77,7 @@ export const aircraftExteriorOptions = [
   
     return (
       <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="text-lg font-semibold mb-4">Services Checklist</h3>
+        <h3 className="text-lg text-black font-semibold mb-4">Services Checklist</h3>
         <div className="grid grid-cols-2 gap-8">
           {/* Exterior Services */}
           <div>

@@ -3,19 +3,107 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --background: #f9f9f9;
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
+/* to enable dark mode */
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.test {
+  outline: 4px solid green;
+}
+
+.test2 {
+  border: 1px solid red;
+}
+
+@keyframes planeFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.plane-float {
+  animation: planeFloat 6s ease-in-out infinite;
+}
+.ripple-btn {
+  position: relative;
+  display: inline-block;
+  padding: 15px 30px;
+  font-size: 16px;
+  font-family: sans-serif;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  color: #000;
+  background-color: #fff;
+  overflow: hidden; /* so the “arcs” stay within the button’s shape */
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.ripple-btn:hover {
+  background-color: #9c27b0; /* the main purple on hover */
+  color: #fff;
+}
+
+/* PSEUDO-ELEMENTS FOR ARCS */
+
+/* bottom arc */
+.ripple-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0; /* top:0, right:0, bottom:0, left:0 */
+  border-radius: inherit; /* match the button's roundness */
+  background: radial-gradient(
+    circle at center bottom,
+    rgba(156, 39, 176, 1) 20%,
+    rgba(156, 39, 176, 0) 60%
+  );
+  /* Start hidden, off the bottom of the button */
+  transform: translateY(100%);
+  transition: transform 0.4s ease;
+  z-index: 1; /* place behind the text but above the base button color */
+}
+
+.ripple-btn:hover::before {
+  transform: translateY(0);
+}
+
+/* top arc */
+.ripple-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at center top,
+    #fff 20%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  /* Start hidden, off the top of the button */
+  transform: translateY(-100%);
+  transition: transform 0.4s ease;
+  z-index: 2;
+}
+
+.ripple-btn:hover::after {
+  transform: translateY(0);
 }

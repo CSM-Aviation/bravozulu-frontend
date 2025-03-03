@@ -1,11 +1,18 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
-import Image from "next/image";
-import mapImage from "../../../../public/images/mapImage.png";
+// import Image from "next/image";
+// import mapImage from "../../../../public/images/mapImage.png";
 import "./contactUsAnimation.css";
 import CustomButton from "@/app/utils/CustomButton";
-import { useScroll, useTransform, motion } from "framer-motion";
+import { useScroll, useTransform, motion, MotionValue } from "framer-motion";
+
+// Define proper types for text components
+interface TextComponentProps {
+  children: React.ReactNode;
+  range: [number, number];
+  progress: MotionValue<number>;
+}
 
 const ContactUs = () => {
   const messageFormRef = useRef<HTMLDivElement>(null);
@@ -64,7 +71,7 @@ const ContactUs = () => {
     timeline: "",
   });
 
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   // Get window width for responsive behavior
   const [deviceWidth, setDeviceWidth] = useState(false);
@@ -159,7 +166,7 @@ const ContactUs = () => {
     );
   };
 
-  const Heading = ({ children, range, progress }: any) => {
+  const Heading = ({ children, range, progress }: TextComponentProps) => {
     const opacity = useTransform(progress, range, [0, 1]);
 
     return (
@@ -172,13 +179,13 @@ const ContactUs = () => {
     );
   };
 
-  const Para = ({ children, range, progress }: any) => {
+  const Para = ({ children, range, progress }: TextComponentProps) => {
     const opacity = useTransform(progress, range, [0, 1]);
 
     return (
       <motion.p
         style={{ opacity }}
-        className="md:text-lg text-sm  text-neutral-600"
+        className="md:text-lg text-sm text-neutral-600"
       >
         {children}
       </motion.p>
@@ -188,7 +195,7 @@ const ContactUs = () => {
   return (
     <div ref={ref} className="container px-4 md:px-16">
       <div className="mx-auto md:mb-16 h-full">
-        <h2 className="md:mb-4 md:text-[100px] lg:text-[250px] text-6xl  text-center  text-black bebas-neue-regular">
+        <h2 className="md:mb-4 md:text-[100px] lg:text-[250px] text-6xl text-center text-black bebas-neue-regular">
           Cont<span className="stroked-text">act</span>
         </h2>
 
@@ -276,7 +283,7 @@ const ContactUs = () => {
               <div className="absolute inset-0 bg-white opacity-10 rounded-3xl transition-opacity duration-300 group-hover:opacity-20"></div>
               <div>
                 <div className="w-12 h-12 relative rounded-full flex items-center justify-center">
-                  <MapPin className="w-6 h-6 text-[#FF204E] icon1  absolute" />
+                  <MapPin className="w-6 h-6 text-[#FF204E] icon1 absolute" />
                   <MapPin className="w-6 h-6 text-white absolute icon2" />
                 </div>
               </div>
@@ -292,7 +299,7 @@ const ContactUs = () => {
             </div>
 
             {/* Map Section */}
-            <div className="group relative bg-gradient-to-br from-[#2C003E] to-[#000000] p-5 lg:p-8 rounded-3xl border-dashed border-t border-l h-52  md:h-40 lg:h-64 w-full md:w-[60%] lg:w-[48%] cursor-pointer transition-all duration-300">
+            <div className="group relative bg-gradient-to-br from-[#2C003E] to-[#000000] p-5 lg:p-8 rounded-3xl border-dashed border-t border-l h-52 md:h-40 lg:h-64 w-full md:w-[60%] lg:w-[48%] cursor-pointer transition-all duration-300">
               <div className="absolute inset-0 bg-white opacity-10 rounded-3xl transition-opacity duration-300 group-hover:opacity-20"></div>
               <div className="flex items-start">
                 {/* Map Image (Uncomment if needed)
@@ -317,9 +324,9 @@ const ContactUs = () => {
           </h1>
 
           <p className="text-gray-500 mt-6 italic leading-relaxed lg:w-1/2">
-            "Bravo Zulu Services exceeded my expectations with their aircraft
+            Bravo Zulu Services exceeded my expectations with their aircraft
             detailing. The attention to detail and professionalism were
-            outstanding. My jet has never looked better!"
+            outstanding. My jet has never looked better!
           </p>
         </div>
 

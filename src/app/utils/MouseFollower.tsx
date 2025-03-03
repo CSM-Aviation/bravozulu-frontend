@@ -54,20 +54,24 @@ const CustomMouse: React.FC = () => {
           });
 
           return () => {
-            headingsRef.current?.forEach((heading) => {
-              heading.removeEventListener("mouseenter", handleMouseEnter);
-              heading.removeEventListener("mouseleave", handleMouseLeave);
-            });
+            if (headingsRef.current) {
+              headingsRef.current.forEach((heading) => {
+                heading.removeEventListener("mouseenter", handleMouseEnter);
+                heading.removeEventListener("mouseleave", handleMouseLeave);
+              });
+            }
           };
         }
-        return () => {};
+        return () => {}; // Return empty cleanup function when document is undefined
       };
 
       const cleanupHeadings = updateHeadings();
 
       return () => {
         window.removeEventListener("mousemove", mouseMove);
-        cleanupHeadings && cleanupHeadings();
+        if (cleanupHeadings) {
+          cleanupHeadings();
+        }
       };
     }
   }, [pathname]);

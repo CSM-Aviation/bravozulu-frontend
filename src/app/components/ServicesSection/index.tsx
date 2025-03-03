@@ -1,14 +1,34 @@
 "use client";
 
-import { useScroll, useTransform, motion } from "framer-motion";
+import { useScroll, useTransform, motion, MotionValue } from "framer-motion";
 import ServicesCarousel from "../ServicesCarousel";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+
+interface TextComponentProps {
+  children: React.ReactNode;
+  range: [number, number];
+  progress: MotionValue<number>;
+}
 
 const ServicesSection = () => {
-  const ref = useRef(null);
-
-  const [deviceWidth, setDeviceWidth] = useState(window.innerWidth < 756);
-
+  const ref = useRef<HTMLElement>(null);
+  
+  // Initialize with null and set in useEffect to avoid hydration issues
+  const [deviceWidth, setDeviceWidth] = useState<boolean | null>(null);
+  
+  useEffect(() => {
+    setDeviceWidth(window.innerWidth < 756);
+    
+    const handleResize = () => {
+      setDeviceWidth(window.innerWidth < 756);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: deviceWidth
@@ -64,7 +84,7 @@ const ServicesSection = () => {
   );
 };
 
-const Heading = ({ children, range, progress }: any) => {
+const Heading = ({ children, range, progress }: TextComponentProps) => {
   const opacity = useTransform(progress, range, [0, 1]);
 
   return (
@@ -77,7 +97,7 @@ const Heading = ({ children, range, progress }: any) => {
   );
 };
 
-const Para = ({ children, range, progress }: any) => {
+const Para = ({ children, range, progress }: TextComponentProps) => {
   const opacity = useTransform(progress, range, [0, 1]);
 
   return (

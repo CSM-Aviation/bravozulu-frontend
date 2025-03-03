@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
+  // const currentYear = new Date().getFullYear();
 
   return (
     <footer className="bg-black py-[23px]  relative overflow-hidden">

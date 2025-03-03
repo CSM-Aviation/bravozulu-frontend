@@ -68,7 +68,7 @@ const NavigationBar = () => {
   };
 
   // Function to check if the link is active
-  const isActive = (path) => {
+  const isActive = (path: string) => {
     return pathname === path;
   };
 

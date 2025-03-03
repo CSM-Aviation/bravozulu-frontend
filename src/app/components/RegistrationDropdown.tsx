@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { apiService } from '../APIServices/apiService';
+import { AircraftData, apiService, FleetAircraft } from '../APIServices/apiService';
 import AircraftLookup from './AircraftLookup';
 import AircraftDetails from './AircraftDetails';
 
@@ -14,12 +14,12 @@ const RegistrationDropdown: React.FC<RegistrationDropdownProps> = ({
   onChange,
   className = ''
 }) => {
-  const [fleetAircraft, setFleetAircraft] = useState<any[]>([]);
+  const [fleetAircraft, setFleetAircraft] = useState<FleetAircraft[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showOtherInput, setShowOtherInput] = useState(false);
   const [customRegistration, setCustomRegistration] = useState('');
-  const [aircraftData, setAircraftData] = useState<any>(null);
+  const [aircraftData, setAircraftData] = useState<AircraftData>();
 
   useEffect(() => {
     const fetchFleetAircraft = async () => {
@@ -44,7 +44,7 @@ const RegistrationDropdown: React.FC<RegistrationDropdownProps> = ({
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
     setShowOtherInput(selectedValue === 'other');
-    setAircraftData(null);
+    setAircraftData(undefined);
     
     if (selectedValue === 'other') {
       setCustomRegistration('');
@@ -61,7 +61,7 @@ const RegistrationDropdown: React.FC<RegistrationDropdownProps> = ({
     onChange(value, false); // Custom registrations are always not in-fleet
   };
 
-  const handleAircraftFound = (data: any) => {
+  const handleAircraftFound = (data: AircraftData) => {
     setAircraftData(data);
     // Pass aircraft model info to the parent component
     onChange(data.nNumber, false, `${data.manufacturer} ${data.model}`);
@@ -116,7 +116,7 @@ const RegistrationDropdown: React.FC<RegistrationDropdownProps> = ({
           {aircraftData && (
             <AircraftDetails 
               aircraftData={aircraftData} 
-              onClose={() => setAircraftData(null)} 
+              onClose={() => setAircraftData(undefined)} 
             />
           )}
         </>

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { apiService, QuoteData, Service, WorkOrder } from '../../APIServices/apiService';
-import { Loader2, ClipboardCheck, Clock, AlertTriangle } from 'lucide-react';
+import { apiService, QuoteData, WorkOrder } from '../../APIServices/apiService';
+import { Loader2, ClipboardCheck, Clock, AlertTriangle, Calendar, MapPin, CheckSquare, MessageSquare} from 'lucide-react';
 import WorkOrderForm from './WorkOrderForm';
 import PDFViewer from '@/app/components/PDFViewer';
+import { TimeEntriesSummary } from '@/app/components/TimeEntriesSummary';
+import { ServicesList } from '@/app/components/ServicesListView';
+import { ImageGallery } from '@/app/components/ImageGalleryView';
 
 interface WorkOrderSectionProps {
   quoteId: string;
@@ -10,65 +13,15 @@ interface WorkOrderSectionProps {
   quoteData: QuoteData;
 }
 
-const ServicesList = ({ services }: { services: Service[] }) => {
-  // Separate services by type
-  const exteriorServices = services.filter((service: Service) => service.type === 'exterior');
-  const interiorServices = services.filter((service: Service) => service.type === 'interior');
 
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 gap-4">
-        {/* Exterior Services */}
-        {exteriorServices.length > 0 && (
-          <div>
-            <h4 className="font-semibold mb-2">Exterior</h4>
-            <div className="bg-white rounded-md border border-gray-200">
-              {exteriorServices.map((service, index) => (
-                <div
-                  key={service.name}
-                  className={`px-4 py-2 flex justify-between items-center ${index !== exteriorServices.length - 1 ? 'border-b border-gray-200' : ''
-                    }`}
-                >
-                  <span className="text-gray-700">{service.displayName}</span>
-                  {/* {service.price && (
-                    <span className="text-gray-600">${service.price.toFixed(2)}</span>
-                  )} */}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
-        {/* Interior Services */}
-        {interiorServices.length > 0 && (
-          <div>
-            <h4 className="font-semibold mb-2">Interior</h4>
-            <div className="bg-white rounded-md border border-gray-200">
-              {interiorServices.map((service, index) => (
-                <div
-                  key={service.name}
-                  className={`px-4 py-2 flex justify-between items-center ${index !== interiorServices.length - 1 ? 'border-b border-gray-200' : ''
-                    }`}
-                >
-                  <span className="text-gray-700">{service.displayName}</span>
-                  {/* {service.price && (
-                    <span className="text-gray-600">${service.price.toFixed(2)}</span>
-                  )} */}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+
 
 const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, quoteData }) => {
   const [workOrder, setWorkOrder] = useState<WorkOrder | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [expanded, setExpanded] = useState(true);
+  const [, setExpanded] = useState(true);
 
   useEffect(() => {
     const fetchWorkOrder = async () => {
@@ -81,7 +34,7 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
         }
         if (response.data) {
           setWorkOrder(response.data);
-          setExpanded(true)
+          setExpanded(true);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch work order');
@@ -96,8 +49,6 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
   const handleWorkOrderUpdate = async (updateData: WorkOrder) => {
     try {
       setLoading(true);
-      // Just update the local state with the new work order data
-      // The API call is already handled in the WorkOrderForm
       setWorkOrder(updateData);
       setLoading(false);
     } catch (err) {
@@ -109,24 +60,12 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
     return null;
   }
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'Pending':
-        return <Clock className="w-5 h-5 text-yellow-500" />;
-      case 'In Progress':
-        return <Loader2 className="w-5 h-5 text-blue-500" />;
-      case 'Completed':
-        return <ClipboardCheck className="w-5 h-5 text-green-500" />;
-      default:
-        return null;
-    }
-  };
-
   if (loading) {
     return (
-      <div className="mt-8">
-        <div className="flex items-center justify-center p-8">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+      <div className="flex items-center justify-center p-8 bg-white rounded-lg shadow-md">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-500 mx-auto mb-4" />
+          <p className="text-gray-600">Loading work order details...</p>
         </div>
       </div>
     );
@@ -134,10 +73,11 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
 
   if (error) {
     return (
-      <div className="mt-8">
-        <div className="p-4 bg-red-50 text-red-500 rounded-md flex items-center">
-          <AlertTriangle className="w-5 h-5 mr-2" />
-          {error}
+      <div className="p-6 bg-red-50 text-red-500 rounded-lg shadow-md flex items-center">
+        <AlertTriangle className="w-6 h-6 mr-3" />
+        <div>
+          <h3 className="font-medium">Error Loading Work Order</h3>
+          <p>{error}</p>
         </div>
       </div>
     );
@@ -145,228 +85,173 @@ const WorkOrderSection: React.FC<WorkOrderSectionProps> = ({ quoteId, status, qu
 
   if (!workOrder) {
     return (
-      <div className="mt-8">
-        <div className="p-4 bg-yellow-50 text-yellow-600 rounded-md">
-          No work order found for this quote.
+      <div className="p-6 bg-yellow-50 text-yellow-700 rounded-lg shadow-md flex items-center">
+        <AlertTriangle className="w-6 h-6 mr-3" />
+        <div>
+          <h3 className="font-medium">No Work Order Found</h3>
+          <p>There is no work order associated with this quote.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="mt-8">
-      <div className="bg-white rounded-lg shadow">
-        {/* Header */}
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex justify-between items-center">
-            <div className="space-y-1">
-              <div className="text-sm text-gray-500">Work Order ID</div>
-              <div className="font-medium">{workOrder.workOrderId}</div>
+    <div>
+      {workOrder.status !== 'Completed' ? (
+        <WorkOrderForm
+          quoteData={quoteData}
+          workOrderData={workOrder}
+          onUpdate={handleWorkOrderUpdate}
+        />
+      ) : (
+        <div className="space-y-6">
+          {/* Header Card with Status & Details */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-blue-50 px-6 py-4 border-b border-gray-200 flex flex-wrap justify-between items-center gap-4">
+              <div className="flex items-center">
+                <ClipboardCheck className="w-6 h-6 text-green-500 mr-3" />
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800">Work Order #{workOrder.workOrderId}</h3>
+                  <p className="text-sm text-gray-600">Status: <span className="font-medium text-green-600">Completed</span></p>
+                </div>
+              </div>
+
+              <PDFViewer
+                pdfUrl={workOrder.wordorderDocument?.url}
+                title="View Work Order"
+                className="ml-auto"
+              />
             </div>
-            <div className="flex items-center gap-2">
-              {getStatusIcon(workOrder.status)}
-              <span className="font-medium">{workOrder.status}</span>
+
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Vehicle Information */}
+                <div className="bg-gray-50 rounded-lg p-4 space-y-4">
+                  <div className="flex items-start">
+                    <MapPin className="w-5 h-5 text-gray-500 mr-2 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium text-gray-800">Vehicle Information</h4>
+                      <div className="mt-2 space-y-2 text-sm">
+                        <p className="flex justify-between">
+                          <span className="text-gray-600">Type:</span>
+                          <span className="text-black font-medium">{quoteData.vehicleType}</span>
+                        </p>
+                        <p className="flex justify-between">
+                          <span className="text-gray-600">Registration:</span>
+                          <span className="text-black font-medium">{quoteData.registrationNumber}</span>
+                        </p>
+                        <p className="flex justify-between">
+                          <span className="text-gray-600">Location:</span>
+                          <span className="text-black font-medium">{quoteData.serviceLocation}</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Completion Information */}
+                <div className="bg-gray-50 rounded-lg p-4 space-y-4">
+                  <div className="flex items-start">
+                    <Calendar className="w-5 h-5 text-gray-500 mr-2 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium text-gray-800">Completion Details</h4>
+                      <div className="mt-2 space-y-2 text-sm">
+                        <p className="flex justify-between">
+                          <span className="text-gray-600">Completed By:</span>
+                          <span className="text-black font-medium">{workOrder.completedUser?.firstName || 'N/A'}</span>
+                        </p>
+                        <p className="flex justify-between">
+                          <span className="text-gray-600">Date:</span>
+                          <span className="text-black font-medium">
+                            {workOrder.completedAt
+                              ? new Date(workOrder.completedAt).toLocaleDateString('en-US', {
+                                month: 'long',
+                                day: 'numeric',
+                                year: 'numeric'
+                              })
+                              : 'N/A'}
+                          </span>
+                        </p>
+                        <p className="flex justify-between">
+                          <span className="text-gray-600">Time:</span>
+                          <span className="text-black font-medium">
+                            {workOrder.completedAt
+                              ? new Date(workOrder.completedAt).toLocaleTimeString('en-US', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                              })
+                              : 'N/A'}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Collapsible Content */}
-        <div className="p-3">
-          {/* <button
-            onClick={() => setExpanded(!expanded)}
-            className="flex justify-between items-center w-full mb-4"
-          >
-            <h3 className="text-lg font-semibold">Work Order Details</h3>
-            <ChevronDown
-              className={`w-5 h-5 transform transition-transform ${expanded ? 'rotate-180' : ''}`}
+          {/* Completed Services */}
+          {workOrder.completedServices && (
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-blue-50 px-6 py-4 border-b border-gray-200">
+                <h3 className="font-bold text-gray-800 flex items-center">
+                  <CheckSquare className="w-5 h-5 text-blue-600 mr-2" />
+                  Completed Services
+                </h3>
+              </div>
+              <div className="p-6">
+                <ServicesList services={workOrder.completedServices} />
+              </div>
+            </div>
+          )}
+
+          {/* Time Entries */}
+          {workOrder.timeEntries && workOrder.timeEntries.length > 0 && (
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-blue-50 px-6 py-4 border-b border-gray-200">
+                <h3 className="font-bold text-gray-800 flex items-center">
+                  <Clock className="w-5 h-5 text-blue-600 mr-2" />
+                  Time Tracking
+                </h3>
+              </div>
+              <div className="p-6">
+                <TimeEntriesSummary timeEntries={workOrder.timeEntries} />
+              </div>
+            </div>
+          )}
+
+          {/* Images Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ImageGallery
+              images={workOrder.beforeImages || []}
+              title="Before Images"
             />
-          </button> */}
+            <ImageGallery
+              images={workOrder.afterImages || []}
+              title="After Images"
+            />
+          </div>
 
-          {expanded && (
-            <div className="mt-4 space-y-8">
-              {workOrder.status !== 'Completed' ? (
-                <WorkOrderForm
-                  quoteData={quoteData}
-                  workOrderData={workOrder}
-                  onUpdate={handleWorkOrderUpdate}
-                />
-              ) : (
-                <div className="space-y-6">
-                  {/* Completion Details */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2">Vehicle Type</h4>
-                      <div className="text-sm text-gray-600">
-                        {quoteData.vehicleType}
-                      </div>
-                    </div>
-
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2">Completion Details</h4>
-                      <div className="text-sm text-gray-600">
-                        Completed by: {workOrder.completedUser?.firstName} on{' '}
-
-                        {new Date(workOrder.completedAt!).toLocaleDateString('en-US', {
-                          month: 'long',
-                          day: 'numeric',
-                        })}
-                        {new Date(workOrder.completedAt!).getDate() >= 1 && new Date(workOrder.completedAt!).getDate() <= 31 && ['st', 'nd', 'rd', 'th'][
-                          (new Date(workOrder.completedAt!).getDate() % 10 > 3) ? 3 : new Date(workOrder.completedAt!).getDate() % 10 - 1
-                        ]}, {new Date(workOrder.completedAt!).getFullYear()} at{' '}
-                        {new Date(workOrder.completedAt!).toLocaleTimeString('en-US', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          hour12: true
-                        })}
-
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2">Registration Number</h4>
-                      <div className="text-sm text-gray-600">
-                        {quoteData.registrationNumber}
-                      </div>
-                    </div>
-
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2">Service Location</h4>
-                      <div className="text-sm text-gray-600">
-                        {quoteData.serviceLocation}
-                      </div>
-                    </div>
-                  </div>
-
-
-
-                  {/* Completed Services */}
-                  {workOrder.completedServices && workOrder.completedServices.length > 0 && (
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-4">Completed Services</h4>
-                      <ServicesList services={workOrder.completedServices} />
-                    </div>
-                  )}
-
-                  {/* Labor Details */}
-                  {/* {workOrder.laborDetails && (
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-4">Labor Details</h4>
-                      <div className="space-y-2">
-                        <div className="flex justify-between">
-                          <span>Total Hours:</span>
-                          <span>{workOrder.laborDetails.totalHours}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Hourly Rate:</span>
-                          <span>${workOrder.laborDetails.hourlyRate}/hr</span>
-                        </div>
-                        <div className="flex justify-between font-semibold">
-                          <span>Total Labor Cost:</span>
-                          <span>${workOrder.laborDetails.laborCost.toFixed(2)}</span>
-                        </div>
-                      </div>
-                    </div>
-                  )} */}
-
-                  {/* Time Entries */}
-                  {workOrder.timeEntries && workOrder.timeEntries.length > 0 && (
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-4">Time Entries</h4>
-                      <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                          <thead>
-                            <tr>
-                              <th className="px-4 py-2 text-left">Date</th>
-                              <th className="px-4 py-2 text-left">Name</th>
-                              <th className="px-4 py-2 text-left">Hours</th>
-                              <th className="px-4 py-2 text-left">Work Performed</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {workOrder.timeEntries.map((entry: { date: string; name: string; hours: number; workPerformed: string }, index: number) => (
-                              <tr key={index} className="border-b">
-                                <td className="px-4 py-2">{entry.date}</td>
-                                <td className="px-4 py-2">{entry.name}</td>
-                                <td className="px-4 py-2">{entry.hours}</td>
-                                <td className="px-4 py-2">{entry.workPerformed}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Documents */}
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-4">Documents</h4>
-                    <div className="space-y-4">
-                      {quoteData.pdfUrl && (
-                        <PDFViewer
-                          pdfUrl={quoteData.pdfUrl}
-                          title="View Quote PDF"
-                        />
-                      )}
-                      {/* {workOrder.invoiceDetails?.url && (
-                        <PDFViewer
-                          pdfUrl={workOrder.invoiceDetails.url}
-                          title="View Invoice PDF"
-                        />
-                      )} */}
-                    </div>
-                  </div>
-
-                  {/* Comments */}
-                  {workOrder.comments && (
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2">Comments</h4>
-                      <p className="text-gray-600 whitespace-pre-wrap">{workOrder.comments}</p>
-                    </div>
-                  )}
-
-                  {/* Images */}
-                  {(workOrder.beforeImages?.length > 0 || workOrder.afterImages?.length > 0) && (
-                    <div className="grid grid-cols-2 gap-8">
-                      {workOrder.beforeImages?.length > 0 && (
-                        <div className="bg-gray-50 p-4 rounded-lg">
-                          <h4 className="font-semibold mb-4">Before Images</h4>
-                          <div className="grid grid-cols-2 gap-4">
-                            {workOrder.beforeImages.map((url: string, index: number) => (
-                              <img
-                                key={index}
-                                src={url}
-                                alt={`Before ${index + 1}`}
-                                className="w-full h-32 object-cover rounded"
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      {workOrder.afterImages?.length > 0 && (
-                        <div className="bg-gray-50 p-4 rounded-lg">
-                          <h4 className="font-semibold mb-4">After Images</h4>
-                          <div className="grid grid-cols-2 gap-4">
-                            {workOrder.afterImages.map((url: string, index: number) => (
-                              <img
-                                key={index}
-                                src={url}
-                                alt={`After ${index + 1}`}
-                                className="w-full h-32 object-cover rounded"
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
+          {/* Comments */}
+          {workOrder.comments && (
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-blue-50 px-6 py-4 border-b border-gray-200">
+                <h3 className="font-bold text-gray-800 flex items-center">
+                  <MessageSquare className="w-5 h-5 text-blue-600 mr-2" />
+                  Comments
+                </h3>
+              </div>
+              <div className="p-6">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <p className="whitespace-pre-wrap text-gray-700">{workOrder.comments}</p>
                 </div>
-              )}
+              </div>
             </div>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 };

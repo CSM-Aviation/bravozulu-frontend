@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: 'Bravo Zulu Services - Aircraft, Automotive & Vessel Detailing',
   description: 'Professional detailing services for aircraft, automobiles, and vessels in Fresno, CA',
   icons: {
-    icon: '/BravoZulu_logo.avif',
+    icon: '/BravoZulu_logo.png',
   },
 };
 

@@ -3,6 +3,7 @@ import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { apiService, QuoteData, ServiceItem } from '../APIServices/apiService';
 import RegistrationDropdown from '../components/RegistrationDropdown';
 import ServiceSelectionSection from '../components/ServiceSelectionSection';
+import { Loader2 } from 'lucide-react';
 
 // import { useRouter } from 'next/navigation';
 
@@ -138,36 +139,6 @@ const Quote = () => {
 
     return () => observer.disconnect();
   }, [formRefs]);
-
-  const resetForm = () => {
-    setSuccess(false);
-    setSelectedExterior([]);
-    setSelectedInterior([]);
-    setSpecialRequests('');
-    setFormData({
-      status: 'Need Response',
-      firstName: '',
-      lastName: '',
-      companyName: '',
-      email: '',
-      phoneNumber: '',
-      vehicleType: 'Aircraft',
-      registrationNumber: '',
-      serviceType: '',
-      serviceLocation: 'FAT',
-      year: undefined,
-      make: '',
-      model: '',
-      boatNumber: '',
-      vesselType: '',
-      length: undefined,
-      isInFleet: false,
-      createdAt: '',
-      serviceDetails: {
-        services: []
-      }
-    });
-  };
 
   if (success) {
     return (
@@ -466,7 +437,13 @@ const Quote = () => {
             disabled={loading}
             className="w-full bg-blue-500 text-white py-5 px-8 rounded-xl text-xl font-semibold hover:bg-blue-600"
           >
-            {loading ? 'Submitting...' : 'Submit Quote Request'}
+            {loading ?
+              <>
+                <Loader2 className="w-5 h-5 mr-2 animate-spin inline" />
+                Submitting...
+              </>
+
+              : 'Submit Quote Request'}
           </button>
 
           {error && (

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Calendar, ChevronLeft, ChevronRight, CalendarIcon, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CalendarIcon, X } from 'lucide-react';
 
 interface DateRange {
     from: Date | null;
@@ -143,6 +143,7 @@ const DateRangePickerCalendar: React.FC<DateRangePickerCalendarProps> = ({
             setSelectedPreset('Custom');
             onFilterChange(formatDateValue(from < date ? from : date), formatDateValue(from < date ? date : from), 'Custom');
         }
+        // console.log(dateRange)
     };
 
     const clearDates = () => {
@@ -226,31 +227,34 @@ const DateRangePickerCalendar: React.FC<DateRangePickerCalendarProps> = ({
         <div className="relative text-black inline-block" ref={dropdownRef}>
             <div className="flex flex-col">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
-                <button
-                    type="button"
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="flex items-center justify-between px-3 py-2 min-w-[280px] border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    <div className="flex items-center">
-                        <CalendarIcon className="h-5 w-5 text-gray-400 mr-2" />
-                        <span className="text-sm text-gray-700">
-                            {dateRange.from
-                                ? `${formatDisplayDate(dateRange.from)} - ${formatDisplayDate(dateRange.to)}`
-                                : 'Select date range'}
-                        </span>
-                    </div>
+                <div className="flex items-center">
+                    <button
+                        type="button"
+                        onClick={() => setIsOpen(!isOpen)}
+                        className="flex items-center justify-between px-3 py-2 flex-grow border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <div className="flex items-center">
+                            <CalendarIcon className="h-5 w-5 text-gray-400 mr-2" />
+                            <span className="text-sm text-gray-700">
+                                {dateRange.from
+                                    ? `${formatDisplayDate(dateRange.from)} - ${formatDisplayDate(dateRange.to)}`
+                                    : 'Select date range'}
+                            </span>
+                        </div>
+                    </button>
                     {dateRange.from && (
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
                                 clearDates();
                             }}
-                            className="ml-2 text-gray-400 hover:text-gray-500"
+                            className="ml-2 p-1 text-gray-400 hover:text-gray-500 rounded-full hover:bg-gray-100"
+                            aria-label="Clear date selection"
                         >
                             <X className="h-4 w-4" />
                         </button>
                     )}
-                </button>
+                </div>
             </div>
 
             {isOpen && (
@@ -319,8 +323,8 @@ const DateRangePickerCalendar: React.FC<DateRangePickerCalendarProps> = ({
                                         setIsOpen(false);
                                     }}
                                     className={`text-xs px-3 py-1 rounded-full border ${selectedPreset === preset
-                                            ? 'bg-blue-100 border-blue-500 text-blue-700'
-                                            : 'border-gray-300 hover:bg-gray-100'
+                                        ? 'bg-blue-100 border-blue-500 text-blue-700'
+                                        : 'border-gray-300 hover:bg-gray-100'
                                         }`}
                                 >
                                     {preset}

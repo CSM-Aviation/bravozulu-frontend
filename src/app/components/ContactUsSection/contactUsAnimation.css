@@ -1,0 +1,21 @@
+.contactcard:hover .icon2 {
+  transform: translateX(100%);
+  opacity: 0;
+}
+.contactcard:hover .icon1 {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.contactcard:hover .contactText {
+  color: #ff204e;
+}
+.icon1 {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+.icon1,
+.icon2,
+.contactText {
+  transition: all 0.3s ease;
+}

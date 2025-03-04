@@ -12,10 +12,10 @@ const HeroSection = () => {
   useEffect(() => {
     // Set video as loaded after initial render
     setVideoLoaded(true);
-    
+
     // Ensure the page starts at the top when loaded
     window.scrollTo(0, 0);
-    
+
     if (videoLoaded) {
       const timer = setTimeout(() => {
         setShowLoader(false);
@@ -61,14 +61,14 @@ const HeroSection = () => {
             alt="Aircraft front view"
             width={1200}
             height={400}
-            className="h-auto w-[90%] md:w-1/2 md:translate-x-6 translate-x-4  translate-y-[16%]"
+            className="h-auto w-[90%] md:w-1/2 translate-x-4 md:translate-x-14 translate-y-[16%] max-h-[40vh] object-contain"
             priority
           />
         </>
       </motion.div>
 
       <motion.div
-        className="absolute inset-0  md:-translate-y-12 w-screen overflow-x-hidden bg-gradient-to-b from-black/30 to-transparent px-5"
+        className="absolute inset-0 md:-translate-y-12 w-screen overflow-x-hidden bg-gradient-to-b from-black/30 to-transparent px-5"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 2 }}
@@ -79,16 +79,16 @@ const HeroSection = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, delay: 2.5 }}
         >
-          <h1 className="mb-6 text-4xl text-left font-bold tracking-tight text-white md:text-7xl">
+          <h1 className="mb-6 text-4xl text-center font-bold tracking-tight text-white md:text-7xl">
             Perfection is in the Detail
           </h1>
-          <p className="mb-8 max-w-2xl text-xs text-left uppercase tracking-wide text-white/90 md:text-base">
+          <p className="mb-8 max-w-[780px] text-center text-xs uppercase tracking-wide text-white/90 md:text-base">
             From single engine Cessna&apos;s to Gulfstreams and everything in
             between, we take care of your aircraft&apos;s detailing needs from
             start to finish, inside and out.
           </p>
           <div className="translate-x-5">
-            <CustomButton text="Book Now" />
+            <CustomButton text="Request Quote" />
           </div>
         </motion.div>
       </motion.div>

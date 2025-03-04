@@ -1,69 +1,83 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { useState, useEffect } from "react";
 import { TfiArrowTopRight } from "react-icons/tfi";
 import { CarouselItems } from "./constants";
 
 const DesktopVersion = () => {
-  const [activeCard, setActiveCard] = useState(0);
+  const [rotation, setRotation] = useState(0);
+  const totalItems = CarouselItems.length;
+  const rotationAngle = 360 / totalItems;
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveCard((prev) => prev + 1);
-    }, 3000);
+    let interval: NodeJS.Timeout; // ✅ Define interval type
 
-    return () => clearInterval(interval);
-  }, []);
+    const handleVisibilityChange = () => {
+      setIsVisible(!document.hidden);
+    };
 
-  const currDeg = -(activeCard * 120);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    if (isVisible) {
+      interval = setInterval(() => {
+        setRotation((prev) => prev - rotationAngle);
+      }, 5000);
+    }
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [rotationAngle, isVisible]);
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="perspective-[1000px] relative h-[400px] w-[350px]">
+    <div className="flex flex-col items-center justify-center">
+      <div className="relative h-[350px] w-full flex items-center justify-center">
         <div
-          className="absolute h-full w-full transition-transform duration-1000 [transform-style:preserve-3d]"
-          style={{ transform: `rotateY(${currDeg}deg)` }}
+          style={{ perspective: "5000px" }}
+          className="relative w-[350px] h-[350px]"
         >
-          {CarouselItems.map((item, index) => {
-            const angle = index * 120;
-            const translateZ =
-              activeCard % CarouselItems.length === index ? 500 : 450;
-            const cardContainerTransform = `rotateY(${angle}deg) translateZ(${translateZ}px) rotateY(-${angle}deg)`;
-
-            return (
+          <div
+            className="absolute inset-0 w-full h-full"
+            style={{
+              transform: `rotateY(${rotation}deg)`,
+              transformStyle: "preserve-3d",
+              transition: "transform 2s ease-in-out",
+              willChange: "transform",
+            }}
+          >
+            {CarouselItems.map((item, index) => (
               <div
                 key={index}
-                className="[transform-style:preserve-3d]"
-                style={{ transform: cardContainerTransform }}
+                className="absolute transition-transform duration-500 ease-out hover:scale-105"
+                style={{
+                  transform: `rotateY(${
+                    index * rotationAngle
+                  }deg) translateZ(400px)`,
+                  transformOrigin: "center",
+                }}
               >
-                <div
-                  className="absolute flex h-[400px] w-[320px] flex-col items-center justify-between overflow-hidden rounded-md p-4 text-white"
-                  style={{
-                    transform: `rotateY(${-currDeg}deg) scale(${
-                      activeCard % CarouselItems.length === index ? 1.2 : 1
-                    })`,
-                    transition: "transform 1s",
-                    backgroundImage: `url(${item.image})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                >
-                  <div className="absolute inset-0 bg-black/20" />
-                  <button className="absolute right-4 top-4 z-20 flex items-center gap-2 rounded-full bg-white py-1 pl-6 pr-2 text-xs text-black transition-all hover:bg-opacity-90">
-                    Book Now
-                    <span className="ml-2 rounded-full bg-[#F6F6F6] p-4">
-                      <TfiArrowTopRight size={15} />
-                    </span>
-                  </button>
-                  <div className="relative z-10 mt-auto text-center">
-                    <h2 className="mb-2 text-2xl font-bold">{item.title}</h2>
-                    <div className="my-2 w-full rounded-md bg-black/30 p-3">
-                      <p className="mb-4 text-xs">{item.description}</p>
+                <div className="w-[350px] h-[350px] rounded-lg overflow-hidden shadow-lg">
+                  <div
+                    className="relative w-full h-full bg-cover bg-center flex flex-col justify-between p-4 text-white"
+                    style={{ backgroundImage: `url(${item.image})` }}
+                  >
+                    <div className="absolute inset-0 bg-black/30 rounded-lg" />
+                    <div className="relative z-10 text-center">
+                      <h2 className="text-lg font-bold">{item.title}</h2>
                     </div>
+                    <button className="relative z-10 mx-auto mt-auto flex items-center gap-2 rounded-full bg-white py-2 px-4 text-xs text-black shadow-md hover:bg-gray-100">
+                      Book Now
+                      <span className="p-2 bg-gray-100 rounded-full flex items-center justify-center">
+                        <TfiArrowTopRight size={14} />
+                      </span>
+                    </button>
                   </div>
                 </div>
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
       </div>
     </div>

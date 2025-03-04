@@ -11,46 +11,47 @@ interface TextComponentProps {
 }
 
 const ServicesSection = () => {
-  const ref = useRef<HTMLElement>(null);
-  
+  // Change the type to HTMLDivElement specifically
+  const ref = useRef<HTMLDivElement>(null);
+
   // Initialize with null and set in useEffect to avoid hydration issues
   const [deviceWidth, setDeviceWidth] = useState<boolean | null>(null);
-  
+
   useEffect(() => {
     setDeviceWidth(window.innerWidth < 756);
-    
+
     const handleResize = () => {
       setDeviceWidth(window.innerWidth < 756);
     };
-    
-    window.addEventListener('resize', handleResize);
+
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
-  
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: deviceWidth
-      ? ["start center", "start start"]
-      : ["start center", "end end"],
+      ? ["end end", "start start"]
+      : ["end end", "start start"],
   });
 
   const firstLine = "Professional detailing services for your";
   const secondLine = "most valued possessions";
 
   return (
-    <section
-      ref={ref}
-      className="container mx-auto md:mt-32 px-4 pb-5 md:pb-28 flex flex-col items-center"
-    >
+    <section className="container mx-auto md:mt-32 4xl:mt-60 px-4 pb-5 md:pb-28 flex flex-col items-center">
       {/* Main Title */}
-      <h2 className="mb-4 md:text-[100px] lg:text-[250px] text-6xl text-center text-black bebas-neue-regular">
+      <h2 className="mb-4 md:text-7xl text-4xl text-center text-black bebas-neue-regular">
         Servic<span className="stroked-text relative">es</span>
       </h2>
 
       {/* First Line */}
-      <div className="flex flex-wrap gap-4 justify-center text-center mt-2 md:mt-9">
+      <div
+        ref={ref}
+        className="flex flex-wrap gap-4 justify-center text-center mt-2 md:mt-9"
+      >
         {firstLine.split(" ").map((ele, i, arr) => {
           const totalWords = arr.length;
           const start = i / totalWords;

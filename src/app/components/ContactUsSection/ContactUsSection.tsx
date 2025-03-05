@@ -1,10 +1,7 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
-// import Image from "next/image";
-// import mapImage from "../../../../public/images/mapImage.png";
 import "./contactUsAnimation.css";
-// import CustomButton from "@/app/utils/CustomButton";
 import { useScroll, useTransform, motion, MotionValue } from "framer-motion";
 
 // Define proper types for text components
@@ -15,59 +12,22 @@ interface TextComponentProps {
 }
 
 const ContactUs = () => {
-  // const messageFormRef = useRef<HTMLDivElement>(null);
-  // const scrollToMessageForm = () => {
-  //   messageFormRef.current?.scrollIntoView({ behavior: "smooth" });
-  // };
-  interface Question {
-    id: string;
-    label: string;
-    field: keyof FormData;
-  }
-
   interface FormData {
-    nameAndEnquiry: string;
-    mobileAndRequirements: string;
-    projectDetails: string;
-    budget: string;
-    timeline: string;
+    name: string;
+    email: string;
+    phone: string;
+    requirements: string;
+    serviceDate: string;
+    concerns: string;
   }
 
-  const questions: Question[] = [
-    {
-      id: "01",
-      label: "Tell us your name and what you are enquiring about today.",
-      field: "nameAndEnquiry",
-    },
-    {
-      id: "02",
-      label: "Tell us your contact number and email?",
-      field: "mobileAndRequirements",
-    },
-    {
-      id: "03",
-      label: "Tell us more about your  requirements.",
-      field: "projectDetails",
-    },
-    {
-      id: "04",
-      label: "When do you want your service to be scheduled?",
-      field: "budget",
-    },
-    {
-      id: "05",
-      label: "What is your main concern about your request?",
-      field: "timeline",
-    },
-  ];
-
-  const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [formData, setFormData] = useState<FormData>({
-    nameAndEnquiry: "",
-    mobileAndRequirements: "",
-    projectDetails: "",
-    budget: "",
-    timeline: "",
+    name: "",
+    email: "",
+    phone: "",
+    requirements: "",
+    serviceDate: "",
+    concerns: ""
   });
 
   const ref = useRef<HTMLDivElement>(null);
@@ -102,7 +62,7 @@ const ContactUs = () => {
   outstanding. My jet has never looked better!`;
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     field: keyof FormData
   ): void => {
     setFormData((prev) => ({
@@ -111,57 +71,21 @@ const ContactUs = () => {
     }));
   };
 
-  const handleNext = (): void => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion((prev) => prev + 1);
-    }
-  };
-
-  const handlePrevious = (): void => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion((prev) => prev - 1);
-    }
-  };
-
-  const renderQuestion = (question: Question, index: number) => {
-    const isActive = index === currentQuestion;
-    const isNext = index === currentQuestion + 1;
-    const isPrevious = index === currentQuestion - 1;
-
-    return (
-      <div
-        key={question.id}
-        className={`absolute w-full transition-all duration-500 ease-in-out  ${
-          isActive
-            ? "translate-y-0 opacity-100 visible"
-            : isNext
-            ? "translate-y-32 opacity-70 visible pointer-events-none"
-            : isPrevious
-            ? "-translate-y-32 opacity-0 invisible"
-            : "translate-y-32 opacity-0 invisible"
-        }`}
-      >
-        <div className="flex items-center gap-4 my-6">
-          <span className="w-10 h-7 rounded-full border border-gray-300 flex items-center justify-center text-sm text-gray-500">
-            {question.id}
-          </span>
-          <input
-            type="text"
-            placeholder={question.label}
-            value={formData[question.field]}
-            onChange={(e) => handleInputChange(e, question.field)}
-            disabled={!isActive}
-            className={`w-full border-b pb-2 text-xs md:text-lg transition-colors bg-transparent ${
-              isActive
-                ? "border-gray-300 placeholder-gray-400 focus:outline-none focus:border-blue-500"
-                : "border-gray-200 placeholder-gray-300"
-            }`}
-            autoFocus={isActive}
-          />
-          <span className="text-gray-500 text-sm">{index + 1}/5</span>
-        </div>
-      </div>
-    );
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission logic here
+    console.log("Form submitted:", formData);
+    // You could add API call to send data or other actions
+    alert("Thank you! Your message has been sent. We'll get back to you soon.");
+    // Reset form after submission
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      requirements: "",
+      serviceDate: "",
+      concerns: ""
+    });
   };
 
   const Heading = ({ children, range, progress }: TextComponentProps) => {
@@ -214,7 +138,7 @@ const ContactUs = () => {
               );
             })}
           </div>
-          <div className="flex gap-1 my-3 md:my-7 flex-wrap  md:w-[450px]">
+          <div className="flex gap-1 my-3 md:my-7 flex-wrap md:w-[450px]">
             {secondLine.split(" ").map((ele, i, arr) => {
               const totalWords = arr.length;
               const start = i / totalWords;
@@ -230,18 +154,10 @@ const ContactUs = () => {
         </div>
         <div className="flex md:flex-row flex-col justify-between items-center md:items-start">
           <div className="md:mb-16 h-full md:w-[40%]">
-            {/* <motion.button
-                style={{ opacity: scrollYProgress }}
-                className="my-4"
-                onClick={scrollToMessageForm}
-              >
-                <CustomButton text="Send Message" />
-              </motion.button> */}
-
             {/* Contact Information Grid */}
-            <div className="flex md:flex-row flex-col flex-wrap items-center justify-center  w-full text-white gap-4">
+            <div className="flex md:flex-row flex-col flex-wrap items-center justify-center w-full text-white gap-4">
               {/* Email Section */}
-              <div className="group contactcard relative flex flex-col justify-between bg-gradient-to-br from-[#2C003E] to-[#000000] p-5  border-white rounded-3xl h-40 md:h-52 w-full md:w-[60%] lg:w-[50%] cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl">
+              <div className="group contactcard relative flex flex-col justify-between bg-gradient-to-br from-[#2C003E] to-[#000000] p-5 border-white rounded-3xl h-40 md:h-52 w-full md:w-[60%] lg:w-[50%] cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl">
                 <div className="contactcard absolute inset-0 bg-white opacity-10 rounded-3xl transition-opacity duration-300 group-hover:opacity-20"></div>
                 <div>
                   <div className="w-12 h-12 relative rounded-full flex items-center justify-center">
@@ -293,74 +209,96 @@ const ContactUs = () => {
                   </p>
                 </div>
               </div>
-
-              {/* Map Section */}
-              {/* <div className="group relative bg-gradient-to-br from-[#2C003E] to-[#000000] p-5 lg:p-8 rounded-3xl border-dashed border-t border-l h-52 md:h-40 lg:h-64 w-full md:w-[60%] lg:w-[48%] cursor-pointer transition-all duration-300">
-                <div className="absolute inset-0 bg-white opacity-10 rounded-3xl transition-opacity duration-300 group-hover:opacity-20"></div>
-                <div className="flex items-start"> */}
-              {/* Map Image (Uncomment if needed)
-      <Image src={mapImage} alt="Location Map" fill className="w-full object-cover rounded-lg" />
-      */}
-              {/* </div> */}
-              {/* </div> */}
             </div>
-
-            {/* Header Section */}
           </div>
-          <div className="md:w-1/2 flex flex-col  items-end h-full md:mt-0 mt-10">
-            <div
-              // ref={messageFormRef}
-              className="flex flex-col md:flex-row gap-12 w-full bg-[#F7F7F7] p-5 lg:pb-20 rounded-xl"
-            >
-              {/* Left Section */}
-              {/* <div className="w-full lg:w-1/2">
-          <h1 className="text-5xl font-bold mb-4 text-black">
-            Send us a
-            <span className="block text-gray-400 font-normal">message</span>
-          </h1>
-
-          <p className="text-gray-500 mt-6 italic leading-relaxed lg:w-1/2">
-            Bravo Zulu Services exceeded my expectations with their aircraft
-            detailing. The attention to detail and professionalism were
-            outstanding. My jet has never looked better!
-          </p>
-        </div> */}
-
-              {/* Right Section - Form */}
-              <div className="w-full relative">
-                <div className="relative h-[300px]">
-                  {questions.map((question, index) =>
-                    renderQuestion(question, index)
-                  )}
+          
+          <div className="md:w-1/2 flex flex-col items-end h-full md:mt-0 mt-10">
+            <div className="flex flex-col md:flex-row w-full bg-[#F7F7F7] p-6 rounded-xl">
+              {/* Simplified Form */}
+              <form onSubmit={handleSubmit} className="w-full space-y-4">
+                <div className="space-y-4">
+                  <div className="form-group">
+                    <label className="text-sm text-black mb-1 block">Your Name</label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => handleInputChange(e, "name")}
+                      placeholder="Tell us your name"
+                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="form-group">
+                      <label className="text-sm text-black mb-1 block">Email Address</label>
+                      <input
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => handleInputChange(e, "email")}
+                        placeholder="Your email address"
+                        className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                        required
+                      />
+                    </div>
+                    
+                    <div className="form-group">
+                      <label className="text-sm text-black mb-1 block">Phone Number</label>
+                      <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => handleInputChange(e, "phone")}
+                        placeholder="Your contact number"
+                        className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                        required
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="form-group">
+                    <label className="text-sm text-black mb-1 block">Service Requirements</label>
+                    <textarea
+                      value={formData.requirements}
+                      onChange={(e) => handleInputChange(e, "requirements")}
+                      placeholder="Tell us about your requirements"
+                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                      rows={3}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label className="text-sm text-black mb-1 block">Preferred Service Date</label>
+                    <input
+                      type="text"
+                      value={formData.serviceDate}
+                      onChange={(e) => handleInputChange(e, "serviceDate")}
+                      placeholder="When do you want your service to be scheduled?"
+                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                    />
+                  </div>
+                  
+                  {/* <div className="form-group">
+                    <label className="text-sm text-gray-600 mb-1 block">Any Concerns?</label>
+                    <input
+                      type="text"
+                      value={formData.concerns}
+                      onChange={(e) => handleInputChange(e, "concerns")}
+                      placeholder="What is your main concern about your request?"
+                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                    />
+                  </div> */}
                 </div>
-
-                {/* Navigation Buttons */}
-                <div className="flex justify-between items-center">
+                
+                <div className="pt-4">
                   <button
-                    onClick={handlePrevious}
-                    disabled={currentQuestion === 0}
-                    className={`px-6 py-2 rounded-full border border-gray-300 text-sm transition-colors duration-200 ${
-                      currentQuestion === 0
-                        ? "text-gray-300 cursor-not-allowed"
-                        : "text-gray-600 hover:bg-gray-50 hover:border-black border-2 hover:text-black"
-                    }`}
+                    type="submit"
+                    className="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-[#2C003E] to-black text-white rounded-full hover:shadow-lg transition-all duration-300 hover:scale-105"
                   >
-                    Previous
-                  </button>
-
-                  <button
-                    onClick={handleNext}
-                    disabled={currentQuestion === questions.length - 1}
-                    className={`px-6 py-2 rounded-full border border-gray-300 text-sm transition-colors duration-200 ${
-                      currentQuestion === questions.length - 1
-                        ? "text-gray-300 cursor-not-allowed"
-                        : "text-gray-600 hover:bg-gray-50 hover:border-black border-2 hover:text-black"
-                    }`}
-                  >
-                    Next
+                    Submit Request
                   </button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>

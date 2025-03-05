@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { LogIn, LogOut, Menu, X, Phone } from 'lucide-react';
-import './button.css';
-import './navbar.css'; // Import the new CSS file
-import { useRouter, usePathname } from 'next/navigation';
-import { apiService } from '../../APIServices/apiService';
-import { useUser } from '../../contexts/UserContext';
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { LogIn, LogOut, Menu, X, Phone } from "lucide-react";
+import "./button.css";
+import "./navbar.css"; // Import the new CSS file
+import { useRouter, usePathname } from "next/navigation";
+import { apiService } from "../../APIServices/apiService";
+import { useUser } from "../../contexts/UserContext";
 
 const NavigationBar = () => {
   const router = useRouter();
@@ -26,8 +26,8 @@ const NavigationBar = () => {
       setPrevScrollPos(currentScrollPos);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [prevScrollPos]);
 
   useEffect(() => {
@@ -46,14 +46,14 @@ const NavigationBar = () => {
     checkAuth();
 
     // Listen for storage events to detect login/logout in other tabs
-    window.addEventListener('storage', checkAuth);
+    window.addEventListener("storage", checkAuth);
 
     // Custom event listener for login/logout in same tab
-    window.addEventListener('authStateChange', checkAuth);
+    window.addEventListener("authStateChange", checkAuth);
 
     return () => {
-      window.removeEventListener('storage', checkAuth);
-      window.removeEventListener('authStateChange', checkAuth);
+      window.removeEventListener("storage", checkAuth);
+      window.removeEventListener("authStateChange", checkAuth);
     };
   }, [clearUser]);
 
@@ -64,7 +64,7 @@ const NavigationBar = () => {
   };
 
   const handleLogin = () => {
-    router.push('/login');
+    router.push("/login");
   };
 
   // Function to check if the link is active
@@ -75,11 +75,11 @@ const NavigationBar = () => {
   return (
     <nav
       className={`fixed left-0 right-0 top-0 z-[100] w-screen transition-all duration-300 ${
-        visible ? 'translate-y-0' : '-translate-y-full'
+        visible ? "translate-y-0" : "-translate-y-full"
       } ${
         prevScrollPos > 10
-          ? 'bg-[rgb(1,10,16)] backdrop-blur-sm'
-          : 'bg-transparent'
+          ? "bg-[rgb(1,10,16)] backdrop-blur-sm"
+          : "bg-transparent"
       }`}
     >
       <div
@@ -90,7 +90,11 @@ const NavigationBar = () => {
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden p-2 text-white hover:text-white/80"
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
           </button>
           <Link href="/" className="relative h-10 w-40">
             <Image
@@ -105,37 +109,33 @@ const NavigationBar = () => {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8">
-          <Link 
-            href="/services" 
-            className={`nav-link ${isActive('/services') ? 'active' : ''}`}
+          <a
+            href="#services"
+            className={`nav-link ${isActive("/services") ? "active" : ""}`}
           >
             Services
-          </Link>
-          <Link 
-            href="/Quote" 
-            className={`nav-link ${isActive('/Quote') ? 'active' : ''}`}
+          </a>
+          <Link
+            href="/Quote"
+            className={`nav-link ${isActive("/Quote") ? "active" : ""}`}
           >
             Quote
           </Link>
-          <Link 
-            href="/contact" 
-            className={`nav-link ${isActive('/contact') ? 'active' : ''}`}
+          <Link
+            href="/contact"
+            className={`nav-link ${isActive("/contact") ? "active" : ""}`}
           >
             Contact
           </Link>
-          <a
-            href="tel:559-425-8620"
-            className="phone-link"
-          >
+          <a href="tel:559-425-8620" className="phone-link">
             <Phone className="w-4 h-4 mr-2" />
-            
           </a>
 
           {isAuthenticated ? (
             <div className="flex items-center gap-4">
               <Link
                 href="/dashboard"
-                className={`nav-link ${isActive('/dashboard') ? 'active' : ''}`}
+                className={`nav-link ${isActive("/dashboard") ? "active" : ""}`}
               >
                 Dashboard
               </Link>
@@ -196,31 +196,39 @@ const NavigationBar = () => {
       {isMobileMenuOpen && (
         <div className="md:hidden bg-[rgb(1,10,16)] shadow-lg">
           <div className="px-8 py-4 space-y-1">
-            <Link 
-              href="/services" 
-              className={`mobile-nav-link ${isActive('/services') ? 'active' : ''}`}
+            <a
+              href="#services"
+              className={`mobile-nav-link ${
+                isActive("/services") ? "active" : ""
+              }`}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Services
-            </Link>
-            <Link 
-              href="/Quote" 
-              className={`mobile-nav-link ${isActive('/Quote') ? 'active' : ''}`}
+            </a>
+            <Link
+              href="/Quote"
+              className={`mobile-nav-link ${
+                isActive("/Quote") ? "active" : ""
+              }`}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Quote
             </Link>
-            <Link 
-              href="/contact" 
-              className={`mobile-nav-link ${isActive('/contact') ? 'active' : ''}`}
+            <Link
+              href="/contact"
+              className={`mobile-nav-link ${
+                isActive("/contact") ? "active" : ""
+              }`}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Contact
             </Link>
             {isAuthenticated && (
-              <Link 
-                href="/dashboard" 
-                className={`mobile-nav-link ${isActive('/dashboard') ? 'active' : ''}`}
+              <Link
+                href="/dashboard"
+                className={`mobile-nav-link ${
+                  isActive("/dashboard") ? "active" : ""
+                }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Dashboard

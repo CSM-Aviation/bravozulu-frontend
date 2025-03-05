@@ -38,7 +38,7 @@ const HeroSection = () => {
           onPlay={() => setVideoLoaded(true)}
           preload="auto"
         >
-          <source src="/videos/BgLightening.mp4" type="video/mp4" />
+          <source src="/videos/VideoBG2.mp4" type="video/mp4" />
           {/* <source src="/videos/BgLightening.gif" type="video/gif" /> */}
         </video>
       </div>
@@ -61,7 +61,7 @@ const HeroSection = () => {
             alt="Aircraft front view"
             width={1200}
             height={400}
-            className="h-auto w-[90%] ml-[13%] md:ml-[7%] lg:ml-[2.75%] md:w-1/2 max-h-[40vh] object-contain  "
+            className="h-auto w-[90%] md:ml-1 md:w-1/2 max-h-[40vh] object-contain  "
             priority
           />
         </>

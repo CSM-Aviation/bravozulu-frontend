@@ -7,11 +7,11 @@ export default function Footer() {
 
   return (
     <footer className="bg-black py-[23px] relative overflow-hidden h-auto">
-      {/* Added max-w-7xl to limit content width and mx-auto to center it */}
-      <div className="max-w-7xl mx-auto px-8 md:px-14 py-6">
+      {/* Updated container to match contact section alignment */}
+      <div className="container mx-auto px-4 md:px-16 py-6">
         <div className="flex lg:flex-row flex-col justify-center lg:justify-between items-center">
           {/* Company Info */}
-          <div className="space-y-8 flex flex-col items-center justify-center">
+          <div className="space-y-8 flex flex-col items-center lg:items-start justify-center">
             <Link href="/">
               <Image
                 src="/footerlogo2.png"
@@ -27,7 +27,7 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Removed the excessive gap-32 and replaced with gap-16 */}
+          {/* Updated spacing for better alignment */}
           <div className="flex md:flex-row flex-col items-center md:items-start flex-wrap justify-center md:justify-end gap-10 md:gap-16 z-20 md:mt-12 lg:mt-0 mt-10">
             {/* Quick Links */}
             <div className="order-1">

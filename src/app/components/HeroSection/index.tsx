@@ -61,7 +61,7 @@ const HeroSection = () => {
             alt="Aircraft front view"
             width={1200}
             height={400}
-            className="h-auto w-[90%] ml-[2.75%] md:w-1/2 max-h-[40vh] object-contain  "
+            className="h-auto w-[90%] ml-[13%] md:ml-[7%] lg:ml-[2.75%] md:w-1/2 max-h-[40vh] object-contain  "
             priority
           />
         </>

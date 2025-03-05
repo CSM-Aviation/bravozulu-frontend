@@ -20,6 +20,7 @@ export const CarouselItems = [
   },
 ];
 
+
 export const positions = [
   { x: 0, z: 30, scale: 1, opacity: 1 }, // Center
   { x: "75%", z: 20, scale: 0.85, opacity: 1 }, // Right

@@ -27,7 +27,7 @@ const ContactUs = () => {
     phone: "",
     requirements: "",
     serviceDate: "",
-    concerns: ""
+    concerns: "",
   });
 
   const ref = useRef<HTMLDivElement>(null);
@@ -52,7 +52,7 @@ const ContactUs = () => {
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: deviceWidth
-      ? ["end end", "start end"]
+      ? ["start center", "center center"]
       : ["start center", "center center"],
   });
 
@@ -84,7 +84,7 @@ const ContactUs = () => {
       phone: "",
       requirements: "",
       serviceDate: "",
-      concerns: ""
+      concerns: "",
     });
   };
 
@@ -120,8 +120,11 @@ const ContactUs = () => {
         Cont<span className="stroked-text">act</span>
       </h2>
       <div className="mt-9 w-full">
-        <div ref={ref} className="flex justify-between md:flex-row flex-col">
-          <div className="flex justify-center gap-4">
+        <div
+          ref={ref}
+          className="flex justify-between gap-16 md:flex-row flex-col"
+        >
+          <div className="flex justify-center items-start lg:items-start md:items-center gap-4">
             {firstLine.split(" ").map((ele, i, arr) => {
               const totalWords = arr.length;
               const start = i / totalWords;
@@ -152,12 +155,12 @@ const ContactUs = () => {
             })}
           </div>
         </div>
-        <div className="flex md:flex-row flex-col justify-between items-center md:items-start">
-          <div className="md:mb-16 h-full md:w-[40%]">
+        <div className="flex lg:flex-row flex-col justify-between items-center md:items-start">
+          <div className="md:mb-16 h-full w-full lg:w-[40%]">
             {/* Contact Information Grid */}
             <div className="flex md:flex-row flex-col flex-wrap items-center justify-center w-full text-white gap-4">
               {/* Email Section */}
-              <div className="group contactcard relative flex flex-col justify-between bg-gradient-to-br from-[#2C003E] to-[#000000] p-5 border-white rounded-3xl h-40 md:h-52 w-full md:w-[60%] lg:w-[50%] cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl">
+              <div className="group contactcard relative flex flex-col justify-between bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] p-5 border-white rounded-3xl h-40 md:h-52 w-full md:w-[60%] lg:w-[50%] cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl">
                 <div className="contactcard absolute inset-0 bg-white opacity-10 rounded-3xl transition-opacity duration-300 group-hover:opacity-20"></div>
                 <div>
                   <div className="w-12 h-12 relative rounded-full flex items-center justify-center">
@@ -167,14 +170,14 @@ const ContactUs = () => {
                 </div>
                 <div>
                   <h3 className="mb-2 contactText">E-mail</h3>
-                  <p className="lg:text-lg text-sm text-semibold contactText">
+                  <p className="lg:text-sm text-base text-semibold contactText">
                     service@mybravozulu.com
                   </p>
                 </div>
               </div>
 
               {/* Phone Section */}
-              <div className="group contactcard relative flex flex-col justify-between bg-gradient-to-br from-[#2C003E] to-[#000000] p-5 rounded-3xl h-40 md:h-52 w-full md:w-[60%] lg:w-[45%] cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl">
+              <div className="group contactcard relative flex flex-col justify-between bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] p-5 rounded-3xl h-40 md:h-52 w-full md:w-[60%] lg:w-[45%] cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl">
                 <div className="absolute inset-0 bg-white opacity-10 rounded-3xl transition-opacity duration-300 group-hover:opacity-20"></div>
                 <div>
                   <div className="w-12 h-12 relative rounded-full flex items-center justify-center">
@@ -191,7 +194,7 @@ const ContactUs = () => {
               </div>
 
               {/* Office Section */}
-              <div className="group contactcard flex-1 relative flex flex-col justify-between bg-gradient-to-br from-[#2C003E] to-[#000000] p-5 rounded-3xl h-40 md:h-52 w-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl">
+              <div className="group contactcard flex-1 relative flex flex-col justify-between bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] p-5 rounded-3xl h-40 md:h-52 w-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl">
                 <div className="absolute inset-0 bg-white opacity-10 rounded-3xl transition-opacity duration-300 group-hover:opacity-20"></div>
                 <div>
                   <div className="w-12 h-12 relative rounded-full flex items-center justify-center">
@@ -211,14 +214,16 @@ const ContactUs = () => {
               </div>
             </div>
           </div>
-          
-          <div className="md:w-1/2 flex flex-col items-end h-full md:mt-0 mt-10">
-            <div className="flex flex-col md:flex-row w-full bg-[#F7F7F7] p-6 rounded-xl">
+
+          <div className="lg:w-1/2 w-full flex flex-col items-end h-full md:mt-0 mt-10">
+            <div className="flex flex-col md:flex-row w-full bg-[#F7F7F7] px-6 py-3 rounded-xl">
               {/* Simplified Form */}
               <form onSubmit={handleSubmit} className="w-full space-y-4">
                 <div className="space-y-4">
                   <div className="form-group">
-                    <label className="text-sm text-black mb-1 block">Your Name</label>
+                    <label className="text-sm text-black mb-1 block">
+                      Your Name
+                    </label>
                     <input
                       type="text"
                       value={formData.name}
@@ -228,10 +233,12 @@ const ContactUs = () => {
                       required
                     />
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="form-group">
-                      <label className="text-sm text-black mb-1 block">Email Address</label>
+                      <label className="text-sm text-black mb-1 block">
+                        Email Address
+                      </label>
                       <input
                         type="email"
                         value={formData.email}
@@ -241,9 +248,11 @@ const ContactUs = () => {
                         required
                       />
                     </div>
-                    
+
                     <div className="form-group">
-                      <label className="text-sm text-black mb-1 block">Phone Number</label>
+                      <label className="text-sm text-black mb-1 block">
+                        Phone Number
+                      </label>
                       <input
                         type="tel"
                         value={formData.phone}
@@ -254,9 +263,11 @@ const ContactUs = () => {
                       />
                     </div>
                   </div>
-                  
+
                   <div className="form-group">
-                    <label className="text-sm text-black mb-1 block">Service Requirements</label>
+                    <label className="text-sm text-black mb-1 block">
+                      Service Requirements
+                    </label>
                     <textarea
                       value={formData.requirements}
                       onChange={(e) => handleInputChange(e, "requirements")}
@@ -266,9 +277,11 @@ const ContactUs = () => {
                       required
                     />
                   </div>
-                  
+
                   <div className="form-group">
-                    <label className="text-sm text-black mb-1 block">Preferred Service Date</label>
+                    <label className="text-sm text-black mb-1 block">
+                      Preferred Service Date
+                    </label>
                     <input
                       type="text"
                       value={formData.serviceDate}
@@ -277,7 +290,7 @@ const ContactUs = () => {
                       className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
                     />
                   </div>
-                  
+
                   {/* <div className="form-group">
                     <label className="text-sm text-gray-600 mb-1 block">Any Concerns?</label>
                     <input
@@ -289,11 +302,11 @@ const ContactUs = () => {
                     />
                   </div> */}
                 </div>
-                
+
                 <div className="pt-4">
                   <button
                     type="submit"
-                    className="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-[#2C003E] to-black text-white rounded-full hover:shadow-lg transition-all duration-300 hover:scale-105"
+                    className="w-full md:w-auto px-8 py-3 bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] text-white rounded-full hover:shadow-lg transition-all duration-300 hover:scale-105"
                   >
                     Submit Request
                   </button>

@@ -6,6 +6,9 @@
   --background: #f9f9f9;
   --foreground: #171717;
 }
+html {
+  scroll-behavior: smooth;
+}
 
 /* to enable dark mode */
 /* @media (prefers-color-scheme: dark) {
@@ -19,6 +22,10 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+#services{
+  scroll-behavior: smooth;
+  scroll-margin: 100px;
 }
 
 .test {
@@ -54,9 +61,7 @@ body {
   color: #000;
   background-color: #fff;
   overflow: hidden; /* so the “arcs” stay within the button’s shape */
-  transition:
-    background-color 0.3s,
-    color 0.3s;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .ripple-btn:hover {
@@ -68,7 +73,7 @@ body {
 
 /* bottom arc */
 .ripple-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0; /* top:0, right:0, bottom:0, left:0 */
   border-radius: inherit; /* match the button's roundness */
@@ -89,7 +94,7 @@ body {
 
 /* top arc */
 .ripple-btn::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;

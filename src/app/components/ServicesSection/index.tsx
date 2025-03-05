@@ -41,7 +41,10 @@ const ServicesSection = () => {
   const secondLine = "most valued possessions";
 
   return (
-    <section className="container mx-auto md:mt-32 4xl:mt-60 px-4 pb-5 md:pb-28 flex flex-col items-center">
+    <section
+      id="services"
+      className="container mx-auto md:mt-32 4xl:mt-60 px-4 pb-5 md:pb-28 flex flex-col items-center"
+    >
       {/* Main Title */}
       <h2 className="mb-4 md:text-7xl text-4xl text-center text-black bebas-neue-regular">
         Servic<span className="stroked-text relative">es</span>

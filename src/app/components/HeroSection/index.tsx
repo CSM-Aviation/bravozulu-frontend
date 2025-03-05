@@ -39,7 +39,7 @@ const HeroSection = () => {
           preload="auto"
         >
           <source src="/videos/BgLightening.mp4" type="video/mp4" />
-          <source src="/videos/BgLightening.gif" type="video/gif" />
+          {/* <source src="/videos/BgLightening.gif" type="video/gif" /> */}
         </video>
       </div>
 
@@ -61,7 +61,7 @@ const HeroSection = () => {
             alt="Aircraft front view"
             width={1200}
             height={400}
-            className="h-auto w-[90%] md:w-1/2 translate-x-4 md:translate-x-14 translate-y-[16%] max-h-[40vh] object-contain"
+            className="h-auto w-[90%] ml-[2.75%] md:w-1/2 max-h-[40vh] object-contain  "
             priority
           />
         </>
@@ -83,13 +83,11 @@ const HeroSection = () => {
             Perfection is in the Detail
           </h1>
           <p className="mb-8 max-w-[780px] text-center text-xs uppercase tracking-wide text-white/90 md:text-base">
-            From single engine Cessna&apos;s to Gulfstreams and everything in
-            between, we take care of your aircraft&apos;s detailing needs from
-            start to finish, inside and out.
+            FROM SINGLE ENGINE CESSNA&apos;S TO GULFSTREAMS AND EVERYTHING IN
+            BETWEEN, WE TAKE CARE OF YOUR AIRCRAFT&apos;S DETAILING NEEDS FROM
+            START TO FINISH, INSIDE AND OUT.
           </p>
-          <div className="translate-x-5">
-            <CustomButton text="Request Quote" />
-          </div>
+          <CustomButton text="Request Quote" />
         </motion.div>
       </motion.div>
     </section>

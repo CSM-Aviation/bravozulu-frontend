@@ -3,10 +3,10 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default function Footer() {
-  // const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-black py-[23px] relative overflow-hidden lg:h-auto h-auto md:h-[78vh]">
+    <footer className="bg-black py-[23px] relative overflow-hidden h-auto">
       {/* Added max-w-7xl to limit content width and mx-auto to center it */}
       <div className="max-w-7xl mx-auto px-8 md:px-14 py-6">
         <div className="flex lg:flex-row flex-col justify-center lg:justify-between items-center">
@@ -130,16 +130,16 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        {/* <div className="border-t border-gray-800 mt-12 pt-8">
+        <div className="border-t border-gray-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm">
+            <p className="text-sm text-white opacity-70">
               ©️ {currentYear} Bravo Zulu Services Inc. All rights reserved.
             </p>
-            <p className="text-sm mt-2 md:mt-0">
-            &quot;A job well done&quot; in Naval terms
+            <p className="text-sm mt-2 md:mt-0 text-white opacity-70">
+              &quot;A job well done&quot; in Naval terms
             </p>
           </div>
-        </div> */}
+        </div>
       </div>
       <div className="pointer-events-none lg:block hidden absolute lg:-bottom-[36%] md:-bottom-[14%] -bottom-[5%] left-1/2 -translate-x-1/2 text-[47px] md:text-[160px] lg:text-[180px] whitespace-nowrap font-semibold">
         <h1 className="text-white opacity-[20%] bebas-neue-regular tracking-wide uppercase">

@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { TfiArrowTopRight } from "react-icons/tfi";
-import { CarouselItems, positions } from "./constants";
+import { CarouselItems } from "./constants";
 
 const MobileVersion = () => {
-  const [rotation, setRotation] = useState(0);
+
   const totalItems = CarouselItems.length;
   const [isVisible, setIsVisible] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);

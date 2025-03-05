@@ -11,28 +11,29 @@ const MobileVersion = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [turn, setTurn] = useState(0);
 
-  // Adjusted carousel radius for better spacing
+  // Reduce carousel radius for mobile to keep all items in view
   const getCarouselRadius = () => {
     if (typeof window !== "undefined") {
-      if (window.innerWidth < 640) return 140; // Mobile
-      if (window.innerWidth < 1024) return 180; // Tablet
+      if (window.innerWidth < 640) return 100; // Smaller for mobile
+      if (window.innerWidth < 1024) return 160; // Adjusted for tablet
     }
-    return 400; // Desktop
+    return 400; // Desktop stays the same
   };
 
+  // Adjust perspective for better 3D effect
   const getPerspective = () => {
     if (typeof window !== "undefined") {
-      if (window.innerWidth < 640) return "900px"; // Mobile
-      if (window.innerWidth < 1024) return "1100px"; // Tablet
+      if (window.innerWidth < 640) return "500px"; // Reduced for mobile
+      if (window.innerWidth < 1024) return "800px"; // Adjusted for tablet
     }
-    return "1500px"; // Desktop
+    return "1500px"; // Desktop stays the same
   };
 
   const [carouselRadius, setCarouselRadius] = useState(getCarouselRadius());
   const [perspective, setPerspective] = useState(getPerspective());
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | undefined;
+    let interval: string | number | NodeJS.Timeout | undefined;
 
     const handleVisibilityChange = () => {
       setIsVisible(!document.hidden);
@@ -63,11 +64,12 @@ const MobileVersion = () => {
   }, [rotationAngle, isVisible]);
 
   return (
-    <div className="flex flex-col items-center md:mt-8 justify-center">
+    <div className="flex flex-col items-center justify-center my-6">
+      {/* Increased container height to accommodate carousel */}
       <div className="relative h-[400px] w-full flex items-center justify-center">
         <div
           style={{ perspective }}
-          className="relative w-full h-[400px] max-w-[450px] sm:max-w-[550px] md:max-w-[650px]"
+          className="relative w-full h-[350px] max-w-[350px] sm:max-w-[550px] md:max-w-[650px]"
         >
           <div
             className="absolute inset-0 w-full h-full"
@@ -94,18 +96,19 @@ const MobileVersion = () => {
                     turn === index ? "hover:scale-105" : "pointer-events-none"
                   } will-change-transform`}
                 >
-                  <div className="w-[150px] h-[240px] sm:w-[200px] sm:h-[300px] md:w-[250px] md:h-[350px] lg:w-[300px] rounded-lg overflow-hidden shadow-lg">
+                  {/* Adjusted card dimensions to ensure all cards are fully visible */}
+                  <div className="w-[200px] h-[300px] rounded-lg overflow-hidden shadow-lg">
                     <div
                       className="relative w-full h-full bg-cover bg-center flex flex-col justify-between p-4 text-white"
                       style={{ backgroundImage: `url(${item.image})` }}
                     >
                       <div className="absolute inset-0 bg-black/30 rounded-lg" />
                       <div className="relative z-10 text-center">
-                        <h2 className="text-sm sm:text-md md:text-lg font-bold">
+                        <h2 className="text-lg font-bold">
                           {item.title}
                         </h2>
                       </div>
-                      <button className="relative z-10 mx-auto mt-auto flex items-center gap-1 rounded-full bg-white py-1 px-3 md:px-8 text-[9px] sm:text-xs text-black shadow-md hover:bg-gray-100">
+                      <button className="relative z-10 mx-auto mt-auto flex items-center gap-1 rounded-full bg-white py-1 px-3 text-xs text-black shadow-md hover:bg-gray-100">
                         Get Quote
                         <span className="p-1.5 bg-gray-100 rounded-full flex items-center justify-center">
                           <TfiArrowTopRight size={12} />

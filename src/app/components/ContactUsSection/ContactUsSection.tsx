@@ -3,6 +3,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
 import "./contactUsAnimation.css";
 import { useScroll, useTransform, motion, MotionValue } from "framer-motion";
+import CustomButton2 from "@/app/utils/CustomButton2";
 
 // Define proper types for text components
 interface TextComponentProps {
@@ -303,13 +304,8 @@ const ContactUs = () => {
                   </div> */}
                 </div>
 
-                <div className="pt-4">
-                  <button
-                    type="submit"
-                    className="w-full md:w-auto px-8 py-3 bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] text-white rounded-full hover:shadow-lg transition-all duration-300 hover:scale-105"
-                  >
-                    Submit Request
-                  </button>
+                <div className="  text-center  pt-4">
+                <CustomButton2 text=" Send Message" />
                 </div>
               </form>
             </div>

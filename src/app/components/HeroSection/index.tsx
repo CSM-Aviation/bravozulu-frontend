@@ -38,7 +38,7 @@ const HeroSection = () => {
           onPlay={() => setVideoLoaded(true)}
           preload="auto"
         >
-          <source src="/videos/VideoBG2.mp4" type="video/mp4" />
+          <source src="/videos/VideoBG3.mp4" type="video/mp4" />
           {/* <source src="/videos/BgLightening.gif" type="video/gif" /> */}
         </video>
       </div>

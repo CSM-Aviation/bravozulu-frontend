@@ -1,124 +1,111 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { TfiArrowTopRight } from "react-icons/tfi";
 import { CarouselItems } from "./constants";
+import Link from "next/link";
 
-const MobileVersion = () => {
+const ServicesCarousel = () => {
   const [rotation, setRotation] = useState(0);
   const totalItems = CarouselItems.length;
-  const rotationAngle = 360 / totalItems;
+  const rotationAngle = useMemo(() => 360 / totalItems, [totalItems]);
   const [isVisible, setIsVisible] = useState(true);
-  const [turn, setTurn] = useState(0);
+  const [translateZ, setTranslateZ] = useState<number | null>(null);
+  useEffect(() => {
+    const updateTranslateZ = () => {
+      const width = window.innerWidth;
+      if (width < 768) setTranslateZ(120);
+      else if (width < 1024) setTranslateZ(300);
+      else setTranslateZ(400);
+    };
 
-  // Reduce carousel radius for mobile to keep all items in view
-  const getCarouselRadius = () => {
-    if (typeof window !== "undefined") {
-      if (window.innerWidth < 640) return 100; // Smaller for mobile
-      if (window.innerWidth < 1024) return 160; // Adjusted for tablet
-    }
-    return 400; // Desktop stays the same
-  };
+    updateTranslateZ();
+    window.addEventListener("resize", updateTranslateZ);
 
-  // Adjust perspective for better 3D effect
-  const getPerspective = () => {
-    if (typeof window !== "undefined") {
-      if (window.innerWidth < 640) return "500px"; // Reduced for mobile
-      if (window.innerWidth < 1024) return "800px"; // Adjusted for tablet
-    }
-    return "1500px"; // Desktop stays the same
-  };
-
-  const [carouselRadius, setCarouselRadius] = useState(getCarouselRadius());
-  const [perspective, setPerspective] = useState(getPerspective());
+    return () => window.removeEventListener("resize", updateTranslateZ);
+  }, []);
 
   useEffect(() => {
-    let interval: string | number | NodeJS.Timeout | undefined;
-
     const handleVisibilityChange = () => {
       setIsVisible(!document.hidden);
     };
 
-    const handleResize = () => {
-      setCarouselRadius(getCarouselRadius());
-      setPerspective(getPerspective());
-    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    if (typeof document !== "undefined") {
-      document.addEventListener("visibilitychange", handleVisibilityChange);
-      window.addEventListener("resize", handleResize);
-    }
-
-    if (isVisible) {
-      interval = setInterval(() => {
-        setRotation((prev) => prev - rotationAngle);
-        setTurn((prev) => (prev + 1) % totalItems);
-      }, 5000);
-    }
-
-    return () => {
-      clearInterval(interval);
+    return () =>
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [rotationAngle, isVisible]);
+  }, []);
+
+  const rotateCarousel = useCallback(() => {
+    setRotation((prev) => prev - rotationAngle);
+  }, [rotationAngle]);
+
+  useEffect(() => {
+    if (!isVisible) return;
+
+    const interval = setInterval(rotateCarousel, 5000);
+    return () => clearInterval(interval);
+  }, [isVisible, rotateCarousel]);
+
+  if (translateZ === null) return null;
 
   return (
-    <div className="flex flex-col items-center justify-center my-6">
-      {/* Increased container height to accommodate carousel */}
+    <div className="flex flex-col items-center justify-center">
       <div className="relative h-[400px] w-full flex items-center justify-center">
         <div
-          style={{ perspective }}
-          className="relative w-full h-[350px] max-w-[350px] sm:max-w-[550px] md:max-w-[650px]"
+          style={{ perspective: "5000px" }}
+          className="relative w-[400px] h-[400px]"
         >
           <div
             className="absolute inset-0 w-full h-full"
             style={{
-              transform: `rotateY(${rotation}deg)`,
               transformStyle: "preserve-3d",
               transition: "transform 2s ease-in-out",
               willChange: "transform",
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transformOrigin: "center",
+              transform: `translate(-50%, -50%) rotateY(${rotation}deg)`,
             }}
           >
-            {CarouselItems.map((item, index) => (
-              <div
-                key={index}
-                className="absolute w-full h-full flex items-center justify-center"
-                style={{
-                  transform: `rotateY(${
-                    index * rotationAngle
-                  }deg) translateZ(${carouselRadius}px)`,
-                  transformOrigin: "50% 50%",
-                }}
-              >
+            {CarouselItems.map((item, index) => {
+              const itemRotation = index * rotationAngle;
+              const transformStyle = `rotateY(${itemRotation}deg) translateZ(${translateZ}px)`;
+
+              return (
                 <div
-                  className={`transition-transform duration-500 ease-out ${
-                    turn === index ? "hover:scale-105" : "pointer-events-none"
-                  } will-change-transform`}
+                  key={index}
+                  className="absolute transition-transform duration-500 ease-out hover:scale-105"
+                  style={{
+                    transformOrigin: "center",
+                    top: "50%",
+                    left: "50%",
+                    transform: `translate(-50%, -50%) ${transformStyle}`,
+                  }}
                 >
-                  {/* Adjusted card dimensions to ensure all cards are fully visible */}
-                  <div className="w-[200px] h-[300px] rounded-lg overflow-hidden shadow-lg">
+                  <div className="w-[200px] h-[340px] md:w-[260px] md:h-[350px] lg:w-[300px] lg:h-[400px] rounded-lg overflow-hidden shadow-lg">
                     <div
                       className="relative w-full h-full bg-cover bg-center flex flex-col justify-between p-4 text-white"
                       style={{ backgroundImage: `url(${item.image})` }}
                     >
                       <div className="absolute inset-0 bg-black/30 rounded-lg" />
                       <div className="relative z-10 text-center">
-                        <h2 className="text-lg font-bold">
-                          {item.title}
-                        </h2>
+                        <h2 className="text-lg font-bold">{item.title}</h2>
                       </div>
-                      <button className="relative z-10 mx-auto mt-auto flex items-center gap-1 rounded-full bg-white py-1 px-3 text-xs text-black shadow-md hover:bg-gray-100">
-                        Get Quote
-                        <span className="p-1.5 bg-gray-100 rounded-full flex items-center justify-center">
-                          <TfiArrowTopRight size={12} />
-                        </span>
-                      </button>
+                      <Link href="/Quote" className="block w-full">
+                      <button className="relative z-10 mt-auto flex items-center justify-between gap-4 rounded-full bg-white py-3 px-6 text-base font-medium text-black shadow-md w-full max-w-[200px] mx-auto transition-all duration-300 hover:bg-black hover:text-white group">
+  Get Quote
+  <span className="p-2 bg-gray-100 rounded-full flex items-center justify-center transition-all duration-300 group-hover:bg-white group-hover:text-black">
+    <TfiArrowTopRight size={14} />
+  </span>
+</button>
+                      </Link>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
@@ -126,4 +113,4 @@ const MobileVersion = () => {
   );
 };
 
-export default MobileVersion;
+export default ServicesCarousel;

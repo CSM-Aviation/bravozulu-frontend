@@ -5,7 +5,7 @@ const CustomButton = ({ text }: { text: string }) => {
   return (
     <>
       <a
-        href="#contact-form"
+        href="/Quote"
         className="btn w-inline-block btn-border-anim stroke-gr custom-a bg-[#F6F0F0] scale-75 md:scale-100"
       >
         <h1 className="md:font-semibold text-black">{text}</h1>

@@ -10,6 +10,7 @@ interface TextComponentProps {
   children: React.ReactNode;
   range: [number, number];
   progress: MotionValue<number>;
+  index?: number;
 }
 
 const ContactUs = () => {
@@ -57,7 +58,7 @@ const ContactUs = () => {
       : ["start center", "center center"],
   });
 
-  const firstLine = "Let's Work Together";
+  const firstLine = "Premium Detailing Services";
   const secondLine = `Bravo Zulu Services exceeded my expectations with their aircraft
   detailing. The attention to detail and professionalism were
   outstanding. My jet has never looked better!`;
@@ -89,13 +90,15 @@ const ContactUs = () => {
     });
   };
 
-  const Heading = ({ children, range, progress }: TextComponentProps) => {
+  const Heading = ({ children, range, progress, index }: TextComponentProps) => {
     const opacity = useTransform(progress, range, [0, 1]);
+    // Check if this word is the middle one (Detailing)
+    const isMiddleWord = index === 1; // For "Premium Detailing Services", the middle word is at index 1
 
     return (
       <motion.h3
         style={{ opacity }}
-        className="lg:text-5xl text-2xl font-bold text-gray-900 mb-2"
+        className={`lg:text-5xl text-2xl font-bold mb-2 ${isMiddleWord ? 'text-transparent bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] bg-clip-text' : 'text-gray-900'}`}
       >
         {children}
       </motion.h3>
@@ -116,7 +119,7 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="container mx-auto flex-col px-4 4xl:mt-32 md:px-16">
+    <section id="contact" className="container mx-auto flex-col px-4 4xl:mt-32 md:px-16">
       <h2 className="md:mb-4 md:text-7xl text-4xl text-center text-black bebas-neue-regular">
         Cont<span className="stroked-text">act</span>
       </h2>
@@ -136,6 +139,7 @@ const ContactUs = () => {
                   key={i}
                   range={[start, end]}
                   progress={scrollYProgress}
+                  index={i}
                 >
                   {ele}
                 </Heading>
@@ -291,28 +295,17 @@ const ContactUs = () => {
                       className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
                     />
                   </div>
-
-                  {/* <div className="form-group">
-                    <label className="text-sm text-gray-600 mb-1 block">Any Concerns?</label>
-                    <input
-                      type="text"
-                      value={formData.concerns}
-                      onChange={(e) => handleInputChange(e, "concerns")}
-                      placeholder="What is your main concern about your request?"
-                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
-                    />
-                  </div> */}
                 </div>
 
-                <div className="  text-center  pt-4">
-                <CustomButton2 text=" Send Message" />
+                <div className="text-center pt-4">
+                <CustomButton2 text="Send Message" />
                 </div>
               </form>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

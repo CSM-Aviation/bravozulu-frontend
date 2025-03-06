@@ -19,6 +19,9 @@ const NavigationBar = () => {
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
 
+  // Check if we're on the homepage
+  const isHomePage = pathname === "/" || pathname === "/home";
+
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPos = window.scrollY;
@@ -72,15 +75,24 @@ const NavigationBar = () => {
     return pathname === path;
   };
 
+  // Determine background style based on page and scroll position
+  const getBackgroundStyle = () => {
+    if (isHomePage) {
+      // On homepage, transparent when at top, semi-transparent when scrolled
+      return prevScrollPos > 50 
+        ? "bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] bg-opacity-80" 
+        : "bg-transparent";
+    } else {
+      // On other pages, always use the gradient
+      return "bg-gradient-to-br from-[#0F172A] to-[#1E3A8A]";
+    }
+  };
+
   return (
     <nav
       className={`fixed left-0 right-0 top-0 z-[100] w-screen transition-all duration-300 ${
         visible ? "translate-y-0" : "-translate-y-full"
-      } ${
-        prevScrollPos > 10
-          ? "bg-[rgb(1,10,16)] backdrop-blur-sm"
-          : "bg-transparent"
-      }`}
+      } ${getBackgroundStyle()}`}
     >
       <div
         className={`container mx-auto flex max-w-screen-2xl items-center justify-between px-8 py-6`}
@@ -121,12 +133,12 @@ const NavigationBar = () => {
           >
             Quote
           </Link>
-          <Link
-            href="/contact"
+          <a
+            href="#contact"
             className={`nav-link ${isActive("/contact") ? "active" : ""}`}
           >
             Contact
-          </Link>
+          </a>
           <a href="tel:559-425-8620" className="phone-link">
             <Phone className="w-4 h-4 mr-2" />
           </a>
@@ -194,7 +206,7 @@ const NavigationBar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-[rgb(1,10,16)] shadow-lg">
+        <div className="md:hidden bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] shadow-lg">
           <div className="px-8 py-4 space-y-1">
             <a
               href="#services"
@@ -214,15 +226,15 @@ const NavigationBar = () => {
             >
               Quote
             </Link>
-            <Link
-              href="/contact"
+            <a
+              href="#contact"
               className={`mobile-nav-link ${
                 isActive("/contact") ? "active" : ""
               }`}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Contact
-            </Link>
+            </a>
             {isAuthenticated && (
               <Link
                 href="/dashboard"

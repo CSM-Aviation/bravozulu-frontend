@@ -62,7 +62,7 @@ export default function Header() {
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
-            <Link href="/" className="flex-shrink-0 flex items-center ml-2 md:ml-0">
+            <Link href="/" className="flex-shrink-0 flex flex-col items-center ml-2 md:ml-0">
               <Image
                 src="/BravoZulu_logo.png"
                 alt="Bravo Zulu Services Logo"
@@ -70,6 +70,9 @@ export default function Header() {
                 height={200}
                 className="w-32 md:w-40 lg:w-48 h-auto"
               />
+              <div className="text-blue-600 font-bold text-xs mt-1">
+                UNDER CONSTRUCTION
+              </div>
             </Link>
           </div>
           <div className="hidden md:flex items-center space-x-4 lg:space-x-8">

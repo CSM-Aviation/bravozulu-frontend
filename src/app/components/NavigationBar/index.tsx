@@ -3,24 +3,59 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { LogIn, LogOut, Menu, X, Phone } from "lucide-react";
+import { LogIn, LogOut, Phone } from "lucide-react";
 import "./button.css";
 import "./navbar.css"; // Import the new CSS file
 import { useRouter, usePathname } from "next/navigation";
 import { apiService } from "../../APIServices/apiService";
 import { useUser } from "../../contexts/UserContext";
+import { motion } from "framer-motion";
 
 const NavigationBar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { user, clearUser } = useUser();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
+  const [scrollToSection, setScrollToSection] = useState<string | null>(null);
+  
   // Check if we're on the homepage
   const isHomePage = pathname === "/" || pathname === "/home";
+  
+  // Monitor for navigation and scroll to the section if needed
+  useEffect(() => {
+    // Check if we're on homepage and have a section to scroll to
+    if (isHomePage && scrollToSection) {
+      // Find the element
+      const element = document.getElementById(scrollToSection);
+      if (element) {
+        // Use setTimeout to ensure the DOM is fully loaded
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+          setScrollToSection(null); // Reset after scrolling
+        }, 100);
+      }
+    }
+  }, [isHomePage, scrollToSection]);
+  
+  // Handle scroll to section on homepage
+  const handleSectionNavigation = (sectionId: string): void => {
+    if (isHomePage) {
+      // Already on homepage, just scroll
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // Set the section to scroll to after navigation
+      setScrollToSection(sectionId);
+      // Navigate to homepage
+      router.push('/');
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,6 +95,18 @@ const NavigationBar = () => {
     };
   }, [clearUser]);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   const handleLogout = () => {
     apiService.logout();
     clearUser();
@@ -98,17 +145,32 @@ const NavigationBar = () => {
         className={`container mx-auto flex max-w-screen-2xl items-center justify-between px-8 py-6`}
       >
         <div className="flex items-center">
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-white hover:text-white/80"
+          <div
+            className="cursor-pointer z-20 md:hidden block"
+            onClick={() => setIsOpen(!isOpen)}
           >
-            {isMobileMenuOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
-          </button>
-          <Link href="/" className="relative h-10 w-40">
+            <motion.div
+              animate={
+                isOpen
+                  ? { rotate: 45, y: 50, x: 200, backgroundColor: "white" }
+                  : { rotate: 0, y: 0 }
+              }
+              className="w-6 h-0.5 bg-white mb-1 rounded"
+            />
+            <motion.div
+              animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
+              className="w-6 h-0.5 bg-white mb-1 rounded"
+            />
+            <motion.div
+              animate={
+                isOpen
+                  ? { rotate: -45, y: 38, x: 199, backgroundColor: "white" }
+                  : { rotate: 0, y: 0 }
+              }
+              className="w-6 h-0.5 bg-white rounded"
+            />
+          </div>
+          <Link href="/" className="relative h-10 w-32 ml-4">
             <Image
               src="/BravoZulu_logo.png"
               alt="Bravo Zulu Logo"
@@ -121,24 +183,24 @@ const NavigationBar = () => {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8">
-          <a
-            href="#services"
+          <button
+            onClick={() => handleSectionNavigation('services')}
             className={`nav-link ${isActive("/services") ? "active" : ""}`}
           >
             Services
-          </a>
+          </button>
           <Link
             href="/Quote"
             className={`nav-link ${isActive("/Quote") ? "active" : ""}`}
           >
             Quote
           </Link>
-          <a
-            href="#contact"
+          <button
+            onClick={() => handleSectionNavigation('contact')}
             className={`nav-link ${isActive("/contact") ? "active" : ""}`}
           >
             Contact
-          </a>
+          </button>
           <a href="tel:559-425-8620" className="phone-link">
             <Phone className="w-4 h-4 mr-2" />
           </a>
@@ -205,47 +267,91 @@ const NavigationBar = () => {
       </div>
 
       {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] shadow-lg">
-          <div className="px-8 py-4 space-y-1">
-            <a
-              href="#services"
-              className={`mobile-nav-link ${
-                isActive("/services") ? "active" : ""
-              }`}
-              onClick={() => setIsMobileMenuOpen(false)}
+      {isOpen && (
+        <div className="flex items-center justify-center min-h-screen bg-gray-100 ">
+          <div className="relative">
+            {/* Sliding menu with updated background and text animation */}
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: isOpen ? "7%" : "-100%" }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              className="fixed top-10 left-0 w-72 h-full bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] shadow-lg p-6 rounded-3xl"
             >
-              Services
-            </a>
-            <Link
-              href="/Quote"
-              className={`mobile-nav-link ${
-                isActive("/Quote") ? "active" : ""
-              }`}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Quote
-            </Link>
-            <a
-              href="#contact"
-              className={`mobile-nav-link ${
-                isActive("/contact") ? "active" : ""
-              }`}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Contact
-            </a>
-            {isAuthenticated && (
-              <Link
-                href="/dashboard"
-                className={`mobile-nav-link ${
-                  isActive("/dashboard") ? "active" : ""
-                }`}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Dashboard
-              </Link>
-            )}
+              <ul className="space-y-6 pt-16 text-white text-2xl font-bold">
+                <motion.li
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                >
+                  <motion.button
+                    className={`${isActive("/services") ? "active" : ""} transition-all duration-300 hover:text-[#13fdfd]`}
+                    onClick={() => {
+                      setIsOpen(false);
+                      handleSectionNavigation('services');
+                    }}
+                    whileHover={{ scale: 1.05, x: 10 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    Services{" "}
+                  </motion.button>
+                </motion.li>
+                <motion.li
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.05, x: 10 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <Link
+                      href="/Quote"
+                      className={`${isActive("/Quote") ? "active" : ""} transition-all duration-300 hover:text-[#13fdfd]`}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Quote
+                    </Link>
+                  </motion.div>
+                </motion.li>
+                <motion.li
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                >
+                  <motion.button
+                    className={`${isActive("/contact") ? "active" : ""} transition-all duration-300 hover:text-[#13fdfd]`}
+                    onClick={() => {
+                      setIsOpen(false);
+                      handleSectionNavigation('contact');
+                    }}
+                    whileHover={{ scale: 1.05, x: 10 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    Contact
+                  </motion.button>
+                </motion.li>
+                {isAuthenticated && (
+                  <motion.li
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: 0.8 }}
+                  >
+                    <motion.div
+                      whileHover={{ scale: 1.05, x: 10 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      <Link
+                        href="/dashboard"
+                        className={`${isActive("/dashboard") ? "active" : ""} transition-all duration-300 hover:text-[#13fdfd]`}
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Dashboard
+                      </Link>
+                    </motion.div>
+                  </motion.li>
+                )}
+              </ul>
+            </motion.div>
           </div>
         </div>
       )}

@@ -166,294 +166,323 @@ const Quote = () => {
 
   return (
     <div className="min-h-screen text-black bg-gradient-to-b from-gray-50 to-gray-100 py-12">
-      <div className="max-w-6xl mx-auto p-12 bg-white rounded-xl shadow-lg space-y-12">
-        <h1 className="text-2xl font-bold text-center mb-12 text-gray-800 tracking-tight md:text-5xl">
-          QUOTE REQUEST
-        </h1>
+    <div className="max-w-6xl mx-auto p-8 md:p-12 bg-white rounded-xl shadow-lg space-y-12">
+      <h1 className="text-2xl mt-10 font-bold text-center mb-12 text-gray-800 tracking-tight md:text-3xl lg:text-4xl">
+        QUOTE REQUEST
+      </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-12">
-          {/* Customer Information Section */}
-          <div ref={formRefs.customerInfo} className="transform transition-all duration-700 opacity-0 translate-y-10">
-            <h2 className="text-3xl font-semibold mb-8 text-gray-800">Customer Information</h2>
-            <div className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                  <label className="block text-xl text-gray-800 font-semibold mb-3">First Name *</label>
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xl text-gray-800 font-semibold mb-3">Last Name *</label>
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
+      <form onSubmit={handleSubmit} className="space-y-12">
+        {/* Customer Information Section */}
+        <div
+          ref={formRefs.customerInfo}
+          className="transform transition-all duration-700 opacity-0 translate-y-10"
+        >
+          <h2 className="md:text-3xl text-xl  font-semibold mb-8 text-gray-800">
+            Customer Information
+          </h2>
+          <div className="space-y-8 form-group">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <label className="block text-xl text-gray-800 font-semibold mb-3">Company Name (Optional)</label>
+                <label className="text-black mb-1 block">First Name *</label>
                 <input
                   type="text"
-                  name="companyName"
-                  value={formData.companyName}
+                  name="firstName"
+                  value={formData.firstName}
                   onChange={handleInputChange}
-                  className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  required
+                  className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                  <label className="block text-xl text-gray-800 font-semibold mb-3">Email *</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xl text-gray-800 font-semibold mb-3">Phone Number *</label>
-                  <input
-                    type="tel"
-                    name="phoneNumber"
-                    value={formData.phoneNumber}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
+              <div>
+                <label className="text-black mb-1 block">Last Name *</label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                />
+              </div>
+            </div>
+            <div>
+              <label className=" text-black mb-1 block">
+                Company Name (Optional)
+              </label>
+              <input
+                type="text"
+                name="companyName"
+                value={formData.companyName}
+                onChange={handleInputChange}
+                className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <label className=" text-black mb-1 block">Email *</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                />
+              </div>
+              <div>
+                <label className=" text-black mb-1 block">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                />
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Vehicle Information Section */}
-          <div ref={formRefs.vehicleInfo} className="transform transition-all duration-700 opacity-0 translate-y-10">
-            <h2 className="text-3xl font-semibold mb-8 text-gray-800">Vehicle Information</h2>
-            <div className="space-y-8">
-              <div>
-                <label className="block text-xl text-gray-800 font-semibold mb-3">Vehicle Type *</label>
-                <select
-                  name="vehicleType"
-                  value={vehicleType}
-                  onChange={(e) => setVehicleType(e.target.value as 'Aircraft' | 'Automobile' | 'Vessel')}
-                  className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="Aircraft">Aircraft</option>
-                  <option value="Automobile">Automobile</option>
-                  <option value="Vessel">Vessel</option>
-                </select>
+        {/* Vehicle Information Section */}
+        <div
+          ref={formRefs.vehicleInfo}
+          className="transform transition-all duration-700 opacity-0 translate-y-10"
+        >
+          <h2 className="md:text-3xl text-xl font-semibold mb-8 text-gray-800">
+            Vehicle Information
+          </h2>
+          <div className="space-y-8">
+            <div>
+              <label className="text-black mb-1 block"> Vehicle Type *</label>
+              <select
+                name="vehicleType"
+                value={vehicleType}
+                onChange={(e) =>
+                  setVehicleType(
+                    e.target.value as "Aircraft" | "Automobile" | "Vessel"
+                  )
+                }
+                className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+              >
+                <option value="Aircraft">Aircraft</option>
+                <option value="Automobile">Automobile</option>
+                <option value="Vessel">Vessel</option>
+              </select>
+            </div>
+
+            {vehicleType === "Aircraft" && (
+              <div className="space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div>
+                    <label className="text-black mb-1 block">
+                      {" "}
+                      Registration Number *
+                    </label>
+                    <RegistrationDropdown
+                      value={formData.registrationNumber || ""}
+                      onChange={(value, isInFleet) => {
+                        if (value === "other") {
+                          setFormData((prev) => ({
+                            ...prev,
+                            registrationNumber: "",
+                            isInFleet: false,
+                          }));
+                        } else {
+                          setFormData((prev) => ({
+                            ...prev,
+                            registrationNumber: value,
+                            isInFleet,
+                          }));
+                        }
+                      }}
+                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                    />
+                    {formData.registrationNumber === "other" && (
+                      <input
+                        type="text"
+                        name="registrationNumber"
+                        value={formData.registrationNumber}
+                        onChange={handleInputChange}
+                        placeholder="Enter Registration Number"
+                        required
+                        className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                      />
+                    )}
+                  </div>
+                  <div>
+                    <label className="text-black mb-1 block">
+                      {" "}
+                      Services Requested *
+                    </label>
+                    <select
+                      name="serviceType"
+                      value={formData.serviceType}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                    >
+                      <option value="">Select a service</option>
+                      <option value="exterior">Exterior Detailing</option>
+                      <option value="interior">Interior Detailing</option>
+                      <option value="both">Both Interior & Exterior</option>
+                    </select>
+                  </div>
+                </div>
               </div>
+            )}
 
-              {vehicleType === 'Aircraft' && (
-                <div className="space-y-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                      <label className="block text-xl text-gray-800 font-semibold mb-3">Registration Number *</label>
-                      <RegistrationDropdown
-                        value={formData.registrationNumber || ''}
-                        onChange={(value, isInFleet) => {
-                          if (value === 'other') {
-                            setFormData(prev => ({
-                              ...prev,
-                              registrationNumber: '',
-                              isInFleet: false
-                            }));
-                          } else {
-                            setFormData(prev => ({
-                              ...prev,
-                              registrationNumber: value,
-                              isInFleet
-                            }));
-                          }
-                        }}
-                        className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-                      />
-                      {formData.registrationNumber === 'other' && (
-                        <input
-                          type="text"
-                          name="registrationNumber"
-                          value={formData.registrationNumber}
-                          onChange={handleInputChange}
-                          placeholder="Enter Registration Number"
-                          required
-                          className="mt-2 w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-                        />
-                      )}
-                    </div>
-                    <div>
-                      <label className="block text-xl text-gray-800 font-semibold mb-3">Services Requested *</label>
-                      <select
-                        name="serviceType"
-                        value={formData.serviceType}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="">Select a service</option>
-                        <option value="exterior">Exterior Detailing</option>
-                        <option value="interior">Interior Detailing</option>
-                        <option value="both">Both Interior & Exterior</option>
-                      </select>
-                    </div>
-                  </div>
-
-                </div>
-              )}
-
-              {vehicleType === 'Automobile' && (
-                <div className="space-y-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div>
-                      <label className="block text-xl text-gray-800 font-semibold mb-3">Year *</label>
-                      <input
-                        type="number"
-                        name="year"
-                        value={formData.year}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xl text-gray-800 font-semibold mb-3">Make *</label>
-                      <input
-                        type="text"
-                        name="make"
-                        value={formData.make}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xl text-gray-800 font-semibold mb-3">Model *</label>
-                      <input
-                        type="text"
-                        name="model"
-                        value={formData.model}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {vehicleType === 'Vessel' && (
-                <div className="space-y-8">
+            {vehicleType === "Automobile" && (
+              <div className="space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   <div>
-                    <label className="block text-xl text-gray-800 font-semibold mb-3">Boat Number *</label>
-                    <input
-                      type="text"
-                      name="boatNumber"
-                      value={formData.boatNumber}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xl text-gray-800 font-semibold mb-3">Vessel Type *</label>
-                    <input
-                      type="text"
-                      name="vesselType"
-                      value={formData.vesselType}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="e.g., Yacht, Speedboat, etc."
-                      className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xl text-gray-800 font-semibold mb-3">Length (ft) *</label>
+                    <label className="text-black mb-1 block"> Year *</label>
                     <input
                       type="number"
-                      name="length"
-                      value={formData.length}
+                      name="year"
+                      value={formData.year}
                       onChange={handleInputChange}
                       required
-                      className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
+                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-black mb-1 block"> Make *</label>
+                    <input
+                      type="text"
+                      name="make"
+                      value={formData.make}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-black mb-1 block"> Model *</label>
+                    <input
+                      type="text"
+                      name="model"
+                      value={formData.model}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
                     />
                   </div>
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
+            )}
 
-          {/* Service Selection Section */}
-          {vehicleType === 'Aircraft' && (
-            <ServiceSelectionSection
-              // className="space-y-8"
-              vehicleType={vehicleType}
-              selectedExterior={selectedExterior}
-              selectedInterior={selectedInterior}
-              onExteriorChange={setSelectedExterior}
-              onInteriorChange={setSelectedInterior}
-              serviceType={formData.serviceType}
-            />
-          )}
-          <div>
-            <label className="block text-xl text-gray-800 font-semibold mb-3">Service Location</label>
-            <select
-              name="serviceLocation"
-              value={formData.serviceLocation}
-              onChange={handleInputChange}
-              className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="FAT">FAT</option>
-              <option value="MJC">MJC</option>
-            </select>
+            {vehicleType === "Vessel" && (
+              <div className="space-y-8">
+                <div>
+                  <label className="text-black mb-1 block">
+                    {" "}
+                    Boat Number *
+                  </label>
+                  <input
+                    type="text"
+                    name="boatNumber"
+                    value={formData.boatNumber}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="text-black mb-1 block">
+                    {" "}
+                    Vessel Type *
+                  </label>
+                  <input
+                    type="text"
+                    name="vesselType"
+                    value={formData.vesselType}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="e.g., Yacht, Speedboat, etc."
+                    className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="text-black mb-1 block">
+                    {" "}
+                    Length (ft) *
+                  </label>
+                  <input
+                    type="number"
+                    name="length"
+                    value={formData.length}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                  />
+                </div>
+              </div>
+            )}
           </div>
+        </div>
 
-          {/* Special Requests */}
-          <div>
-            <label className="block text-xl text-gray-800 font-semibold mb-3">
-              Special Requests
-            </label>
-            <textarea
-              name="specialRequests"
-              value={specialRequests}
-              onChange={(e) => setSpecialRequests(e.target.value)}
-              rows={4}
-              className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-              placeholder="Any special requirements or additional information..."
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-500 text-white py-5 px-8 rounded-xl text-xl font-semibold hover:bg-blue-600"
+        {/* Service Selection Section */}
+        {vehicleType === "Aircraft" && (
+          <ServiceSelectionSection
+            // className="space-y-8"
+            vehicleType={vehicleType}
+            selectedExterior={selectedExterior}
+            selectedInterior={selectedInterior}
+            onExteriorChange={setSelectedExterior}
+            onInteriorChange={setSelectedInterior}
+            serviceType={formData.serviceType}
+          />
+        )}
+        <div>
+          <label className="text-black mb-1 block"> Service Location</label>
+          <select
+            name="serviceLocation"
+            value={formData.serviceLocation}
+            onChange={handleInputChange}
+            className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
           >
-            {loading ?
-              <>
-                <Loader2 className="w-5 h-5 mr-2 animate-spin inline" />
-                Submitting...
-              </>
+            <option value="FAT">FAT</option>
+            <option value="MJC">MJC</option>
+          </select>
+        </div>
 
-              : 'Submit Quote Request'}
-          </button>
+        {/* Special Requests */}
+        <div>
+          <label className="text-black mb-1 block"> Special Requests</label>
+          <textarea
+            name="specialRequests"
+            value={specialRequests}
+            onChange={(e) => setSpecialRequests(e.target.value)}
+            rows={4}
+            className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
+            placeholder="Any special requirements or additional information..."
+          />
+        </div>
 
-          {error && (
-            <div className="text-red-500 text-center mt-4">
-              {error}
-            </div>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full md:w-auto px-8 py-3 bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] text-white rounded-full hover:shadow-lg transition-all duration-300 hover:scale-105"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="w-5 h-5 mr-2 animate-spin inline" />
+              Submitting...
+            </>
+          ) : (
+            "Submit Quote Request"
           )}
-        </form>
-      </div>
+        </button>
+
+        {error && (
+          <div className="text-red-500 text-center mt-4">{error}</div>
+        )}
+      </form>
     </div>
+  </div>
   );
 };
 

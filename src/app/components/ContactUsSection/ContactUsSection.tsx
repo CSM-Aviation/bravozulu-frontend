@@ -59,9 +59,7 @@ const ContactUs = () => {
   });
 
   const firstLine = "Premium Detailing Services";
-  const secondLine = `Bravo Zulu Services exceeded my expectations with their aircraft
-  detailing. The attention to detail and professionalism were
-  outstanding. My jet has never looked better!`;
+
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -98,25 +96,29 @@ const ContactUs = () => {
     return (
       <motion.h3
         style={{ opacity }}
-        className={`lg:text-5xl text-2xl font-bold mb-2 ${isMiddleWord ? 'text-transparent bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] bg-clip-text' : 'text-gray-900'}`}
+        className={`text-3xl sm:text-5xl md:text-5xl lg:text-5xl xl:text-5xl font-bold mb-2 ${
+          isMiddleWord 
+            ? 'text-transparent bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] bg-clip-text' 
+            : 'text-gray-900'
+        }`}
       >
         {children}
       </motion.h3>
     );
   };
 
-  const Para = ({ children, range, progress }: TextComponentProps) => {
-    const opacity = useTransform(progress, range, [0, 1]);
+  // const Para = ({ children, range, progress }: TextComponentProps) => {
+  //   const opacity = useTransform(progress, range, [0, 1]);
 
-    return (
-      <motion.p
-        style={{ opacity }}
-        className="md:text-sm text-sm text-neutral-600"
-      >
-        {children}
-      </motion.p>
-    );
-  };
+  //   return (
+  //     <motion.p
+  //       style={{ opacity }}
+  //       className="md:text-sm text-sm text-neutral-600"
+  //     >
+  //       {children}
+  //     </motion.p>
+  //   );
+  // };
 
   return (
     <section id="contact" className="container mx-auto flex-col px-4 4xl:mt-32 md:px-16">
@@ -128,7 +130,7 @@ const ContactUs = () => {
           ref={ref}
           className="flex justify-between gap-16 md:flex-row flex-col"
         >
-          <div className="flex justify-center items-start lg:items-start md:items-center gap-4">
+         <div className="flex flex-wrap justify-center items-center w-full my-8 md:my-12 lg:my-16 gap-2 md:gap-4">
             {firstLine.split(" ").map((ele, i, arr) => {
               const totalWords = arr.length;
               const start = i / totalWords;
@@ -146,19 +148,7 @@ const ContactUs = () => {
               );
             })}
           </div>
-          <div className="flex gap-1 my-3 md:my-7 flex-wrap md:w-[450px]">
-            {secondLine.split(" ").map((ele, i, arr) => {
-              const totalWords = arr.length;
-              const start = i / totalWords;
-              const end = start + 1 / totalWords;
-
-              return (
-                <Para key={i} range={[start, end]} progress={scrollYProgress}>
-                  {ele}
-                </Para>
-              );
-            })}
-          </div>
+          
         </div>
         <div className="flex lg:flex-row flex-col justify-between items-center md:items-start">
           <div className="md:mb-16 h-full w-full lg:w-[40%]">
@@ -175,7 +165,7 @@ const ContactUs = () => {
                 </div>
                 <div>
                   <h3 className="mb-2 contactText">E-mail</h3>
-                  <p className="lg:text-sm text-base text-semibold contactText">
+                  <p className="text-xs  text-semibold contactText">
                     service@mybravozulu.com
                   </p>
                 </div>
@@ -208,11 +198,11 @@ const ContactUs = () => {
                   </div>
                 </div>
                 <div>
-                  <h3 className="mb-2">Office</h3>
-                  <p className="lg:text-lg text-xs text-semibold">
+                  <h3 className="mb-2 contactText">Office</h3>
+                  <p className="lg:text-lg text-xs text-semibold contactText">
                     6737 N. Milburn Ave. Suite
                   </p>
-                  <p className="lg:text-lg text-xs text-semibold">
+                  <p className="lg:text-lg text-xs text-semibold contactText">
                     160-100 Fresno, CA 93722
                   </p>
                 </div>

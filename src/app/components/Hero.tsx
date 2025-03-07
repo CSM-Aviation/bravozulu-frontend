@@ -1,9 +1,9 @@
-import Link from 'next/link'
+
 
 export default function Hero() {
   return (
     <div className="relative bg-gray-900">
-      <div 
+      {/* <div 
         className="absolute inset-0 z-0"
         style={{
           backgroundImage: "url('/Hero_image.avif')",
@@ -13,17 +13,17 @@ export default function Hero() {
         }}
       >
         <div className="absolute inset-0 bg-gray-900/75" />
-      </div>
+      </div> */}
 
-      <div className="relative z-10 max-w-7xl mx-auto py-30 px-4 sm:py-40 lg:py-60 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-          Perfection is in the Detail
+      <div className="relative z-10 max-w-7xl  max-h-full mx-auto py-30 px-4 sm:py-40 lg:py-60 sm:px-6 lg:px-8">
+        <h1 className="text-4xl text-center h-[500px] font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+          Under Construction
         </h1>
-        <p className="mt-6 text-xl text-gray-300 max-w-3xl">
+        {/* <p className="mt-6 text-xl text-gray-300 max-w-3xl">
           From single engine Cessna&quot;s to Gulfstreams and everything in between, 
           we take care of your aircraft&quot;s detailing needs from start to finish, inside and out.
-        </p>
-        <div className="mt-10 flex gap-4">
+        </p> */}
+        {/* <div className="mt-10 flex gap-4">
           <Link 
             href="/Quote" 
             className="bg-blue-600 text-white px-8 py-3 rounded-md hover:bg-blue-700"
@@ -36,7 +36,7 @@ export default function Hero() {
           >
             View Services
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   )

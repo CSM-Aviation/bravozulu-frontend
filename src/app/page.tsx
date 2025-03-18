@@ -9,7 +9,11 @@
 // import ContactUs from "./components/ContactUsSection/ContactUsSection";
 // import CustomMouse from "./utils/MouseFollower";
 // import Header from "./components/Header";
-import Hero from "./components/Hero";
+import ContactUs from "./components/ContactUsSection/ContactUsSection";
+import Footer from "./components/Footer";
+// import Hero from "./components/Hero";
+import HeroSection from "./components/HeroSection";
+import ServicesSection from "./components/ServicesSection";
 // import Services from "./components/Services";
 // import Contact from "./components/Contact";
 
@@ -19,14 +23,14 @@ export default function Home() {
       {/* <CustomMouse /> */}
       
       <main>
-        {/* <HeroSection /> */}
-        <Hero/>
-        {/* <ServicesSection /> */}
+        <HeroSection />
+        {/* <Hero/> */}
+        <ServicesSection />
         {/* <Services/> */}
-        {/* <ContactUs /> */}
+        <ContactUs />
         {/* <Contact /> */}
       </main>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }

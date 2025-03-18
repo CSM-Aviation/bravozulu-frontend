@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { AircraftData, apiService, FleetAircraft } from '../APIServices/apiService';
+import React, { useState } from 'react';
+import { AircraftData } from '../APIServices/apiService';
 import AircraftLookup from './AircraftLookup';
 import AircraftDetails from './AircraftDetails';
 
@@ -10,51 +10,51 @@ interface RegistrationDropdownProps {
 }
 
 const RegistrationDropdown: React.FC<RegistrationDropdownProps> = ({
-  value,
   onChange,
   className = ''
 }) => {
-  const [fleetAircraft, setFleetAircraft] = useState<FleetAircraft[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [showOtherInput, setShowOtherInput] = useState(false);
+  // const [fleetAircraft, setFleetAircraft] = useState<FleetAircraft[]>([]);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState('');
+  const [showOtherInput, ] = useState(true);
   const [customRegistration, setCustomRegistration] = useState('');
   const [aircraftData, setAircraftData] = useState<AircraftData>();
 
-  useEffect(() => {
-    const fetchFleetAircraft = async () => {
-      try {
-        const response = await apiService.getFleetAircraft();
-        if (response.error) {
-          throw new Error(response.error);
-        }
-        if (response.data) {
-          setFleetAircraft(response.data);
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch fleet aircraft');
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchFleetAircraft = async () => {
+  //     try {
+  //       const response = await apiService.getFleetAircraft();
+  //       if (response.error) {
+  //         throw new Error(response.error);
+  //       }
+  //       if (response.data) {
+  //         setFleetAircraft(response.data);
+  //       }
+  //     } catch (err) {
+  //       setError(err instanceof Error ? err.message : 'Failed to fetch fleet aircraft');
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchFleetAircraft();
-  }, []);
+  //   fetchFleetAircraft();
+  // }, []);
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = e.target.value;
-    setShowOtherInput(selectedValue === 'other');
-    setAircraftData(undefined);
+  // const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const selectedValue = e.target.value;
+  //   setShowOtherInput(selectedValue === 'other');
+  //   setAircraftData(undefined);
     
-    if (selectedValue === 'other') {
-      setCustomRegistration('');
-      onChange('', false); // Reset the value when switching to "Other"
-    } else {
-      const aircraft = fleetAircraft.find(aircraft => aircraft.tailNumber === selectedValue);
-      const isInFleet = !!aircraft;
-      onChange(selectedValue, isInFleet, aircraft?.type);
-    }
-  };
+  //   if (selectedValue === 'other') {
+  //     setCustomRegistration('');
+  //     onChange('', false); // Reset the value when switching to "Other"
+  //   } 
+  //   else {
+  //     const aircraft = fleetAircraft.find(aircraft => aircraft.tailNumber === selectedValue);
+  //     const isInFleet = !!aircraft;
+  //     onChange(selectedValue, isInFleet, aircraft?.type);
+  //   }
+  // };
 
   const handleCustomInputChange = (value: string) => {
     setCustomRegistration(value);
@@ -67,25 +67,25 @@ const RegistrationDropdown: React.FC<RegistrationDropdownProps> = ({
     onChange(data.nNumber, false, `${data.manufacturer} ${data.model}`);
   };
 
-  if (loading) {
-    return (
-      <select className={className} disabled>
-        <option>Loading...</option>
-      </select>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <select className={className} disabled>
+  //       <option>Loading...</option>
+  //     </select>
+  //   );
+  // }
 
-  if (error) {
-    return (
-      <select className={className} disabled>
-        <option>Error loading aircraft</option>
-      </select>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <select className={className} disabled>
+  //       <option>Error loading aircraft</option>
+  //     </select>
+  //   );
+  // }
 
   return (
     <div className="space-y-2">
-      <select
+      {/* <select
         value={showOtherInput ? 'other' : value}
         onChange={handleSelectChange}
         className={className}
@@ -102,7 +102,7 @@ const RegistrationDropdown: React.FC<RegistrationDropdownProps> = ({
         <optgroup label="Other">
           <option value="other">Other Registration Number</option>
         </optgroup>
-      </select>
+      </select> */}
 
       {showOtherInput && (
         <>

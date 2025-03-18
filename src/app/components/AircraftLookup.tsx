@@ -50,19 +50,19 @@ const AircraftLookup: React.FC<AircraftLookupProps> = ({
 
     return (
         <div className="space-y-2">
-            <div className="flex items-center">
+            <div className="flex items-center gap-2">
                 <input
                     type="text"
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     placeholder="Enter Registration Number"
-                    className={`${className} flex-grow`}
+                    className={`${className} flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
                     required
                 />
                 <button
                     type="button"
                     onClick={handleSearch}
-                    className="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 disabled:bg-gray-300 disabled:text-gray-500 flex items-center gap-2"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-500 flex items-center whitespace-nowrap"
                     disabled={loading}
                 >
                     <span className="flex items-center gap-2">

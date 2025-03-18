@@ -300,7 +300,7 @@ const Quote = () => {
                       }}
                       className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
                     />
-                    {formData.registrationNumber === "other" && (
+                    {/* {formData.registrationNumber === "other" && (
                       <input
                         type="text"
                         name="registrationNumber"
@@ -310,7 +310,7 @@ const Quote = () => {
                         required
                         className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
                       />
-                    )}
+                    )} */}
                   </div>
                   <div>
                     <label className="text-black mb-1 block">

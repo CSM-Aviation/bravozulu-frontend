@@ -66,6 +66,10 @@ export interface QuoteData {
   vesselType?: string;
   length?: number;
 
+  // Servicing schedule fields
+  servicingDate?: string;
+  servicingTime?: string;
+
   // New service selection fields
   // services?: ServiceSelection;
   isInFleet?: boolean;

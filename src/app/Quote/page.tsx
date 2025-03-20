@@ -35,6 +35,8 @@ const Quote = () => {
     length: undefined,
     isInFleet: false,
     createdAt: '',
+    servicingDate: '',
+    servicingTime: '',
     serviceDetails: {
       services: []
     }
@@ -219,7 +221,7 @@ const Quote = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <label className=" text-black mb-1 block">Email *</label>
+                <label className="text-black mb-1 block">Email *</label>
                 <input
                   type="email"
                   name="email"
@@ -230,7 +232,7 @@ const Quote = () => {
                 />
               </div>
               <div>
-                <label className=" text-black mb-1 block">
+                <label className="text-black mb-1 block">
                   Phone Number *
                 </label>
                 <input
@@ -447,6 +449,35 @@ const Quote = () => {
             <option value="FAT">FAT</option>
             <option value="MJC">MJC</option>
           </select>
+        </div>
+
+        {/* Servicing Date and Time */}
+        <div className="space-y-8">
+          <h2 className="md:text-3xl text-xl font-semibold mb-8 text-gray-800">
+            Preferred Servicing Schedule
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <label className="text-black mb-1 block">Preferred Date</label>
+              <input
+                type="date"
+                name="servicingDate"
+                value={formData.servicingDate}
+                onChange={handleInputChange}
+                className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+              />
+            </div>
+            <div>
+              <label className="text-black mb-1 block">Preferred Time</label>
+              <input
+                type="time"
+                name="servicingTime"
+                value={formData.servicingTime}
+                onChange={handleInputChange}
+                className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Special Requests */}

@@ -107,10 +107,10 @@ export default function Footer() {
               <ul className="space-y-[14px] text-xs text-[#B6B6B6] lg:text-left opacity-70 text-center">
                 <li>
                   <a
-                    href="tel:559-425-8620"
+                    href="tel:559-690-9500"
                     className="hover:text-white transition-colors"
                   >
-                    559-425-8620
+                    559-690-9500
                   </a>
                 </li>
                 <li className="flex items-center justify-center lg:justify-start">
@@ -149,4 +149,5 @@ export default function Footer() {
       <div className="pointer-events-none lg:block hidden absolute bottom-0 w-full h-[10%] md:h-[30%] lg:h-[50%] bg-gradient-to-t from-black/90 to-transparent"></div>
     </footer>
   );
+
 }

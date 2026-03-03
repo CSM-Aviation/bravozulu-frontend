@@ -58,10 +58,10 @@ export default function Contact() {
                 <div>
                   <p className="text-gray-900 font-medium">Phone</p>
                   <a 
-                    href="tel:559-425-8620" 
+                    href="tel:559-690-9500" 
                     className="text-blue-600 hover:text-blue-700"
                   >
-                    559-425-8620
+                    559-690-9500
                   </a>
                 </div>
               </div>
@@ -142,4 +142,5 @@ export default function Contact() {
       </div>
     </section>
   );
+
 }

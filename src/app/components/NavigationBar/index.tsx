@@ -201,7 +201,7 @@ const NavigationBar = () => {
           >
             Contact
           </button>
-          <a href="tel:559-425-8620" className="phone-link">
+          <a href="tel:559-690-9500" className="phone-link">
             <Phone className="w-4 h-4 mr-2" />
           </a>
 
@@ -242,7 +242,7 @@ const NavigationBar = () => {
         {/* Mobile Phone and Login Button */}
         <div className="md:hidden flex items-center gap-4">
           <a
-            href="tel:559-425-8620"
+            href="tel:559-690-9500"
             className="p-2 text-white hover:text-[#13fdfd] transition-colors"
           >
             <Phone className="w-6 h-6" />

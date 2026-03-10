@@ -183,7 +183,7 @@ const ContactUs = () => {
                 <div>
                   <h3 className="mb-2 contactText">Contact</h3>
                   <p className="lg:text-lg text-xs text-semibold contactText">
-                    559-425-8620
+                    559-690-9500
                   </p>
                 </div>
               </div>

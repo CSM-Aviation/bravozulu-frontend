@@ -11,8 +11,7 @@ export default function Footer() {
   const pathname = usePathname();
   const isHomePage = pathname === "/" || pathname === "/home";
 
-  const handleContactClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
+  const handleContactClick = () => {
     if (isHomePage) {
       const element = document.getElementById("contact");
       if (element) {
@@ -75,13 +74,12 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <a
-                    href="/#contact"
+                  <button
                     onClick={handleContactClick}
                     className="hover:text-white transition-colors cursor-pointer"
                   >
                     Contact Us
-                  </a>
+                  </button>
                 </li>
                 <li>
                   <Link

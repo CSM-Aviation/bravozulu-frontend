@@ -1,9 +1,27 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const router = useRouter();
+  const pathname = usePathname();
+  const isHomePage = pathname === "/" || pathname === "/home";
+
+  const handleContactClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (isHomePage) {
+      const element = document.getElementById("contact");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      router.push("/#contact");
+    }
+  };
 
   return (
     <footer className="bg-black py-[23px] relative overflow-hidden h-auto">
@@ -50,19 +68,20 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/quote"
+                    href="/Quote"
                     className="hover:text-white transition-colors"
                   >
                     Get a Quote
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    href="/contact"
-                    className="hover:text-white transition-colors"
+                  <a
+                    href="/#contact"
+                    onClick={handleContactClick}
+                    className="hover:text-white transition-colors cursor-pointer"
                   >
                     Contact Us
-                  </Link>
+                  </a>
                 </li>
                 <li>
                   <Link

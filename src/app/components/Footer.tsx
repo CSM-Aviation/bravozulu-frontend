@@ -23,7 +23,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-black py-[23px] relative overflow-hidden h-auto">
+    <footer className="bg-bz-jet py-[23px] relative overflow-hidden h-auto">
       {/* Updated container to match contact section alignment */}
       <div className="container mx-auto px-4 md:px-16 py-6">
         <div className="flex lg:flex-row flex-col justify-center lg:justify-between items-center">
@@ -31,36 +31,32 @@ export default function Footer() {
           <div className="space-y-8 flex flex-col items-center lg:items-start justify-center">
             <Link href="/">
               <Image
-                src="/footerlogo2.png"
-                alt="Bravo Zulu Services Logo"
-                width={190}
-                height={20}
+                src="/logo-bravo-zulu-white.svg"
+                alt="Bravo Zulu Detailing Logo"
+                width={167}
+                height={90}
+                className="h-auto w-40"
               />
             </Link>
-            <p className="text-sm md:w-[480px] lg:w-[290px] lg:text-left text-center text-white opacity-70 md:opacity-50 lg:opacity-70">
-              Bravo Zulu Services exceeded my expectations with their aircraft
-              detailing. The attention to detail and professionalism were
-              outstanding. My jet has never looked better!
-            </p>
           </div>
 
           {/* Updated spacing for better alignment */}
           <div className="flex md:flex-row flex-col items-center md:items-start flex-wrap justify-center md:justify-end gap-10 md:gap-16 z-20 md:mt-12 lg:mt-0 mt-10">
             {/* Quick Links */}
             <div className="order-1">
-              <h3 className="text-white text-sm mb-5 lg:mb-7 text-center lg:text-left">
+              <h3 className="font-display font-bold text-white text-sm mb-5 lg:mb-7 text-center lg:text-left">
                 Quick Links
               </h3>
-              <ul className="space-y-[14px] text-xs text-[#B6B6B6] opacity-70 lg:text-left text-center">
+              <ul className="space-y-[14px] text-xs text-bz-silver lg:text-left text-center">
                 <li>
-                  <Link href="/" className="hover:text-white transition-colors">
+                  <Link href="/" className="hover:text-bz-electric transition-colors">
                     Home
                   </Link>
                 </li>
                 <li>
                   <Link
                     href="/services"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-bz-electric transition-colors"
                   >
                     Services
                   </Link>
@@ -68,7 +64,7 @@ export default function Footer() {
                 <li>
                   <Link
                     href="/Quote"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-bz-electric transition-colors"
                   >
                     Get a Quote
                   </Link>
@@ -76,7 +72,7 @@ export default function Footer() {
                 <li>
                   <button
                     onClick={handleContactClick}
-                    className="hover:text-white transition-colors cursor-pointer"
+                    className="hover:text-bz-electric transition-colors cursor-pointer"
                   >
                     Contact Us
                   </button>
@@ -84,7 +80,7 @@ export default function Footer() {
                 <li>
                   <Link
                     href="/privacy"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-bz-electric transition-colors"
                   >
                     Privacy Policy
                   </Link>
@@ -94,23 +90,26 @@ export default function Footer() {
 
             {/* Services */}
             <div className="order-2 lg:order-2 md:order-3">
-              <h3 className="text-white text-sm text-center lg:text-left mb-5 lg:mb-7">
+              <h3 className="font-display font-bold text-white text-sm text-center lg:text-left mb-5 lg:mb-7">
                 Our Services
               </h3>
-              <ul className="space-y-[14px] text-xs text-[#B6B6B6] opacity-70 lg:text-left text-center">
-                <li className="hover:text-white transition-colors">
+              <ul className="space-y-[14px] text-xs text-bz-silver lg:text-left text-center">
+                <li className="hover:text-bz-electric transition-colors">
                   Aircraft Detailing
                 </li>
-                <li className="hover:text-white transition-colors">
+                <li className="hover:text-bz-electric transition-colors">
                   Automotive Detailing
                 </li>
-                <li className="hover:text-white transition-colors">
+                <li className="hover:text-bz-electric transition-colors">
+                  RV Detailing
+                </li>
+                <li className="hover:text-bz-electric transition-colors">
                   Vessel Detailing
                 </li>
-                <li className="hover:text-white transition-colors">
+                <li className="hover:text-bz-electric transition-colors">
                   Interior Services
                 </li>
-                <li className="hover:text-white transition-colors">
+                <li className="hover:text-bz-electric transition-colors">
                   Exterior Services
                 </li>
               </ul>
@@ -118,14 +117,14 @@ export default function Footer() {
 
             {/* Contact Info */}
             <div className="order-3 lg:order-3 md:order-2">
-              <h3 className="text-white text-sm text-center lg:text-left mb-5 lg:mb-7">
+              <h3 className="font-display font-bold text-white text-sm text-center lg:text-left mb-5 lg:mb-7">
                 Contact
               </h3>
-              <ul className="space-y-[14px] text-xs text-[#B6B6B6] lg:text-left opacity-70 text-center">
+              <ul className="space-y-[14px] text-xs text-bz-silver lg:text-left text-center">
                 <li>
                   <a
                     href="tel:559-690-9500"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-bz-electric transition-colors"
                   >
                     559-690-9500
                   </a>
@@ -133,13 +132,13 @@ export default function Footer() {
                 <li className="flex items-center justify-center lg:justify-start">
                   <a
                     href="mailto:service@mybravozulu.com"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-bz-electric transition-colors"
                   >
                     service@mybravozulu.com
                   </a>
                 </li>
                 <li className="w-[160px]">
-                  6737 N. Milburn Ave.Suite 160-100 Fresno, CA 93722
+                  2665 N. Air Fresno Dr, Suite 110, Fresno, CA 93727
                 </li>
               </ul>
             </div>
@@ -147,23 +146,26 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-800 mt-12 pt-8">
+        <div className="border-t border-white/10 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-white opacity-70">
               ©️ {currentYear} Bravo Zulu Services Inc. All rights reserved.
             </p>
-            <p className="text-sm mt-2 md:mt-0 text-white opacity-70">
-              &quot;A job well done&quot; in Naval terms
-            </p>
+            <Link
+              href="/login"
+              className="text-sm mt-2 md:mt-0 text-bz-silver hover:text-white transition-colors"
+            >
+              Staff Login
+            </Link>
           </div>
         </div>
       </div>
-      <div className="pointer-events-none lg:block hidden absolute lg:-bottom-[36%] md:-bottom-[14%] -bottom-[5%] left-1/2 -translate-x-1/2 text-[47px] md:text-[160px] lg:text-[180px] whitespace-nowrap font-semibold">
-        <h1 className="text-white opacity-[20%] bebas-neue-regular tracking-wide uppercase">
+      <div className="pointer-events-none lg:block hidden absolute lg:-bottom-[36%] md:-bottom-[14%] -bottom-[5%] left-1/2 -translate-x-1/2 text-[47px] md:text-[160px] lg:text-[180px] whitespace-nowrap">
+        <h1 className="font-display font-extrabold text-white opacity-[20%] tracking-wide uppercase">
           Bravo Zulu
         </h1>
       </div>
-      <div className="pointer-events-none lg:block hidden absolute bottom-0 w-full h-[10%] md:h-[30%] lg:h-[50%] bg-gradient-to-t from-black/90 to-transparent"></div>
+      <div className="pointer-events-none lg:block hidden absolute bottom-0 w-full h-[10%] md:h-[30%] lg:h-[50%] bg-gradient-to-t from-bz-jet to-transparent"></div>
     </footer>
   );
 

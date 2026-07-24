@@ -2,7 +2,7 @@
 
 import { useScroll, useTransform, motion, MotionValue } from "framer-motion";
 import ServicesCarousel from "../ServicesCarousel";
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 
 interface TextComponentProps {
   children: React.ReactNode;
@@ -11,51 +11,31 @@ interface TextComponentProps {
 }
 
 const ServicesSection = () => {
-  // Change the type to HTMLDivElement specifically
   const ref = useRef<HTMLDivElement>(null);
-
-  // Initialize with null and set in useEffect to avoid hydration issues
-  const [deviceWidth, setDeviceWidth] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    setDeviceWidth(window.innerWidth < 756);
-
-    const handleResize = () => {
-      setDeviceWidth(window.innerWidth < 756);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: deviceWidth
-      ? ["end end", "start start"]
-      : ["end end", "start start"],
+    offset: ["end end", "start start"],
   });
 
-  const firstLine = "Professional detailing services for your";
-  const secondLine = "most valued possessions";
+  const headline = "Services designed around how you use your vehicle.";
 
   return (
     <section
       id="services"
-      className="container mx-auto md:mt-32 4xl:mt-60 px-4 pb-5 md:pb-28 flex flex-col items-center"
+      className="container mx-auto md:mt-32 px-4 pb-5 md:pb-28 flex flex-col items-center"
     >
-      {/* Main Title */}
-      <h2 className="mb-4 md:text-7xl text-4xl text-center text-black bebas-neue-regular">
-        Servic<span className="stroked-text relative">es</span>
-      </h2>
+      {/* Section label */}
+      <span className="mb-4 font-mono text-xs font-medium uppercase tracking-[0.14em] text-bz-electric">
+        Services
+      </span>
 
-      {/* First Line */}
+      {/* Headline */}
       <div
         ref={ref}
-        className="flex flex-wrap gap-4 justify-center text-center mt-2 md:mt-9"
+        className="flex max-w-4xl flex-wrap justify-center gap-x-3 gap-y-1 text-center mt-2 md:mt-4"
       >
-        {firstLine.split(" ").map((ele, i, arr) => {
+        {headline.split(" ").map((ele, i, arr) => {
           const totalWords = arr.length;
           const start = i / totalWords;
           const end = start + 1 / totalWords;
@@ -68,20 +48,14 @@ const ServicesSection = () => {
         })}
       </div>
 
-      {/* Second Line with Custom Color */}
-      <div className="flex flex-wrap gap-4 justify-center text-center mt-2 mb-4 md:mb-16">
-        {secondLine.split(" ").map((ele, i, arr) => {
-          const totalWords = arr.length;
-          const start = i / totalWords;
-          const end = start + 1 / totalWords;
-
-          return (
-            <Para key={i} range={[start, end]} progress={scrollYProgress}>
-              {ele}
-            </Para>
-          );
-        })}
-      </div>
+      {/* Body copy */}
+      <p className="mt-6 mb-4 max-w-3xl text-center font-body text-base leading-relaxed text-bz-slate md:mb-16">
+        Bravo Zulu provides professional wash, interior cleaning, exterior
+        detailing, paint enhancement, correction, and ceramic protection
+        services designed to clean, restore, and protect the vehicles you rely
+        on and enjoy &mdash; from routine upkeep and trip-ready cleaning to
+        more complete detailing services.
+      </p>
 
       <ServicesCarousel />
     </section>
@@ -92,25 +66,12 @@ const Heading = ({ children, range, progress }: TextComponentProps) => {
   const opacity = useTransform(progress, range, [0, 1]);
 
   return (
-    <motion.h3
+    <motion.h2
       style={{ opacity }}
-      className="lg:text-5xl md:text-2xl text-xl font-semibold"
+      className="font-display text-3xl font-extrabold tracking-[-0.02em] text-bz-jet md:text-5xl"
     >
       {children}
-    </motion.h3>
-  );
-};
-
-const Para = ({ children, range, progress }: TextComponentProps) => {
-  const opacity = useTransform(progress, range, [0, 1]);
-
-  return (
-    <motion.p
-      style={{ opacity }}
-      className="lg:text-4xl text-xl font-semibold text-[#00879E]"
-    >
-      {children}
-    </motion.p>
+    </motion.h2>
   );
 };
 

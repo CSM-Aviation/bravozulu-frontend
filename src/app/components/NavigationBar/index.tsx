@@ -3,8 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { LogIn, LogOut, Phone } from "lucide-react";
-import "./button.css";
+import { LogOut } from "lucide-react";
 import "./navbar.css"; // Import the new CSS file
 import { useRouter, usePathname } from "next/navigation";
 import { apiService } from "../../APIServices/apiService";
@@ -21,10 +20,13 @@ const NavigationBar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [scrollToSection, setScrollToSection] = useState<string | null>(null);
-  
+
   // Check if we're on the homepage
   const isHomePage = pathname === "/" || pathname === "/home";
-  
+
+  // Overlay style (transparent, white text) only while at the top of the homepage
+  const isSolid = !isHomePage || prevScrollPos > 50;
+
   // Monitor for navigation and scroll to the section if needed
   useEffect(() => {
     // Check if we're on homepage and have a section to scroll to
@@ -40,7 +42,7 @@ const NavigationBar = () => {
       }
     }
   }, [isHomePage, scrollToSection]);
-  
+
   // Handle scroll to section on homepage
   const handleSectionNavigation = (sectionId: string): void => {
     if (isHomePage) {
@@ -113,36 +115,25 @@ const NavigationBar = () => {
     setIsAuthenticated(false);
   };
 
-  const handleLogin = () => {
-    router.push("/login");
-  };
-
   // Function to check if the link is active
   const isActive = (path: string) => {
     return pathname === path;
   };
 
-  // Determine background style based on page and scroll position
-  const getBackgroundStyle = () => {
-    if (isHomePage) {
-      // On homepage, transparent when at top, semi-transparent when scrolled
-      return prevScrollPos > 50 
-        ? "bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] bg-opacity-80" 
-        : "bg-transparent";
-    } else {
-      // On other pages, always use the gradient
-      return "bg-gradient-to-br from-[#0F172A] to-[#1E3A8A]";
-    }
-  };
+  const barColor = isSolid ? "#1F2326" : "#FFFFFF";
 
   return (
     <nav
       className={`fixed left-0 right-0 top-0 z-[100] w-screen transition-all duration-300 ${
         visible ? "translate-y-0" : "-translate-y-full"
-      } ${getBackgroundStyle()}`}
+      } ${
+        isSolid
+          ? "nav-solid bg-white shadow-sm border-b border-bz-silver/40"
+          : "nav-overlay bg-transparent"
+      }`}
     >
       <div
-        className={`container mx-auto flex max-w-screen-2xl items-center justify-between px-8 py-6`}
+        className={`container mx-auto flex max-w-screen-2xl items-center justify-between px-8 py-3 md:py-4`}
       >
         <div className="flex items-center">
           <div
@@ -152,27 +143,34 @@ const NavigationBar = () => {
             <motion.div
               animate={
                 isOpen
-                  ? { rotate: 45, y: 50, x: 200, backgroundColor: "white" }
-                  : { rotate: 0, y: 0 }
+                  ? { rotate: 45, y: 50, x: 200, backgroundColor: "#1F2326" }
+                  : { rotate: 0, y: 0, x: 0, backgroundColor: barColor }
               }
-              className="w-6 h-0.5 bg-white mb-1 rounded"
-            />
-            <motion.div
-              animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
-              className="w-6 h-0.5 bg-white mb-1 rounded"
+              className="w-6 h-0.5 mb-1 rounded"
+              style={{ backgroundColor: barColor }}
             />
             <motion.div
               animate={
                 isOpen
-                  ? { rotate: -45, y: 38, x: 199, backgroundColor: "white" }
-                  : { rotate: 0, y: 0 }
+                  ? { opacity: 0 }
+                  : { opacity: 1, backgroundColor: barColor }
               }
-              className="w-6 h-0.5 bg-white rounded"
+              className="w-6 h-0.5 mb-1 rounded"
+              style={{ backgroundColor: barColor }}
+            />
+            <motion.div
+              animate={
+                isOpen
+                  ? { rotate: -45, y: 38, x: 199, backgroundColor: "#1F2326" }
+                  : { rotate: 0, y: 0, x: 0, backgroundColor: barColor }
+              }
+              className="w-6 h-0.5 rounded"
+              style={{ backgroundColor: barColor }}
             />
           </div>
-          <Link href="/" className="relative h-10 w-32 ml-4">
+          <Link href="/" className="relative h-12 w-[89px] md:h-14 md:w-[104px] ml-4">
             <Image
-              src="/BravoZulu_logo.png"
+              src={isSolid ? "/logo-bravo-zulu.svg" : "/logo-bravo-zulu-white.svg"}
               alt="Bravo Zulu Logo"
               fill
               className="object-contain"
@@ -201,11 +199,8 @@ const NavigationBar = () => {
           >
             Contact
           </button>
-          <a href="tel:559-690-9500" className="phone-link">
-            <Phone className="w-4 h-4 mr-2" />
-          </a>
 
-          {isAuthenticated ? (
+          {isAuthenticated && (
             <div className="flex items-center gap-4">
               <Link
                 href="/dashboard"
@@ -215,76 +210,66 @@ const NavigationBar = () => {
               </Link>
               <div className="flex flex-col items-center">
                 {user && (
-                  <span className="text-white text-sm font-medium">
+                  <span
+                    className={`text-sm font-medium ${
+                      isSolid ? "text-bz-jet" : "text-white"
+                    }`}
+                  >
                     {user.firstName}
                   </span>
                 )}
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-1 mt-1 text-sm text-white hover:text-[#13fdfd] transition-colors"
+                  className={`flex items-center gap-1 mt-1 text-sm transition-colors hover:text-bz-electric ${
+                    isSolid ? "text-bz-jet" : "text-white"
+                  }`}
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Logout</span>
                 </button>
               </div>
             </div>
-          ) : (
-            <Link
-              href="/login"
-              className="btn btn-secondary in-nav w-inline-block stroke-gr-8 secondary-btn-gr custom-a"
-              onClick={handleLogin}
-            >
-              <div className="nav-text">Login</div>
-            </Link>
           )}
         </div>
 
-        {/* Mobile Phone and Login Button */}
-        <div className="md:hidden flex items-center gap-4">
-          <a
-            href="tel:559-690-9500"
-            className="p-2 text-white hover:text-[#13fdfd] transition-colors"
-          >
-            <Phone className="w-6 h-6" />
-          </a>
-
-          {isAuthenticated ? (
+        {/* Mobile Logout Button */}
+        {isAuthenticated && (
+          <div className="md:hidden flex items-center gap-4">
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1 text-white hover:text-[#13fdfd] transition-colors"
+              className={`flex items-center gap-1 transition-colors hover:text-bz-electric ${
+                isSolid ? "text-bz-jet" : "text-white"
+              }`}
             >
               <LogOut className="w-5 h-5" />
             </button>
-          ) : (
-            <button
-              onClick={handleLogin}
-              className="flex items-center text-white hover:text-[#13fdfd] transition-colors"
-            >
-              <LogIn className="w-5 h-5" />
-            </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100 ">
+        <div
+          className="fixed left-0 top-0 h-screen w-screen bg-bz-jet/40"
+          onClick={() => setIsOpen(false)}
+        >
           <div className="relative">
-            {/* Sliding menu with updated background and text animation */}
+            {/* Sliding menu */}
             <motion.div
               initial={{ x: "-100%" }}
               animate={{ x: isOpen ? "7%" : "-100%" }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="fixed top-10 left-0 w-72 h-full bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] shadow-lg p-6 rounded-3xl"
+              className="fixed top-10 left-0 w-72 h-[calc(100vh-2.5rem)] overflow-y-auto bg-white shadow-lg p-6 rounded-3xl"
+              onClick={(e) => e.stopPropagation()}
             >
-              <ul className="space-y-6 pt-16 text-white text-2xl font-bold">
+              <ul className="space-y-6 pt-16 text-bz-jet text-2xl font-display font-bold">
                 <motion.li
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: 0.2 }}
                 >
                   <motion.button
-                    className={`${isActive("/services") ? "active" : ""} transition-all duration-300 hover:text-[#13fdfd]`}
+                    className={`${isActive("/services") ? "active" : ""} transition-all duration-300 hover:text-bz-electric`}
                     onClick={() => {
                       setIsOpen(false);
                       handleSectionNavigation('services');
@@ -306,7 +291,7 @@ const NavigationBar = () => {
                   >
                     <Link
                       href="/Quote"
-                      className={`${isActive("/Quote") ? "active" : ""} transition-all duration-300 hover:text-[#13fdfd]`}
+                      className={`${isActive("/Quote") ? "active" : ""} transition-all duration-300 hover:text-bz-electric`}
                       onClick={() => setIsOpen(false)}
                     >
                       Quote
@@ -319,7 +304,7 @@ const NavigationBar = () => {
                   transition={{ duration: 0.6, delay: 0.6 }}
                 >
                   <motion.button
-                    className={`${isActive("/contact") ? "active" : ""} transition-all duration-300 hover:text-[#13fdfd]`}
+                    className={`${isActive("/contact") ? "active" : ""} transition-all duration-300 hover:text-bz-electric`}
                     onClick={() => {
                       setIsOpen(false);
                       handleSectionNavigation('contact');
@@ -342,7 +327,7 @@ const NavigationBar = () => {
                     >
                       <Link
                         href="/dashboard"
-                        className={`${isActive("/dashboard") ? "active" : ""} transition-all duration-300 hover:text-[#13fdfd]`}
+                        className={`${isActive("/dashboard") ? "active" : ""} transition-all duration-300 hover:text-bz-electric`}
                         onClick={() => setIsOpen(false)}
                       >
                         Dashboard

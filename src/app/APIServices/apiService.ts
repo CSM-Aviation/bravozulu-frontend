@@ -51,7 +51,7 @@ export interface QuoteData {
   email: string;
   phoneNumber: string;
   companyName?: string;
-  vehicleType: 'Aircraft' | 'Automobile' | 'Vessel';
+  vehicleType: 'Aircraft' | 'Automobile' | 'Vessel' | 'RV/Trailer';
   status: 'Need Response' | 'Quoted' | 'Approved' | 'Completed';
   createdAt: string;
 
@@ -59,6 +59,7 @@ export interface QuoteData {
   registrationNumber?: string;
   serviceType?: string;
   serviceLocation?: string;
+  serviceAddress?: string;
   year?: number;
   make?: string;
   model?: string;

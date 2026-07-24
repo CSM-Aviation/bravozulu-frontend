@@ -5,14 +5,15 @@ import RegistrationDropdown from '../components/RegistrationDropdown';
 import ServiceSelectionSection from '../components/ServiceSelectionSection';
 import { Loader2 } from 'lucide-react';
 
-// import { useRouter } from 'next/navigation';
+const inputClasses =
+  "w-full border-b border-bz-silver pb-2 font-body text-base text-bz-jet bg-transparent focus:outline-none focus:border-bz-electric transition-colors";
+const labelClasses =
+  "mb-1 block font-mono text-xs font-medium uppercase tracking-[0.14em] text-bz-slate";
 
 const Quote = () => {
-  // const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [vehicleType, setVehicleType] = useState<'Aircraft' | 'Automobile' | 'Vessel'>('Aircraft');
   const [selectedExterior, setSelectedExterior] = useState<string[]>([]);
   const [selectedInterior, setSelectedInterior] = useState<string[]>([]);
   const [specialRequests, setSpecialRequests] = useState('');
@@ -23,10 +24,11 @@ const Quote = () => {
     companyName: '',
     email: '',
     phoneNumber: '',
-    vehicleType: 'Aircraft',
+    vehicleType: 'Automobile',
     registrationNumber: '',
     serviceType: '',
-    serviceLocation: 'FAT',
+    serviceLocation: 'Onsite - Drop Off',
+    serviceAddress: '',
     year: undefined,
     make: '',
     model: '',
@@ -71,6 +73,10 @@ const Quote = () => {
 
     const quoteData: Partial<QuoteData> = {
       ...formData,
+      serviceAddress:
+        formData.serviceLocation === 'Mobile Service'
+          ? formData.serviceAddress
+          : undefined,
       serviceDetails: {
         services: transformedServices,
         specialRequests: specialRequests || undefined
@@ -142,32 +148,26 @@ const Quote = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 py-12">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-bz-mist py-12">
         <div className="max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-lg text-center">
           <div className="text-green-500 mb-8">
             <svg className="w-24 h-24 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h1 className="text-4xl font-bold mb-4 text-gray-800">Thank you!</h1>
-          <p className="text-xl text-gray-600 mb-8">
+          <h1 className="font-display text-4xl font-extrabold mb-4 text-bz-jet">Thank you!</h1>
+          <p className="font-body text-xl text-bz-slate mb-8">
             Your quote request has been sent. We will get in touch with you shortly after reviewing your servicing details.
           </p>
-          {/* <button
-            onClick={resetForm}
-            className="bg-blue-500 text-white py-3 px-8 rounded-lg text-lg font-semibold hover:bg-blue-600 transform hover:scale-[1.02] transition-all duration-200"
-          >
-            Submit New Quote
-          </button> */}
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen text-black bg-gradient-to-b from-gray-50 to-gray-100 py-12">
+    <div className="min-h-screen bg-bz-mist py-12">
     <div className="max-w-6xl mx-auto p-8 md:p-12 bg-white rounded-xl shadow-lg space-y-12">
-      <h1 className="text-2xl mt-10 font-bold text-center mb-12 text-gray-800 tracking-tight md:text-3xl lg:text-4xl">
+      <h1 className="font-display text-2xl mt-10 font-extrabold text-center mb-12 text-bz-jet tracking-[-0.025em] md:text-3xl lg:text-4xl">
         QUOTE REQUEST
       </h1>
 
@@ -177,36 +177,36 @@ const Quote = () => {
           ref={formRefs.customerInfo}
           className="transform transition-all duration-700 opacity-0 translate-y-10"
         >
-          <h2 className="md:text-3xl text-xl  font-semibold mb-8 text-gray-800">
+          <h2 className="font-display md:text-3xl text-xl font-bold mb-8 text-bz-jet tracking-[-0.02em]">
             Customer Information
           </h2>
           <div className="space-y-8 form-group">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <label className="text-black mb-1 block">First Name *</label>
+                <label className={labelClasses}>First Name *</label>
                 <input
                   type="text"
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleInputChange}
                   required
-                  className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                  className={inputClasses}
                 />
               </div>
               <div>
-                <label className="text-black mb-1 block">Last Name *</label>
+                <label className={labelClasses}>Last Name *</label>
                 <input
                   type="text"
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleInputChange}
                   required
-                  className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                  className={inputClasses}
                 />
               </div>
             </div>
             <div>
-              <label className=" text-black mb-1 block">
+              <label className={labelClasses}>
                 Company Name (Optional)
               </label>
               <input
@@ -214,23 +214,23 @@ const Quote = () => {
                 name="companyName"
                 value={formData.companyName}
                 onChange={handleInputChange}
-                className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                className={inputClasses}
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <label className=" text-black mb-1 block">Email *</label>
+                <label className={labelClasses}>Email *</label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                  className={inputClasses}
                 />
               </div>
               <div>
-                <label className=" text-black mb-1 block">
+                <label className={labelClasses}>
                   Phone Number *
                 </label>
                 <input
@@ -239,7 +239,7 @@ const Quote = () => {
                   value={formData.phoneNumber}
                   onChange={handleInputChange}
                   required
-                  className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                  className={inputClasses}
                 />
               </div>
             </div>
@@ -251,34 +251,30 @@ const Quote = () => {
           ref={formRefs.vehicleInfo}
           className="transform transition-all duration-700 opacity-0 translate-y-10"
         >
-          <h2 className="md:text-3xl text-xl font-semibold mb-8 text-gray-800">
+          <h2 className="font-display md:text-3xl text-xl font-bold mb-8 text-bz-jet tracking-[-0.02em]">
             Vehicle Information
           </h2>
           <div className="space-y-8">
             <div>
-              <label className="text-black mb-1 block"> Vehicle Type *</label>
+              <label className={labelClasses}>Vehicle Type *</label>
               <select
                 name="vehicleType"
-                value={vehicleType}
-                onChange={(e) =>
-                  setVehicleType(
-                    e.target.value as "Aircraft" | "Automobile" | "Vessel"
-                  )
-                }
-                className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                value={formData.vehicleType}
+                onChange={handleInputChange}
+                className={inputClasses}
               >
-                <option value="Aircraft">Aircraft</option>
                 <option value="Automobile">Automobile</option>
+                <option value="Aircraft">Aircraft</option>
+                <option value="RV/Trailer">RV/Trailer</option>
                 <option value="Vessel">Vessel</option>
               </select>
             </div>
 
-            {vehicleType === "Aircraft" && (
+            {formData.vehicleType === "Aircraft" && (
               <div className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div>
-                    <label className="text-black mb-1 block">
-                      {" "}
+                    <label className={labelClasses}>
                       Registration Number *
                     </label>
                     <RegistrationDropdown
@@ -298,23 +294,11 @@ const Quote = () => {
                           }));
                         }
                       }}
-                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                      className={inputClasses}
                     />
-                    {/* {formData.registrationNumber === "other" && (
-                      <input
-                        type="text"
-                        name="registrationNumber"
-                        value={formData.registrationNumber}
-                        onChange={handleInputChange}
-                        placeholder="Enter Registration Number"
-                        required
-                        className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
-                      />
-                    )} */}
                   </div>
                   <div>
-                    <label className="text-black mb-1 block">
-                      {" "}
+                    <label className={labelClasses}>
                       Services Requested *
                     </label>
                     <select
@@ -322,7 +306,7 @@ const Quote = () => {
                       value={formData.serviceType}
                       onChange={handleInputChange}
                       required
-                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                      className={inputClasses}
                     >
                       <option value="">Select a service</option>
                       <option value="exterior">Exterior Detailing</option>
@@ -334,51 +318,63 @@ const Quote = () => {
               </div>
             )}
 
-            {vehicleType === "Automobile" && (
+            {(formData.vehicleType === "Automobile" ||
+              formData.vehicleType === "RV/Trailer") && (
               <div className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   <div>
-                    <label className="text-black mb-1 block"> Year *</label>
+                    <label className={labelClasses}>Year *</label>
                     <input
                       type="number"
                       name="year"
-                      value={formData.year}
+                      value={formData.year ?? ""}
                       onChange={handleInputChange}
                       required
-                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                      className={inputClasses}
                     />
                   </div>
                   <div>
-                    <label className="text-black mb-1 block"> Make *</label>
+                    <label className={labelClasses}>Make *</label>
                     <input
                       type="text"
                       name="make"
                       value={formData.make}
                       onChange={handleInputChange}
                       required
-                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                      className={inputClasses}
                     />
                   </div>
                   <div>
-                    <label className="text-black mb-1 block"> Model *</label>
+                    <label className={labelClasses}>Model *</label>
                     <input
                       type="text"
                       name="model"
                       value={formData.model}
                       onChange={handleInputChange}
                       required
-                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                      className={inputClasses}
                     />
                   </div>
+                  {formData.vehicleType === "RV/Trailer" && (
+                    <div>
+                      <label className={labelClasses}>Length (ft)</label>
+                      <input
+                        type="number"
+                        name="length"
+                        value={formData.length ?? ""}
+                        onChange={handleInputChange}
+                        className={inputClasses}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             )}
 
-            {vehicleType === "Vessel" && (
+            {formData.vehicleType === "Vessel" && (
               <div className="space-y-8">
                 <div>
-                  <label className="text-black mb-1 block">
-                    {" "}
+                  <label className={labelClasses}>
                     Boat Number *
                   </label>
                   <input
@@ -387,12 +383,11 @@ const Quote = () => {
                     value={formData.boatNumber}
                     onChange={handleInputChange}
                     required
-                    className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                    className={inputClasses}
                   />
                 </div>
                 <div>
-                  <label className="text-black mb-1 block">
-                    {" "}
+                  <label className={labelClasses}>
                     Vessel Type *
                   </label>
                   <input
@@ -402,21 +397,20 @@ const Quote = () => {
                     onChange={handleInputChange}
                     required
                     placeholder="e.g., Yacht, Speedboat, etc."
-                    className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                    className={inputClasses}
                   />
                 </div>
                 <div>
-                  <label className="text-black mb-1 block">
-                    {" "}
+                  <label className={labelClasses}>
                     Length (ft) *
                   </label>
                   <input
                     type="number"
                     name="length"
-                    value={formData.length}
+                    value={formData.length ?? ""}
                     onChange={handleInputChange}
                     required
-                    className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                    className={inputClasses}
                   />
                 </div>
               </div>
@@ -425,10 +419,9 @@ const Quote = () => {
         </div>
 
         {/* Service Selection Section */}
-        {vehicleType === "Aircraft" && (
+        {formData.vehicleType === "Aircraft" && (
           <ServiceSelectionSection
-            // className="space-y-8"
-            vehicleType={vehicleType}
+            vehicleType={formData.vehicleType}
             selectedExterior={selectedExterior}
             selectedInterior={selectedInterior}
             onExteriorChange={setSelectedExterior}
@@ -437,27 +430,42 @@ const Quote = () => {
           />
         )}
         <div>
-          <label className="text-black mb-1 block"> Service Location</label>
+          <label className={labelClasses}>Service Location</label>
           <select
             name="serviceLocation"
             value={formData.serviceLocation}
             onChange={handleInputChange}
-            className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+            className={inputClasses}
           >
-            <option value="FAT">FAT</option>
-            <option value="MJC">MJC</option>
+            <option value="Onsite - Drop Off">Onsite - Drop Off</option>
+            <option value="Mobile Service">Mobile Service</option>
           </select>
         </div>
 
+        {formData.serviceLocation === "Mobile Service" && (
+          <div>
+            <label className={labelClasses}>Service Address *</label>
+            <input
+              type="text"
+              name="serviceAddress"
+              value={formData.serviceAddress}
+              onChange={handleInputChange}
+              required
+              placeholder="Street, City, ZIP — where should we come to you?"
+              className={inputClasses}
+            />
+          </div>
+        )}
+
         {/* Special Requests */}
         <div>
-          <label className="text-black mb-1 block"> Special Requests</label>
+          <label className={labelClasses}>Special Requests</label>
           <textarea
             name="specialRequests"
             value={specialRequests}
             onChange={(e) => setSpecialRequests(e.target.value)}
             rows={4}
-            className="w-full p-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
+            className="w-full p-4 font-body text-lg text-bz-jet border border-bz-silver rounded-xl focus:outline-none focus:ring-2 focus:ring-bz-electric"
             placeholder="Any special requirements or additional information..."
           />
         </div>
@@ -465,7 +473,7 @@ const Quote = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full md:w-auto px-8 py-3 bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] text-white rounded-full hover:shadow-lg transition-all duration-300 hover:scale-105"
+          className="w-full md:w-auto px-8 py-3 bg-bz-electric font-display font-bold text-white rounded-lg transition-colors duration-300 hover:bg-bz-current disabled:opacity-60"
         >
           {loading ? (
             <>

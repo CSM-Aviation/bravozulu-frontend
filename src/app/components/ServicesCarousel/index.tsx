@@ -14,7 +14,7 @@ const ServicesCarousel = () => {
   useEffect(() => {
     const updateTranslateZ = () => {
       const width = window.innerWidth;
-      if (width < 768) setTranslateZ(120);
+      if (width < 768) setTranslateZ(150);
       else if (width < 1024) setTranslateZ(300);
       else setTranslateZ(400);
     };
@@ -86,17 +86,17 @@ const ServicesCarousel = () => {
                 >
                   <div className="w-[200px] h-[340px] md:w-[260px] md:h-[350px] lg:w-[300px] lg:h-[400px] rounded-lg overflow-hidden shadow-lg">
                     <div
-                      className="relative w-full h-full bg-cover bg-center flex flex-col justify-between p-4 text-white"
+                      className="relative w-full h-full bg-bz-jet bg-cover bg-center flex flex-col justify-between p-4 text-white"
                       style={{ backgroundImage: `url(${item.image})` }}
                     >
                       <div className="absolute inset-0 bg-black/30 rounded-lg" />
                       <div className="relative z-10 text-center">
-                        <h2 className="text-lg font-bold">{item.title}</h2>
+                        <h2 className="font-display text-lg font-bold">{item.title}</h2>
                       </div>
                       <Link href="/Quote" className="block w-full">
-                      <button className="relative z-10 mt-auto flex items-center justify-between gap-4 rounded-full bg-white py-3 px-6 text-base font-medium text-black shadow-md w-full max-w-[200px] mx-auto transition-all duration-300 hover:bg-black hover:text-white group">
+                      <button className="relative z-10 mt-auto flex items-center justify-between gap-4 rounded-full bg-white py-3 px-6 text-base font-medium text-bz-jet shadow-md w-full max-w-[200px] mx-auto transition-all duration-300 hover:bg-bz-electric hover:text-white group">
   Get Quote
-  <span className="p-2 bg-gray-100 rounded-full flex items-center justify-center transition-all duration-300 group-hover:bg-white group-hover:text-black">
+  <span className="p-2 bg-bz-mist rounded-full flex items-center justify-center text-bz-jet transition-all duration-300 group-hover:bg-white group-hover:text-bz-jet">
     <TfiArrowTopRight size={14} />
   </span>
 </button>

@@ -23,7 +23,7 @@ interface ServiceCheckboxGroupProps {
 
 const ServiceCheckboxGroup: React.FC<ServiceCheckboxGroupProps> = ({ title, options, selected, onChange }) => (
   <div className="space-y-3">
-    <h3 className="font-semibold text-gray-700">{title}</h3>
+    <h3 className="font-display font-bold text-bz-jet">{title}</h3>
     <div className="space-y-2">
       {options.map((option) => (
         <label key={option.value} className="flex items-center space-x-2">
@@ -37,9 +37,9 @@ const ServiceCheckboxGroup: React.FC<ServiceCheckboxGroupProps> = ({ title, opti
                 onChange(selected.filter(item => item !== option.value));
               }
             }}
-            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            className="rounded border-bz-silver text-bz-electric focus:ring-bz-electric"
           />
-          <span className="text-gray-700">{option.label}</span>
+          <span className="font-body text-bz-slate">{option.label}</span>
         </label>
       ))}
     </div>

@@ -9,14 +9,19 @@ export const CarouselItems = [
     title: "Vessel Detailing",
     description:
       "Expert vessel detailing services to keep your watercraft in pristine condition, with attention to every detail inside and out.",
-      image: "/images/services/Card3.webp",
-
-    },
-    {
-      title: "Automotive Detailing",
-      description:
+    image: "/images/services/Card3.webp",
+  },
+  {
+    title: "Automotive Detailing",
+    description:
       "Comprehensive automotive detailing services including washing, waxing, paint rejuvenation, and specialized brightwork polishing for superior results.",
-      image: "/images/services/Card1.webp",
+    image: "/images/services/Card1.webp",
+  },
+  {
+    title: "RV Detailing",
+    description:
+      "Professional RV detailing to keep your motorhome or trailer road-ready — interior cleaning, exterior wash, and lasting protection for every trip.",
+    image: "/images/services/Card4.jpg",
   },
 ];
 

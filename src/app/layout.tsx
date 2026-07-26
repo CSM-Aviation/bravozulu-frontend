@@ -1,27 +1,32 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Manrope, Roboto, DM_Mono } from "next/font/google";
 import "./globals.css";
 
 import { UserProvider } from "./contexts/UserContext";
-// import NavigationBar from "./components/NavigationBar";
-// import Header from "./components/Header";
 import NavigationBar from "./components/NavigationBar";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const manrope = Manrope({
+  variable: "--font-display",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const roboto = Roboto({
+  variable: "--font-body",
+  weight: ["300", "400", "500"],
+  subsets: ["latin"],
+});
+
+const dmMono = DM_Mono({
+  variable: "--font-mono",
+  weight: ["400", "500"],
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: 'Bravo Zulu Services - Aircraft, Automotive & Vessel Detailing',
-  description: 'Professional detailing services for aircraft, automobiles, and vessels in Fresno, CA',
+  title: 'Bravo Zulu Services - Aircraft, Automotive, RV & Vessel Detailing',
+  description: 'Professional mobile detailing services for aircraft, automobiles, RVs, and vessels in Fresno, CA',
   icons: {
-    icon: '/BravoZulu_logo.png',
+    icon: '/logo-bravo-zulu.svg',
   },
 };
 
@@ -32,10 +37,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${manrope.variable} ${roboto.variable} ${dmMono.variable} antialiased`}>
         <UserProvider>
           <NavigationBar />
-          {/* <Header /> */}
           {children}
         </UserProvider>
       </body>

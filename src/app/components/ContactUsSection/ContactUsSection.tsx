@@ -1,7 +1,6 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
-import "./contactUsAnimation.css";
 import { useScroll, useTransform, motion, MotionValue } from "framer-motion";
 import CustomButton2 from "@/app/utils/CustomButton2";
 
@@ -34,31 +33,12 @@ const ContactUs = () => {
 
   const ref = useRef<HTMLDivElement>(null);
 
-  // Get window width for responsive behavior
-  const [deviceWidth, setDeviceWidth] = useState(false);
-
-  // Update device width on client-side only
-  useEffect(() => {
-    setDeviceWidth(window.innerWidth < 756);
-
-    const handleResize = () => {
-      setDeviceWidth(window.innerWidth < 756);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: deviceWidth
-      ? ["start center", "center center"]
-      : ["start center", "center center"],
+    offset: ["start center", "center center"],
   });
 
-  const firstLine = "Premium Detailing Services";
+  const firstLine = "Premium Mobile Detailing Services";
 
 
   const handleInputChange = (
@@ -90,16 +70,14 @@ const ContactUs = () => {
 
   const Heading = ({ children, range, progress, index }: TextComponentProps) => {
     const opacity = useTransform(progress, range, [0, 1]);
-    // Check if this word is the middle one (Detailing)
-    const isMiddleWord = index === 1; // For "Premium Detailing Services", the middle word is at index 1
+    // Accent word: "Mobile" in "Premium Mobile Detailing Services"
+    const isAccentWord = index === 1;
 
     return (
       <motion.h3
         style={{ opacity }}
-        className={`text-3xl sm:text-5xl md:text-5xl lg:text-5xl xl:text-5xl font-bold mb-2 ${
-          isMiddleWord 
-            ? 'text-transparent bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] bg-clip-text' 
-            : 'text-gray-900'
+        className={`font-display text-3xl font-extrabold tracking-[-0.025em] md:text-4xl mb-2 ${
+          isAccentWord ? "text-bz-electric" : "text-bz-jet"
         }`}
       >
         {children}
@@ -107,30 +85,24 @@ const ContactUs = () => {
     );
   };
 
-  // const Para = ({ children, range, progress }: TextComponentProps) => {
-  //   const opacity = useTransform(progress, range, [0, 1]);
-
-  //   return (
-  //     <motion.p
-  //       style={{ opacity }}
-  //       className="md:text-sm text-sm text-neutral-600"
-  //     >
-  //       {children}
-  //     </motion.p>
-  //   );
-  // };
+  const inputClasses =
+    "w-full border-b border-bz-silver pb-2 font-body text-base text-bz-jet placeholder:text-bz-slate/60 bg-transparent focus:outline-none focus:border-bz-electric transition-colors";
+  const labelClasses =
+    "mb-1 block font-mono text-xs font-medium uppercase tracking-[0.14em] text-bz-slate";
 
   return (
-    <section id="contact" className="container mx-auto flex-col px-4 4xl:mt-32 md:px-16">
-      <h2 className="md:mb-4 md:text-7xl text-4xl text-center text-black bebas-neue-regular">
-        Cont<span className="stroked-text">act</span>
-      </h2>
-      <div className="mt-9 w-full">
+    <section id="contact" className="container mx-auto flex-col px-4 md:px-16">
+      <div className="flex flex-col items-center">
+        <span className="font-mono text-xs font-medium uppercase tracking-[0.14em] text-bz-electric">
+          Contact
+        </span>
+      </div>
+      <div className="mt-2 w-full">
         <div
           ref={ref}
           className="flex justify-between gap-16 md:flex-row flex-col"
         >
-         <div className="flex flex-wrap justify-center items-center w-full my-8 md:my-12 lg:my-16 gap-2 md:gap-4">
+         <div className="flex flex-wrap justify-center items-center w-full my-8 md:my-10 gap-2 md:gap-3">
             {firstLine.split(" ").map((ele, i, arr) => {
               const totalWords = arr.length;
               const start = i / totalWords;
@@ -148,62 +120,62 @@ const ContactUs = () => {
               );
             })}
           </div>
-          
+
         </div>
         <div className="flex lg:flex-row flex-col justify-between items-center md:items-start">
           <div className="md:mb-16 h-full w-full lg:w-[40%]">
             {/* Contact Information Grid */}
-            <div className="flex md:flex-row flex-col flex-wrap items-center justify-center w-full text-white gap-4">
+            <div className="grid grid-cols-1 gap-4 w-full">
               {/* Email Section */}
-              <div className="group contactcard relative flex flex-col justify-between bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] p-5 border-white rounded-3xl h-40 md:h-52 w-full md:w-[60%] lg:w-[50%] cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl">
-                <div className="contactcard absolute inset-0 bg-white opacity-10 rounded-3xl transition-opacity duration-300 group-hover:opacity-20"></div>
-                <div>
-                  <div className="w-12 h-12 relative rounded-full flex items-center justify-center">
-                    <Mail className="w-6 h-6 text-[#FF204E] absolute icon1" />
-                    <Mail className="w-6 h-6 text-white absolute icon2" />
-                  </div>
+              <div className="flex items-start gap-4 rounded-xl border border-bz-silver/40 bg-bz-mist p-5 transition-shadow duration-300 hover:shadow-md">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-bz-glaze">
+                  <Mail className="h-5 w-5 text-bz-electric" />
                 </div>
                 <div>
-                  <h3 className="mb-2 contactText">E-mail</h3>
-                  <p className="text-xs  text-semibold contactText">
+                  <h3 className="mb-1 font-display text-lg font-bold text-bz-jet">
+                    E-mail
+                  </h3>
+                  <a
+                    href="mailto:service@mybravozulu.com"
+                    className="font-body text-sm text-bz-current transition-colors hover:text-bz-electric"
+                  >
                     service@mybravozulu.com
-                  </p>
+                  </a>
                 </div>
               </div>
 
               {/* Phone Section */}
-              <div className="group contactcard relative flex flex-col justify-between bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] p-5 rounded-3xl h-40 md:h-52 w-full md:w-[60%] lg:w-[45%] cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl">
-                <div className="absolute inset-0 bg-white opacity-10 rounded-3xl transition-opacity duration-300 group-hover:opacity-20"></div>
-                <div>
-                  <div className="w-12 h-12 relative rounded-full flex items-center justify-center">
-                    <Phone className="w-6 h-6 text-[#FF204E] icon1 absolute" />
-                    <Phone className="w-6 h-6 text-white icon2 absolute" />
-                  </div>
+              <div className="flex items-start gap-4 rounded-xl border border-bz-silver/40 bg-bz-mist p-5 transition-shadow duration-300 hover:shadow-md">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-bz-glaze">
+                  <Phone className="h-5 w-5 text-bz-electric" />
                 </div>
                 <div>
-                  <h3 className="mb-2 contactText">Contact</h3>
-                  <p className="lg:text-lg text-xs text-semibold contactText">
+                  <h3 className="mb-1 font-display text-lg font-bold text-bz-jet">
+                    Contact
+                  </h3>
+                  <a
+                    href="tel:559-690-9500"
+                    className="font-body text-sm text-bz-current transition-colors hover:text-bz-electric"
+                  >
                     559-690-9500
-                  </p>
+                  </a>
                 </div>
               </div>
 
               {/* Office Section */}
-              <div className="group contactcard flex-1 relative flex flex-col justify-between bg-gradient-to-br from-[#0F172A] to-[#1E3A8A] p-5 rounded-3xl h-40 md:h-52 w-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl">
-                <div className="absolute inset-0 bg-white opacity-10 rounded-3xl transition-opacity duration-300 group-hover:opacity-20"></div>
-                <div>
-                  <div className="w-12 h-12 relative rounded-full flex items-center justify-center">
-                    <MapPin className="w-6 h-6 text-[#FF204E] icon1 absolute" />
-                    <MapPin className="w-6 h-6 text-white absolute icon2" />
-                  </div>
+              <div className="flex items-start gap-4 rounded-xl border border-bz-silver/40 bg-bz-mist p-5 transition-shadow duration-300 hover:shadow-md">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-bz-glaze">
+                  <MapPin className="h-5 w-5 text-bz-electric" />
                 </div>
                 <div>
-                  <h3 className="mb-2 contactText">Office</h3>
-                  <p className="lg:text-lg text-xs text-semibold contactText">
-                    6737 N. Milburn Ave. Suite
+                  <h3 className="mb-1 font-display text-lg font-bold text-bz-jet">
+                    Office &amp; Onsite Detail Garage
+                  </h3>
+                  <p className="font-body text-sm text-bz-slate">
+                    2665 N. Air Fresno Dr, Suite 110
                   </p>
-                  <p className="lg:text-lg text-xs text-semibold contactText">
-                    160-100 Fresno, CA 93722
+                  <p className="font-body text-sm text-bz-slate">
+                    Fresno, CA 93727
                   </p>
                 </div>
               </div>
@@ -211,12 +183,12 @@ const ContactUs = () => {
           </div>
 
           <div className="lg:w-1/2 w-full flex flex-col items-end h-full md:mt-0 mt-10">
-            <div className="flex flex-col md:flex-row w-full bg-[#F7F7F7] px-6 py-3 rounded-xl">
+            <div className="flex flex-col md:flex-row w-full bg-bz-mist p-6 md:p-8 rounded-xl">
               {/* Simplified Form */}
               <form onSubmit={handleSubmit} className="w-full space-y-4">
                 <div className="space-y-4">
                   <div className="form-group">
-                    <label className="text-sm text-black mb-1 block">
+                    <label className={labelClasses}>
                       Your Name
                     </label>
                     <input
@@ -224,14 +196,14 @@ const ContactUs = () => {
                       value={formData.name}
                       onChange={(e) => handleInputChange(e, "name")}
                       placeholder="Tell us your name"
-                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                      className={inputClasses}
                       required
                     />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="form-group">
-                      <label className="text-sm text-black mb-1 block">
+                      <label className={labelClasses}>
                         Email Address
                       </label>
                       <input
@@ -239,13 +211,13 @@ const ContactUs = () => {
                         value={formData.email}
                         onChange={(e) => handleInputChange(e, "email")}
                         placeholder="Your email address"
-                        className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                        className={inputClasses}
                         required
                       />
                     </div>
 
                     <div className="form-group">
-                      <label className="text-sm text-black mb-1 block">
+                      <label className={labelClasses}>
                         Phone Number
                       </label>
                       <input
@@ -253,28 +225,28 @@ const ContactUs = () => {
                         value={formData.phone}
                         onChange={(e) => handleInputChange(e, "phone")}
                         placeholder="Your contact number"
-                        className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                        className={inputClasses}
                         required
                       />
                     </div>
                   </div>
 
                   <div className="form-group">
-                    <label className="text-sm text-black mb-1 block">
+                    <label className={labelClasses}>
                       Service Requirements
                     </label>
                     <textarea
                       value={formData.requirements}
                       onChange={(e) => handleInputChange(e, "requirements")}
                       placeholder="Tell us about your requirements"
-                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                      className={inputClasses}
                       rows={3}
                       required
                     />
                   </div>
 
                   <div className="form-group">
-                    <label className="text-sm text-black mb-1 block">
+                    <label className={labelClasses}>
                       Preferred Service Date
                     </label>
                     <input
@@ -282,7 +254,7 @@ const ContactUs = () => {
                       value={formData.serviceDate}
                       onChange={(e) => handleInputChange(e, "serviceDate")}
                       placeholder="When do you want your service to be scheduled?"
-                      className="w-full border-b border-gray-300 pb-2 text-base bg-transparent focus:outline-none focus:border-blue-500 transition-colors"
+                      className={inputClasses}
                     />
                   </div>
                 </div>

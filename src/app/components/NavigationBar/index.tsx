@@ -24,9 +24,6 @@ const NavigationBar = () => {
   // Check if we're on the homepage
   const isHomePage = pathname === "/" || pathname === "/home";
 
-  // Overlay style (transparent, white text) only while at the top of the homepage
-  const isSolid = !isHomePage || prevScrollPos > 50;
-
   // Monitor for navigation and scroll to the section if needed
   useEffect(() => {
     // Check if we're on homepage and have a section to scroll to
@@ -120,17 +117,13 @@ const NavigationBar = () => {
     return pathname === path;
   };
 
-  const barColor = isSolid ? "#1F2326" : "#FFFFFF";
+  const barColor = "#1F2326";
 
   return (
     <nav
       className={`fixed left-0 right-0 top-0 z-[100] w-screen transition-all duration-300 ${
         visible ? "translate-y-0" : "-translate-y-full"
-      } ${
-        isSolid
-          ? "nav-solid bg-white shadow-sm border-b border-bz-silver/40"
-          : "nav-overlay bg-transparent"
-      }`}
+      } nav-solid bg-white shadow-sm border-b border-bz-silver/40`}
     >
       <div
         className={`container mx-auto flex max-w-screen-2xl items-center justify-between px-8 py-3 md:py-4`}
@@ -170,7 +163,7 @@ const NavigationBar = () => {
           </div>
           <Link href="/" className="relative h-12 w-[89px] md:h-14 md:w-[104px] ml-4">
             <Image
-              src={isSolid ? "/logo-bravo-zulu.svg" : "/logo-bravo-zulu-white.svg"}
+              src="/logo-bravo-zulu.svg"
               alt="Bravo Zulu Logo"
               fill
               className="object-contain"
@@ -210,19 +203,13 @@ const NavigationBar = () => {
               </Link>
               <div className="flex flex-col items-center">
                 {user && (
-                  <span
-                    className={`text-sm font-medium ${
-                      isSolid ? "text-bz-jet" : "text-white"
-                    }`}
-                  >
+                  <span className="text-sm font-medium text-bz-jet">
                     {user.firstName}
                   </span>
                 )}
                 <button
                   onClick={handleLogout}
-                  className={`flex items-center gap-1 mt-1 text-sm transition-colors hover:text-bz-electric ${
-                    isSolid ? "text-bz-jet" : "text-white"
-                  }`}
+                  className="flex items-center gap-1 mt-1 text-sm text-bz-jet transition-colors hover:text-bz-electric"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Logout</span>
@@ -237,9 +224,7 @@ const NavigationBar = () => {
           <div className="md:hidden flex items-center gap-4">
             <button
               onClick={handleLogout}
-              className={`flex items-center gap-1 transition-colors hover:text-bz-electric ${
-                isSolid ? "text-bz-jet" : "text-white"
-              }`}
+              className="flex items-center gap-1 text-bz-jet transition-colors hover:text-bz-electric"
             >
               <LogOut className="w-5 h-5" />
             </button>

@@ -12,7 +12,8 @@
 import ContactUs from "./components/ContactUsSection/ContactUsSection";
 import Footer from "./components/Footer";
 // import Hero from "./components/Hero";
-import HeroSection from "./components/HeroSection";
+// import HeroSection from "./components/HeroSection";
+import HeroSplit from "./components/HeroSplit";
 import ServicesSection from "./components/ServicesSection";
 // import Services from "./components/Services";
 // import Contact from "./components/Contact";
@@ -23,7 +24,8 @@ export default function Home() {
       {/* <CustomMouse /> */}
       
       <main>
-        <HeroSection />
+        <HeroSplit />
+        {/* <HeroSection /> */}
         {/* <Hero/> */}
         <ServicesSection />
         {/* <Services/> */}

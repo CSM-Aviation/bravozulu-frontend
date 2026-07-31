@@ -26,7 +26,7 @@ const ServicesSection = () => {
       className="container mx-auto md:mt-16 px-4 pb-5 md:pb-28 flex flex-col items-center"
     >
       {/* Section label */}
-      <span className="mb-4 font-mono text-xs font-medium uppercase tracking-[0.14em] text-bz-electric">
+      <span className="mb-4 font-mono text-4xl font-medium uppercase tracking-[0.08em] text-bz-electric md:text-6xl">
         Services
       </span>
 

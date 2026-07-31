@@ -75,7 +75,7 @@ const HeroSplit = () => {
           <div className="bz-fade-up relative aspect-[3/4] overflow-hidden rounded-2xl border border-bz-silver/40 [animation-delay:0.3s]">
             <Image
               src="/images/hero/hero-aircraft.jpg"
-              alt="Business jet on wet tarmac after professional detailing"
+              alt="Business jet on a sunny ramp after professional detailing"
               fill
               priority
               className="object-cover"
@@ -95,7 +95,7 @@ const HeroSplit = () => {
             <div className="bz-fade-up relative aspect-[4/3] overflow-hidden rounded-xl border border-bz-silver/40 [animation-delay:0.6s]">
               <Image
                 src="/images/hero/hero-auto.jpg"
-                alt="Luxury car on wet asphalt after mobile detailing"
+                alt="Luxury car in bright sunlight after mobile detailing"
                 fill
                 className="object-cover"
                 sizes="(min-width: 1024px) 26vw, 45vw"

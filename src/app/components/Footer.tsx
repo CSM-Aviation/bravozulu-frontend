@@ -131,10 +131,10 @@ export default function Footer() {
                 </li>
                 <li className="flex items-center justify-center lg:justify-start">
                   <a
-                    href="mailto:service@mybravozulu.com"
+                    href="mailto:services@mybravozulu.com"
                     className="hover:text-bz-electric transition-colors"
                   >
-                    service@mybravozulu.com
+                    services@mybravozulu.com
                   </a>
                 </li>
                 <li className="w-[160px]">

@@ -161,7 +161,7 @@ const NavigationBar = () => {
               style={{ backgroundColor: barColor }}
             />
           </div>
-          <Link href="/" className="relative h-12 w-[89px] md:h-14 md:w-[104px] ml-4">
+          <Link href="/" className="relative h-14 w-[104px] md:h-[72px] md:w-[133px] ml-4">
             <Image
               src="/logo-bravo-zulu.svg"
               alt="Bravo Zulu Logo"

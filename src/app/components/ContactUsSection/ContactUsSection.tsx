@@ -93,7 +93,7 @@ const ContactUs = () => {
   return (
     <section id="contact" className="container mx-auto flex-col px-4 md:px-16">
       <div className="flex flex-col items-center">
-        <span className="font-mono text-xs font-medium uppercase tracking-[0.14em] text-bz-electric">
+        <span className="font-mono text-4xl font-medium uppercase tracking-[0.08em] text-bz-electric md:text-5xl">
           Contact
         </span>
       </div>
@@ -136,10 +136,10 @@ const ContactUs = () => {
                     E-mail
                   </h3>
                   <a
-                    href="mailto:service@mybravozulu.com"
+                    href="mailto:services@mybravozulu.com"
                     className="font-body text-sm text-bz-current transition-colors hover:text-bz-electric"
                   >
-                    service@mybravozulu.com
+                    services@mybravozulu.com
                   </a>
                 </div>
               </div>

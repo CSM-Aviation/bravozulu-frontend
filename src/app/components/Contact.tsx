@@ -71,10 +71,10 @@ export default function Contact() {
                 <div>
                   <p className="text-gray-900 font-medium">Email</p>
                   <a 
-                    href="mailto:service@mybravozulu.com" 
+                    href="mailto:services@mybravozulu.com"
                     className="text-blue-600 hover:text-blue-700"
                   >
-                    service@mybravozulu.com
+                    services@mybravozulu.com
                   </a>
                 </div>
               </div>
